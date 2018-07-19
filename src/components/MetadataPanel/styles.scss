@@ -67,3 +67,10 @@ $sidebar-padding: 29px;
     text-transform: capitalize;
   }
 }
+
+.listItem:hover {
+  cursor: pointer;
+  &:hover {
+    background: rgba(0, 0, 0, 0.08);
+  }
+}

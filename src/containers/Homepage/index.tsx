@@ -32,17 +32,14 @@ type HomepageState = typeof initState
 class Homepage extends React.Component<HomepageProps, HomepageState> {
   state = initState
   componentWillMount () {
-    this.setState(state => ({ loading: state.loading + 1 }))
-    this.props.CITAObservables.newBlockNumber(0, false)
-      .finally(() => this.setState(state => ({ loading: state.loading - 1 })))
-      .subscribe(
-        // next
-        blockNumber => this.blockHistory({ height: blockNumber, count: 10 }),
-        // error
-        this.handleError,
-        // complete
-        () => {},
-      )
+
+    this.props.CITAObservables.newBlockNumber(0, false).subscribe(
+      // next
+      blockNumber => this.blockHistory({ height: blockNumber, count: 10 }),
+      // error
+      this.handleError,
+      // complete
+    )
     this.transactionHistory()
   }
   componentDidMount () {
@@ -59,11 +56,13 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
   ]
 
   private blockHistory = ({ height, count }) => {
+    this.setState(state => ({ loading: state.loading + 1 }))
     this.props.CITAObservables.blockHistory({
       by: height,
       count,
     }).subscribe((blocks: IBlock[]) => {
       this.setState(state => ({
+        loading: state.loading - 1,
         blocks,
       }))
     }, this.handleError)

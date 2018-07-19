@@ -42,7 +42,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        CITA_SERVER: JSON.stringify(process.env.CITA_SERVER),
+        CHAIN_SERVERS: JSON.stringify(process.env.CHAIN_SERVERS),
         APP_NAME: JSON.stringify(process.env.APP_NAME),
       },
     }),

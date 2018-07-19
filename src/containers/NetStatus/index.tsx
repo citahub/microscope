@@ -30,7 +30,8 @@ const initialState = {
     version: 0,
   },
   gasPrice: 0,
-  network: process.env.CITA_SERVER || '',
+  // network: process.env.CHAIN_SERVERS || '',
+  network: '',
 }
 
 type INetStatusState = Readonly<typeof initialState>

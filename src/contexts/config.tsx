@@ -9,9 +9,11 @@ const getServerList = () => {
   const storedList = window.localStorage.getItem(LOCAL_STORAGE.SERVER_LIST)
   if (storedList) {
     const servers = JSON.parse(storedList)
-    return servers.length ? servers : [process.env.CITA_SERVER]
+    return servers.length
+      ? servers
+      : (process.env.CHAIN_SERVERS || '').split(',')
   }
-  return [process.env.CITA_SERVER]
+  return (process.env.CHAIN_SERVERS || '').split(',')
 }
 
 const getPrivkeyList = () => {

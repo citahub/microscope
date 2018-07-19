@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { List, ListItem, ListItemText } from '@material-ui/core'
 import { translate } from 'react-i18next'
 import { Metadata } from '../../typings'
 
@@ -49,6 +50,7 @@ interface MetadataPanelProps {
   switchChain: (e) => void
   handleKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void
   t: (key: string) => string
+  serverList: string[]
 }
 
 const MetadataPanel: React.SFC<MetadataPanelProps> = ({
@@ -59,6 +61,7 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
   handleKeyUp,
   switchChain,
   t,
+  serverList,
 }) => (
   <div>
     <div className={styles.title}>
@@ -80,7 +83,19 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
     </div>
     {searchResult.chainId !== '' ? (
       <MetadataRender metadata={searchResult} />
-    ) : null}
+    ) : (
+      <List>
+        {serverList.map(server => (
+          <ListItem
+            key={server}
+            onClick={() => switchChain(server)}
+            classes={{ root: styles.listItem }}
+          >
+            <ListItemText primary={server} />
+          </ListItem>
+        ))}
+      </List>
+    )}
   </div>
 )
 

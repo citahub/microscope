@@ -41,7 +41,7 @@ const initState = {
   keyword: '',
   metadata: initMetadata,
   sidebarNavs: false,
-  activePanel: '',
+  activePanel: window.localStorage.getItem('chainIp') ? '' : 'metadata',
   searchIp: '',
   otherMetadata: initMetadata,
   tps: 0,
@@ -176,6 +176,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState(state => ({
       ...state,
       [key]: value,
+      otherMetadata: initMetadata,
     }))
   }
   private toggleLngMenu = (lngOpen = false) => e => {
@@ -188,15 +189,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     window.localStorage.setItem('i18nextLng', lng)
     window.location.reload()
   }
-  private switchChain = () => {
+  private switchChain = (chain?: string) => {
+    const ip = chain || this.state.searchIp
     this.props.CITAObservables.setServer(
-      this.state.searchIp.startsWith('http')
-        ? this.state.searchIp
-        : `http://${this.state.searchIp}`,
+      ip.startsWith('http') ? ip : `http://${ip}`,
     )
-    const chainIp = this.state.searchIp.startsWith('http')
-      ? this.state.searchIp
-      : `http://${this.state.searchIp}`
+    const chainIp = ip.startsWith('http') ? ip : `http://${ip}`
     window.localStorage.setItem('chainIp', chainIp)
     window.location.reload()
   }
@@ -310,6 +308,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 searchResult={this.state.otherMetadata}
                 switchChain={this.switchChain}
                 handleKeyUp={this.handleKeyUp}
+                serverList={this.props.config.serverList}
               />
             ) : this.state.activePanel === 'statistics' ? (
               <BriefStatisticsPanel
