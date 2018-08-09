@@ -21,10 +21,10 @@ yarn run dll
 4.  Add Config
 
 ```shell
-cp ./env.example ./env
+cp ./.env.example ./.env
 ```
 
-set env variables in `./env`
+set env variables in `./.env`
 
 ```
 PUBLIC=  # public content server address
@@ -62,7 +62,7 @@ Homeage includes `Latest 10 Blocks` and `Latest 10 Transactions`
 
 ### Block
 
-> NOTICE: This page only works with [agera_one](https://github.com/Keith-CY/agera_one), the server caching appchain.
+> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/ReBirth), the server caching appchain.
 
 **Block Page** show list of blocks, the table items can be specified in **Config Page**
 
@@ -76,7 +76,7 @@ Block Detail can be inspected via table link.
 
 ### Transaction
 
-> NOTICE: This page only works with [agera_one](https://github.com/Keith-CY/agera_one), the server caching appchain.
+> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/ReBirth), the server caching appchain.
 
 **Transaction Page** show list of transaction, the table items can be specified in **Config Page**
 
@@ -92,7 +92,7 @@ Account Detail can be inspected via `from` and `to`.
 
 ### Statisitcs
 
-> NOTICE: Partial diagrams works with [agera_one](https://github.com/Keith-CY/agera_one), the server caching appchain.
+> NOTICE: Partial diagrams works with [ReBirth](https://github.com/cryptape/ReBirth), the server caching appchain.
 
 **Statistics Page** show list of diagrams, the displaying items can be specified in **Config Page**
 
