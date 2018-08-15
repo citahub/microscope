@@ -2,16 +2,17 @@
  * @Author: Keith-CY
  * @Date: 2018-07-22 19:59:22
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-08-02 12:08:25
+ * @Last Modified time: 2018-08-03 18:01:57
  */
 
 import { IBlock, IBlockHeader, Transaction, Metadata, ABI } from './typings'
-import { PanelConfigs } from './config/localstorage'
 import widerThan from './utils/widerThan'
 import { Contract, AccountType } from './typings/account'
 import { LocalAccount } from './components/LocalAccounts'
 
 import { SelectorType } from './components/TableWithSelector'
+import LOCAL_STORAGE, { PanelConfigs } from './config/localstorage'
+import { getServerList, getPrivkeyList, getPanelConfigs } from './utils/accessLocalstorage'
 
 const isDesktop = widerThan(800)
 export const initHeader: IBlockHeader = {
@@ -166,13 +167,13 @@ export const initBlockTableState = {
       type: SelectorType.RANGE,
       key: 'number',
       text: 'number selector',
-      items: [{ key: 'numberFrom', text: 'NumberFrom' }, { key: 'numberTo', text: 'NumberTo' }]
+      items: [{ key: 'numberFrom', text: 'Number From' }, { key: 'numberTo', text: 'Number To' }]
     },
     {
       type: SelectorType.RANGE,
       key: 'transaction',
       text: 'transactions selector',
-      items: [{ key: 'transactionFrom', text: 'transactionFrom' }, { key: 'transactionTo', text: 'transactionTo' }]
+      items: [{ key: 'transactionFrom', text: 'Transaction From' }, { key: 'transactionTo', text: 'Transaction To' }]
     }
   ],
   selectorsValue: {
@@ -186,4 +187,15 @@ export const initBlockTableState = {
     code: '',
     message: ''
   }
+}
+export const initConfigContext = {
+  localStorage: LOCAL_STORAGE,
+  serverList: getServerList(),
+  privkeyList: getPrivkeyList(),
+  panelConfigs: getPanelConfigs(),
+  addServer: server => false,
+  deleteServer: server => false,
+  addPrivkey: privkey => false,
+  deletePrivkey: privkey => false,
+  changePanelConfig: (config: any) => false
 }

@@ -2,12 +2,13 @@
 $sidebar-padding: 29px;
 .display {
   padding: 0 $sidebar-padding;
+  padding-top: 6px;
   color: $sidebar-text;
   text-transform: capitalize;
   .item {
     font-size: 1rem;
-    line-height: 2rem;
-    height: 2rem;
+    line-height: 2.2rem;
+    height: 2.2rem;
     span {
       text-transform: none;
     }
@@ -17,6 +18,7 @@ $sidebar-padding: 29px;
   }
   .validators {
     .box {
+      margin-top: 10px;
       padding: 10px 17px;
       border: 1px solid #ccc;
       border-radius: 4px;
@@ -41,8 +43,8 @@ $sidebar-padding: 29px;
   background-color: #f4f7ff;
   font-weight: bold;
   padding: 0 $sidebar-padding;
-  height: 42px;
-  line-height: 42px;
+  height: 36px;
+  line-height: 36px;
   font-weight: bolder;
   text-transform: capitalize;
 }
@@ -65,6 +67,12 @@ $sidebar-padding: 29px;
     padding: 6px 24px;
     margin-left: 10px;
     text-transform: capitalize;
+    cursor: pointer;
+    &:disabled {
+      background: #eee;
+      color: #aaa;
+      cursor: default;
+    }
   }
 }
 
@@ -76,6 +84,14 @@ $sidebar-padding: 29px;
 }
 
 .serverGutters {
-  padding-left: 28px;
-  padding-right: 28px;
+  padding-left: 28px !important;
+  padding-right: 28px !important;
+}
+
+.serverPrimary {
+  color: $heavyText !important;
+}
+
+.serverSecondary {
+  color: $plainText !important;
 }

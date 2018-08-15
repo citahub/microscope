@@ -21,7 +21,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
   state = {
     overview: {
       title: 'overview',
-      content: 'Across the Microscope, we can reach every cell in the nervos',
+      content: 'Across the Microscope, we can reach every cell in Nervos Network',
     },
     products: {
       title: 'other product',

@@ -1703,9 +1703,9 @@ cors@^2.8.1:
     object-assign "^4"
     vary "^1"
 
-cosmiconfig@^2.1.0, cosmiconfig@^2.1.1:
+cosmConfig@^2.1.0, cosmConfig@^2.1.1:
   version "2.2.2"
-  resolved "https://registry.npmjs.org/cosmiconfig/-/cosmiconfig-2.2.2.tgz#6173cebd56fac042c1f4390edf7af6c07c7cb892"
+  resolved "https://registry.npmjs.org/cosmConfig/-/cosmConfig-2.2.2.tgz#6173cebd56fac042c1f4390edf7af6c07c7cb892"
   dependencies:
     is-directory "^0.3.1"
     js-yaml "^3.4.3"
@@ -1715,9 +1715,9 @@ cosmiconfig@^2.1.0, cosmiconfig@^2.1.1:
     parse-json "^2.2.0"
     require-from-string "^1.1.0"
 
-cosmiconfig@^4.0.0:
+cosmConfig@^4.0.0:
   version "4.0.0"
-  resolved "https://registry.npmjs.org/cosmiconfig/-/cosmiconfig-4.0.0.tgz#760391549580bbd2df1e562bc177b13c290972dc"
+  resolved "https://registry.npmjs.org/cosmConfig/-/cosmConfig-4.0.0.tgz#760391549580bbd2df1e562bc177b13c290972dc"
   dependencies:
     is-directory "^0.3.1"
     js-yaml "^3.9.0"
@@ -4689,7 +4689,7 @@ lint-staged@^6.1.0:
     app-root-path "^2.0.0"
     chalk "^2.1.0"
     commander "^2.11.0"
-    cosmiconfig "^4.0.0"
+    cosmConfig "^4.0.0"
     debug "^3.1.0"
     dedent "^0.7.0"
     execa "^0.8.0"
@@ -6063,7 +6063,7 @@ postcss-load-config@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/postcss-load-config/-/postcss-load-config-1.2.0.tgz#539e9afc9ddc8620121ebf9d8c3673e0ce50d28a"
   dependencies:
-    cosmiconfig "^2.1.0"
+    cosmConfig "^2.1.0"
     object-assign "^4.1.0"
     postcss-load-options "^1.2.0"
     postcss-load-plugins "^2.3.0"
@@ -6072,14 +6072,14 @@ postcss-load-options@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/postcss-load-options/-/postcss-load-options-1.2.0.tgz#b098b1559ddac2df04bc0bb375f99a5cfe2b6d8c"
   dependencies:
-    cosmiconfig "^2.1.0"
+    cosmConfig "^2.1.0"
     object-assign "^4.1.0"
 
 postcss-load-plugins@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/postcss-load-plugins/-/postcss-load-plugins-2.3.0.tgz#745768116599aca2f009fad426b00175049d8d92"
   dependencies:
-    cosmiconfig "^2.1.1"
+    cosmConfig "^2.1.1"
     object-assign "^4.1.0"
 
 postcss-loader@^2.0.10:

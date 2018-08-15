@@ -9,6 +9,7 @@ import { TransactionFromServer, IContainerProps } from '../../typings'
 import paramsFilter from '../../utils/paramsFilter'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
+import { rangeSelectorText } from '../../utils/searchTextGen'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -41,12 +42,12 @@ message: string
     {
       type: SelectorType.SINGLE,
       key: 'from',
-      text: 'from'
+      text: 'From'
     },
     {
       type: SelectorType.SINGLE,
       key: 'to',
-      text: 'to'
+      text: 'To'
     }
   ],
   selectorsValue: {
@@ -180,7 +181,8 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
   render () {
     const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error } = this.state
     const { inset = false, showInOut = false } = this.props
-    const activeParams = paramsFilter(selectorsValue)
+    const activeParams = paramsFilter(selectorsValue) as any
+    const searchText = rangeSelectorText('Transaction', activeParams.from, activeParams.to)
     return (
       <React.Fragment>
         {loading ? (
@@ -192,10 +194,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
         ) : null}
         {!inset ? (
           <Banner bg={`${process.env.PUBLIC}/banner/banner-Transaction.png`}>
-            Current Search:{' '}
-            {Object.keys(activeParams)
-              .map(key => `${key}: ${activeParams[key]}`)
-              .join(', ')}
+            {searchText ? `Current Search: ${searchText}` : 'Transactions'}
           </Banner>
         ) : null}
         <TableWithSelector
@@ -210,6 +209,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
           handlePageChanged={this.handlePageChanged}
           showInout={showInOut}
           inset={inset}
+          searchText={searchText}
         />
         <ErrorNotification error={error} dismissError={this.dismissError} />
       </React.Fragment>

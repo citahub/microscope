@@ -54,26 +54,20 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   state = initState
   componentWillMount () {
     this.onSearch$ = new Subject()
-    this.fetchStatus()
+    // hide TPS in header
   }
   componentDidMount () {
-    // console.log(this.props)
-
+    // start search subscription
     this.searchSubscription = this.onSearch$.debounceTime(1000).subscribe(({ key, value }) => {
       if (key === 'searchIp') {
         this.getChainMetadata(value)
       }
     }, this.handleError)
-    this.props.CITAObservables.metaData({
-      blockNumber: 'latest'
-    }).subscribe((metadata: Chain.MetaData) => {
-      this.setState({
-        metadata: {
-          ...metadata,
-          genesisTimestamp: new Date(metadata.genesisTimestamp).toLocaleString()
-        }
-      })
-    }, this.handleError)
+
+    // fetch status of brief-statistics panel
+    this.fetchStatisticsPanel()
+    // fetch data of metadata panel
+    this.fetchMetaDataPanel()
   }
   componentWillReceiveProps (nextProps: HeaderProps) {
     if (this.props.location.pathname !== nextProps.location.pathname) {
@@ -102,9 +96,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState({ sidebarNavs: open })
   }
   /**
-   * @method fetchStatus
+   * @method fetchStatisticsPanel
    */
-  private fetchStatus = () => {
+  private fetchStatisticsPanel = () => {
     // fetch brief statistics
     fetchStatistics({ type: 'brief' })
       .then(({ result: { tps, tpb, ipb } }) => {
@@ -139,6 +133,35 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       })
       .catch(this.handleError)
   }
+
+  private fetchMetaDataPanel = () => {
+    // fetch metadata
+    this.props.CITAObservables.metaData({
+      blockNumber: 'latest'
+    }).subscribe((metadata: Chain.MetaData) => {
+      this.setState({
+        metadata: {
+          ...metadata,
+          genesisTimestamp: new Date(metadata.genesisTimestamp).toLocaleString()
+        }
+      })
+    }, this.handleError)
+
+    // fetch server list
+    fetchServerList()
+      .then(servers => {
+        if (!servers) return
+        const serverList = [] as ServerList
+        Object.keys(servers).forEach(serverName => {
+          serverList.push({
+            serverName,
+            serverIp: servers[serverName]
+          })
+        })
+        this.setState({ serverList })
+      })
+      .catch(this.handleError)
+  }
   private togglePanel = (panel: string) => (e?: any) => {
     this.setState({
       activePanel: panel
@@ -147,7 +170,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
-      this.switchChain()
+      this.switchChain('')()
     }
   }
 
@@ -168,12 +191,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private changeLng = (lng = 'en') => e => {
     this.setState({ lngOpen: false })
-    // this.props.i18n.changeLanguage(lng)
     window.localStorage.setItem('i18nextLng', lng)
     window.location.reload()
   }
-  private switchChain = (chain?: string) => {
+  private switchChain = (chain: string = '') => (e?: any) => {
     const ip = chain || this.state.searchIp
+    if (!ip) return
     this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `http://${ip}`)
     const chainIp = ip.startsWith('http') ? ip : `http://${ip}`
     window.localStorage.setItem('chainIp', chainIp)
@@ -218,11 +241,11 @@ class Header extends React.Component<HeaderProps, HeaderState> {
               <Button className={styles.navItem} onClick={this.togglePanel('metadata')}>
                 {this.state.metadata.chainName || 'InvalidChain'}
               </Button>
-              {this.props.config.panelConfigs.TPS ? (
+              {/* this.props.config.panelConfigs.TPS ? (
                 <Button className={styles.navItem} onClick={this.togglePanel('statistics')}>
                   {t('TPS')}: {this.state.tps.toFixed(2)}
                 </Button>
-              ) : null}
+              ) : null */}
               <IconButton className={styles.navItem} onClick={this.togglePanel('search')}>
                 <svg className="icon" aria-hidden="true">
                   <use xlinkHref="#icon-magnifier" />

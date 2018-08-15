@@ -2,7 +2,7 @@
  * @Author: Keith-CY
  * @Date: 2018-08-02 12:05:46
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-08-02 12:12:50
+ * @Last Modified time: 2018-08-03 18:28:02
  */
 
 import * as React from 'react'
@@ -21,6 +21,7 @@ import { fetchBlocks } from '../../utils/fetcher'
 import paramsFilter from '../../utils/paramsFilter'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
+import { rangeSelectorText } from '../../utils/searchTextGen'
 
 import { initBlockTableState } from '../../initValues'
 
@@ -140,9 +141,20 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
   private handleError = handleError(this)
   private dismissError = dismissError(this)
 
-  render () {
+  public render () {
     const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error } = this.state
-    const activeParams = paramsFilter(selectorsValue)
+    const activeParams = paramsFilter(selectorsValue) as any
+    const blockSearchText = rangeSelectorText('Number', activeParams.numberFrom, activeParams.numberTo)
+    const transactionSearchText = rangeSelectorText(
+      'Transaction',
+      activeParams.transactionFrom,
+      activeParams.transactionTo
+    )
+    const searchText =
+      blockSearchText && transactionSearchText
+        ? `${blockSearchText}, ${transactionSearchText}`
+        : blockSearchText || transactionSearchText
+
     return (
       <React.Fragment>
         {loading ? (
@@ -153,10 +165,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
           />
         ) : null}
         <Banner bg={`${process.env.PUBLIC}/banner/banner-Block.png`}>
-          Current Search:{' '}
-          {Object.keys(activeParams)
-            .map(key => `${key}: ${activeParams[key]}`)
-            .join(', ')}
+          {searchText ? `Current Search: ${searchText}` : 'Blocks'}
         </Banner>
         <TableWithSelector
           headers={headers}
@@ -168,6 +177,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
           pageSize={pageSize}
           pageNo={pageNo}
           handlePageChanged={this.handlePageChanged}
+          searchText={searchText}
         />
         <ErrorNotification error={error} dismissError={this.dismissError} />
       </React.Fragment>

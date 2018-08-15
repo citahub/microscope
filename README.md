@@ -1,4 +1,30 @@
-# Getting Started
+[![MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/cryptape/microscope)
+[![AppChain](https://img.shields.io/badge/made%20for-Nervos%20AppChain-blue.svg)](https://appchain.nervos.org/)
+
+# Overview
+
+Microscope provides an easy-to-use user interface to inspect every cell of every AppChain. Yes, every AppChain, due to the ability to switch target chain in Metadata Panel of the Microscope.
+
+# About Microscope
+
+Microscope is a blockchain explorer built with [React](https://reactjs.org/) for inspecting any AppChain. It supports searching block, transaction, account and invoking call method of smart contract. It also can work with [ReBirth](https://github.com/cryptape/re-birth) to display a list of blocks and transactions on specified conditions, or even analyzes AppChain working status.
+
+## Features
+
+- [x] **Open Source Development**: This project is welcome anyone to use and PR.
+- [x] **Multi-Chain Switch**: This project supports switch between any AppChain.
+- [x] **Smart Contract Support**: This project provides a user friendly interface to call methods of smart contracts.
+- [x] **User Customized**: This project supports a config page to specify which value should be displayed.
+- [x] **Progressive**: This project is under progressive development, which means it can work independently, and is able to work with [ReBirth](https://github.com/cryptape/re-birth), another project for AppChain.
+- [x] **Internationalized**: This project supports i18n, default to 中文 and Englisgh.
+
+## Getting Started
+
+- [Development](#development)
+
+- [Usage](#usage)
+
+# Development
 
 1.  clone the repo
 
@@ -46,7 +72,7 @@ yarn start
 yarn run build:prod
 ```
 
-# How to use
+# Usage
 
 ## Set appchain
 
@@ -62,7 +88,7 @@ Homeage includes `Latest 10 Blocks` and `Latest 10 Transactions`
 
 ### Block
 
-> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/ReBirth), the server caching appchain.
+> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the server caching appchain.
 
 **Block Page** show list of blocks, the table items can be specified in **Config Page**
 
@@ -76,7 +102,7 @@ Block Detail can be inspected via table link.
 
 ### Transaction
 
-> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/ReBirth), the server caching appchain.
+> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the server caching appchain.
 
 **Transaction Page** show list of transaction, the table items can be specified in **Config Page**
 
@@ -115,6 +141,8 @@ On click of **Chain Name** the **Metapata Panel** will be called out.
 The **Metadata Panel** is used to check metadata of active chain, or inspect and switch to other chain by entering IP in the search field.
 
 ### Statistics Panel
+
+> NOTICE: this panel is hidden by default, corresponding code is at `src/containers/Header/index.tsx`
 
 On click of **TPS** the **Statistics Panel** will be called out.
 

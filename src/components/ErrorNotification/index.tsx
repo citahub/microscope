@@ -15,7 +15,7 @@ export default ({ error, dismissError }) => (
     action={
       <React.Fragment>
         <a
-          href="https://cryptape.github.io/cita/usage-guide/rpc_error_code/index.html"
+          href="https://docs.nervos.org/cita/#/rpc_guide/rpc_error_code"
           target="_blank"
           rel="noopener noreferrer"
           className={texts.highlight}

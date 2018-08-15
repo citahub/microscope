@@ -18,8 +18,8 @@
 }
 
 .addr {
-  @extend %hash;
-  color: $primaryText;
+  @extend %hash; // color: $primaryText;
+  color: #2647fdcc;
 }
 
 .hash {

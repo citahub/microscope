@@ -48,7 +48,7 @@ interface MetadataPanelProps {
   searchIp: string
   searchResult: Metadata
   handleInput: (key: string) => (e: any) => void
-  switchChain: (e) => void
+  switchChain: (ip?: string) => (e) => void
   handleKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void
   t: (key: string) => string
   serverList: ServerList
@@ -80,7 +80,9 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
         value={searchIp}
         onKeyUp={handleKeyUp}
       />
-      <button onClick={switchChain}>{t('switch')}</button>
+      <button onClick={switchChain('')} disabled={!searchIp}>
+        {t('switch')}
+      </button>
     </div>
     {searchResult.chainId !== -1 ? (
       <MetadataRender metadata={searchResult} />
@@ -89,13 +91,20 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
         {serverList.map(({ serverName, serverIp }) => (
           <ListItem
             key={serverName}
-            onClick={() => switchChain(serverIp)}
+            onClick={switchChain(serverIp)}
             classes={{
               root: styles.listItem,
               gutters: styles.serverGutters
             }}
           >
-            <ListItemText primary={serverName} secondary={serverIp} />
+            <ListItemText
+              classes={{
+                primary: styles.serverPrimary,
+                secondary: styles.serverSecondary
+              }}
+              primary={serverName}
+              secondary={serverIp}
+            />
           </ListItem>
         ))}
       </List>

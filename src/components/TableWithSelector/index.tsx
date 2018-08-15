@@ -3,12 +3,7 @@ import { Link } from 'react-router-dom'
 import { translate } from 'react-i18next'
 import { Paper } from '@material-ui/core'
 import Pager from 'react-pager'
-import {
-  KeyboardArrowLeft,
-  KeyboardArrowRight,
-  SkipNext,
-  SkipPrevious,
-} from '@material-ui/icons'
+import { KeyboardArrowLeft, KeyboardArrowRight, SkipNext, SkipPrevious } from '@material-ui/icons'
 
 import Dialog from '../../containers/Dialog'
 import paramsFilter from '../../utils//paramsFilter'
@@ -20,7 +15,7 @@ const styles = require('./tableWithSelector.scss')
 export enum SelectorType {
   SINGLE,
   MULTIPLE,
-  RANGE,
+  RANGE
 }
 
 export interface TableHeaderWithSelector {
@@ -51,20 +46,18 @@ export interface TableWithSelectorProps {
   // showInOut?: boolean
   showInout?: boolean
   inset?: boolean
+  searchText?: string
 }
 
-class TableWithSelector extends React.Component<
-  TableWithSelectorProps & { t: (key: string) => string },
-  any
-  > {
+class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (key: string) => string }, any> {
   state = {
     on: false,
-    selectorsValue: this.props.selectorsValue,
+    selectorsValue: this.props.selectorsValue
   }
 
   showDialog = (on: boolean = false) => (e?: any) => {
     this.setState(state => ({
-      on,
+      on
     }))
   }
 
@@ -74,11 +67,11 @@ class TableWithSelector extends React.Component<
       const { selectorsValue } = state
       const newSelectorsValue = {
         ...selectorsValue,
-        [selector]: e.target.value,
+        [selector]: e.target.value
       }
 
       return {
-        selectorsValue: newSelectorsValue,
+        selectorsValue: newSelectorsValue
       }
     })
   }
@@ -88,35 +81,16 @@ class TableWithSelector extends React.Component<
   }
   render () {
     const { on, selectorsValue } = this.state
-    const {
-      headers,
-      items,
-      selectors,
-      pageSize,
-      pageNo,
-      count,
-      t,
-      inset,
-    } = this.props
+    const { headers, items, selectors, pageSize, pageNo, count, t, inset, searchText } = this.props
     const total = Math.ceil(count / pageSize)
-    const activeParams = paramsFilter(this.props.selectorsValue)
+    // const activeParams = paramsFilter(this.props.selectorsValue)
     return (
-      <Paper
-        className={`${layout.center} ${inset ? styles.insetContainer : styles.container}`}
-        elevation={0}
-      >
-        <Dialog
-          on={!!on}
-          dialogTitle={t('advanced selector')}
-          onClose={this.showDialog(false)}
-          maxWidth="md"
-        >
+      <Paper className={`${layout.center} ${inset ? styles.insetContainer : styles.container}`} elevation={0}>
+        <Dialog on={!!on} dialogTitle={t('advanced selector')} onClose={this.showDialog(false)} maxWidth="md">
           <div className={styles.dialog}>
             <div className={styles.fields}>
               <div className={styles.titles}>
-                {selectors.map(selector => (
-                  <span className={styles.title}>{t(selector.text)}</span>
-                ))}
+                {selectors.map(selector => <span className={styles.title}>{t(selector.text)}</span>)}
               </div>
               <div className={styles.inputs}>
                 {selectors.map(
@@ -140,7 +114,7 @@ class TableWithSelector extends React.Component<
                           onChange={this.handleSelectorInput(selector.key)}
                         />
                       </div>
-                    ),
+                    )
                 )}
               </div>
             </div>
@@ -149,32 +123,19 @@ class TableWithSelector extends React.Component<
         </Dialog>
         <div className={styles.options}>
           <span>
-            {t('current params')}:{' '}
-            {Object.keys(activeParams)
-              .map(key => `${key}: ${activeParams[key]}`)
-              .join(', ')}
+            {t('current params')}: {searchText}
           </span>
-          <button onClick={this.showDialog(true)}>
-            {t('advanced selector')}
-          </button>
+          <button onClick={this.showDialog(true)}>{t('advanced selector')}</button>
         </div>
         <table className={styles.table}>
           <thead>
-            <tr>
-              {headers.map(header => (
-                <th key={header.key}>{t(header.text)}</th>
-              ))}
-            </tr>
+            <tr>{headers.map(header => <th key={header.key}>{t(header.text)}</th>)}</tr>
           </thead>
           <tbody>
             {items.map(item => (
               <tr key={item.key}>
                 {headers.map(header => (
-                  <td
-                    key={header.key}
-                    className={text.ellipsis}
-                    title={item[header.key]}
-                  >
+                  <td key={header.key} className={text.ellipsis} title={item[header.key]}>
                     {header.href === undefined ? (
                       item[header.key] === null ? (
                         '/'
@@ -204,7 +165,7 @@ class TableWithSelector extends React.Component<
             first: <SkipPrevious />,
             last: <SkipNext />,
             prev: <KeyboardArrowLeft />,
-            next: <KeyboardArrowRight />,
+            next: <KeyboardArrowRight />
           }}
           className={styles.pager}
           onPageChanged={this.props.handlePageChanged}

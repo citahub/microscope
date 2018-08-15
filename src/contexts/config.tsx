@@ -2,24 +2,8 @@
 /// <reference path="../typings/react/index.d.ts" />
 /* eslint-enable */
 import * as React from 'react'
+import { initConfigContext } from '../initValues'
 import LOCAL_STORAGE from '../config/localstorage'
-import {
-  getServerList,
-  getPrivkeyList,
-  getPanelConfigs,
-} from '../utils/accessLocalstorage'
-
-const initConfig = {
-  localStorage: LOCAL_STORAGE,
-  serverList: getServerList(),
-  privkeyList: getPrivkeyList(),
-  panelConfigs: getPanelConfigs(),
-  addServer: server => false,
-  deleteServer: server => false,
-  addPrivkey: privkey => false,
-  deletePrivkey: privkey => false,
-  changePanelConfig: (config: any) => false,
-}
 
 interface ConfigProviderActions {
   addServer: (server: string) => boolean
@@ -29,26 +13,23 @@ interface ConfigProviderActions {
   changePanelConfig: (configs: any) => boolean
 }
 
-export type IConfig = typeof initConfig & ConfigProviderActions
+export type Config = typeof initConfigContext & ConfigProviderActions
 
-const ConfigContext = React.createContext<IConfig>({
-  ...initConfig,
+const ConfigContext = React.createContext<Config>({
+  ...initConfigContext
 })
 
-class ConfigProvider extends React.Component<any, IConfig> {
-  readonly state = initConfig
+class ConfigProvider extends React.Component<any, Config> {
+  readonly state = initConfigContext
   protected addServer = (server: string): boolean => {
     const serverList = [...this.state.serverList]
     if (!serverList.includes(server)) {
       const newServerList = [...serverList, server]
       this.setState({
-        serverList: newServerList,
+        serverList: newServerList
       })
       // side effect
-      window.localStorage.setItem(
-        LOCAL_STORAGE.SERVER_LIST,
-        JSON.stringify(newServerList),
-      )
+      window.localStorage.setItem(LOCAL_STORAGE.SERVER_LIST, JSON.stringify(newServerList))
       return true
     }
     return false
@@ -59,13 +40,10 @@ class ConfigProvider extends React.Component<any, IConfig> {
     }
     const serverList = [...this.state.serverList].splice(idx, 1)
     this.setState({
-      serverList,
+      serverList
     })
     // side effect
-    window.localStorage.setItem(
-      LOCAL_STORAGE.SERVER_LIST,
-      JSON.stringify(serverList),
-    )
+    window.localStorage.setItem(LOCAL_STORAGE.SERVER_LIST, JSON.stringify(serverList))
     return true
   }
   protected addPrivkey = (privkey: string): boolean => {
@@ -74,10 +52,7 @@ class ConfigProvider extends React.Component<any, IConfig> {
       const newPrivkeyList = [...privkeyList, privkey]
       this.setState({ privkeyList: newPrivkeyList })
       // side effect
-      window.localStorage.setItem(
-        LOCAL_STORAGE.PRIV_KEY_LIST,
-        JSON.stringify(newPrivkeyList),
-      )
+      window.localStorage.setItem(LOCAL_STORAGE.PRIV_KEY_LIST, JSON.stringify(newPrivkeyList))
       return true
     }
     return false
@@ -89,21 +64,15 @@ class ConfigProvider extends React.Component<any, IConfig> {
     const privkeyList = [...this.state.privkeyList].splice(idx, 1)
     this.setState({ privkeyList })
     // side effect
-    window.localStorage.setItem(
-      LOCAL_STORAGE.PRIV_KEY_LIST,
-      JSON.stringify(privkeyList),
-    )
+    window.localStorage.setItem(LOCAL_STORAGE.PRIV_KEY_LIST, JSON.stringify(privkeyList))
     return true
   }
   protected changePanelConfig = newPanelConfigs => {
     this.setState({
-      panelConfigs: newPanelConfigs,
+      panelConfigs: newPanelConfigs
     })
     // side effect
-    window.localStorage.setItem(
-      LOCAL_STORAGE.PANEL_CONFIGS,
-      JSON.stringify(newPanelConfigs),
-    )
+    window.localStorage.setItem(LOCAL_STORAGE.PANEL_CONFIGS, JSON.stringify(newPanelConfigs))
     return true
   }
   public render () {
@@ -115,7 +84,7 @@ class ConfigProvider extends React.Component<any, IConfig> {
           deleteServer: this.deleteServer,
           addPrivkey: this.addPrivkey,
           deletePrivkey: this.deletePrivkey,
-          changePanelConfig: this.changePanelConfig,
+          changePanelConfig: this.changePanelConfig
         }}
       >
         {this.props.children}
@@ -131,9 +100,7 @@ export const provideConfig = Comp => props => (
 )
 
 export const withConfig = Comp => props => (
-  <ConfigContext.Consumer>
-    {config => <Comp {...props} config={config} />}
-  </ConfigContext.Consumer>
+  <ConfigContext.Consumer>{config => <Comp {...props} config={config} />}</ConfigContext.Consumer>
 )
 
 export default ConfigContext

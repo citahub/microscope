@@ -1,12 +1,12 @@
 import CITAObservables from '@nervos/observables'
-import { IConfig } from '../contexts/config'
+import { Config } from '../contexts/config'
 import i18n from '../config/i18n'
 import './block'
 
 export * from './block'
 /* eslint-disable no-restricted-globals */
 export interface IContainerProps {
-  config: IConfig
+  config: Config
   CITAObservables: CITAObservables
   history: any
   match: {
