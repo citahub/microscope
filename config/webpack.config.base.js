@@ -42,7 +42,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        CHAIN_SERVERS: JSON.stringify(process.env.CHAIN_SERVERS),
+        CHAIN_SERVER: JSON.stringify(process.env.CHAIN_SERVER),
         APP_NAME: JSON.stringify(process.env.APP_NAME),
         LNGS: JSON.stringify(process.env.LNGS)
       },
