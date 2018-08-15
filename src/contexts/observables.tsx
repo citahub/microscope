@@ -6,7 +6,7 @@ import * as React from 'react'
 import CITAObservables from '@nervos/observables'
 
 export const initObservables: CITAObservables = new CITAObservables({
-  server: window.localStorage.getItem('chainIp') || process.env.CHAIN_SERVER || '',
+  server: window.localStorage.getItem('chainIp') || process.env.CHAIN_SERVERS || '',
   interval: (process.env.OBSERVABLE_INTERVAL && +process.env.OBSERVABLE_INTERVAL) || 1000
 })
 const ObservableContext = React.createContext(initObservables)
