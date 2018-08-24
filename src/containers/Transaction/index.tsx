@@ -11,7 +11,7 @@ import {
   Divider
 } from '@material-ui/core'
 import { unsigner } from '@nervos/signer'
-import { Chain } from '@nervos/web3-plugin/lib/typings/index.d'
+import { Chain } from '@nervos/plugin/lib/typings/index.d'
 
 import Banner from '../../components/Banner'
 

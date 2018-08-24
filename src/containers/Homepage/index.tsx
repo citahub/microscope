@@ -2,7 +2,7 @@ import * as React from 'react'
 import { LinearProgress, Grid } from '@material-ui/core'
 import { translate } from 'react-i18next'
 
-import { Chain } from '@nervos/web3-plugin'
+import { Chain } from '@nervos/plugin'
 import { IContainerProps, TransactionFromServer } from '../../typings'
 import { withObservables } from '../../contexts/observables'
 import { fetch10Transactions } from '../../utils/fetcher'

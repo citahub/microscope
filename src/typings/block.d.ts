@@ -10,7 +10,7 @@ export interface IBlockHeader {
   receiptsRoot: string
   gasUsed: string
   proof: {
-    Tendermint: {
+    Bft: {
       proposal: string
     }
   }
@@ -76,7 +76,7 @@ export interface BlockFromServer {
     stateRoot: string
     receiptsRoot: string
     proof: {
-      Tendermint: {
+      Bft: {
         proposal: string
       }
     }

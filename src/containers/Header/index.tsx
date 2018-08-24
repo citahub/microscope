@@ -4,7 +4,7 @@ import { translate } from 'react-i18next'
 import { Subject, Subscription } from '@reactivex/rxjs'
 import { AppBar, Toolbar, Menu, MenuItem, Typography, Button, IconButton } from '@material-ui/core'
 import { Translate as TranslateIcon, Close as CloseIcon } from '@material-ui/icons'
-import { Chain } from '@nervos/web3-plugin'
+import { Chain } from '@nervos/plugin'
 import containers from '../../Routes/containers'
 import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
@@ -294,7 +294,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 peerCount={this.state.peerCount}
                 number={this.state.block.header.number}
                 timestamp={this.state.block.header.timestamp}
-                proposal={this.state.block.header.proof.Tendermint.proposal}
+                proposal={this.state.block.header.proof.Bft.proposal}
                 tps={this.state.tps}
                 tpb={this.state.tpb}
                 ipb={this.state.ipb}

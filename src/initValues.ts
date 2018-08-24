@@ -24,7 +24,7 @@ export const initHeader: IBlockHeader = {
   receiptsRoot: '',
   gasUsed: '',
   proof: {
-    Tendermint: {
+    Bft: {
       proposal: ''
     }
   }
@@ -86,6 +86,7 @@ export const initPanelConfigs: PanelConfigs = {
 }
 
 export const initServerList = (process.env.CHAIN_SERVERS || '').split(',')
+console.log(initServerList)
 export const initPrivateKeyList = []
 export const initError = { message: '', code: '' }
 export const initAccountState = {
@@ -137,7 +138,7 @@ export const initBlockState = {
     receiptsRoot: '',
     gasUsed: '',
     proof: {
-      Tendermint: {
+      Bft: {
         proposal: ''
       }
     }

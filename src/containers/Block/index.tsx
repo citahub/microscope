@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { LinearProgress, Card, CardContent, List, ListItem } from '@material-ui/core'
 
 import { unsigner } from '@nervos/signer'
-import { RpcResult, Chain } from '@nervos/web3-plugin/lib/typings/index.d'
+import { RpcResult, Chain } from '@nervos/plugin/lib/typings/index.d'
 import { IContainerProps, IBlock } from '../../typings'
 
 import { initBlockState } from '../../initValues'
@@ -172,7 +172,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
                 <ListItem>
                   <span className={styles.itemTitle}>Proposer</span>
                   <span className={texts.hash}>
-                    {header.proof && header.proof.Tendermint && header.proof.Tendermint.proposal}
+                    {header.proof && header.proof.Bft && header.proof.Bft.proposal}
                   </span>
                 </ListItem>
                 <ListItem>

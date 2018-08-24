@@ -27,7 +27,7 @@
   "dependencies": {
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
-    "@nervos/observables": "^0.17.7",
+    "@nervos/observables": "^0.18.0",
     "@nervos/signer": "^1.0.28",
     "@reactivex/rxjs": "^5.5.6",
     "axios": "^0.18.0",

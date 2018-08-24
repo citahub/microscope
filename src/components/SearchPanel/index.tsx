@@ -54,7 +54,7 @@ const BlockDisplay = translate('microscope')(
           </tr>
           <tr>
             <td>{t('validator')}</td>
-            <td>{block.header.proof.Tendermint.proposal}</td>
+            <td>{block.header.proof.Bft.proposal}</td>
           </tr>
           <tr>
             <td>{t('time')}</td>
