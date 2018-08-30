@@ -61,7 +61,7 @@ export const fetchServerList = () =>
 
 export const fetchMetadata = ip =>
   axios
-    .post(`http://${ip}`, {
+    .post(ip.startsWith('http') ? ip : `https://${ip}`, {
       jsonrpc: '2.0',
       method: 'getMetaData',
       params: ['latest'],
