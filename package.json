@@ -1,7 +1,7 @@
 {
   "name": "Microscope",
   "version": "0.1.0",
-  "description": "NervOS Web",
+  "description": "Nervos Web",
   "main": "index.js",
   "repository": "https://github.com/cryptape/microscope",
   "author": "Keith <keithwhisper@gmail.com>",
