@@ -18,6 +18,10 @@ Microscope is a blockchain explorer built with [React](https://reactjs.org/) for
 - [x] **Progressive**: This project is under progressive development, which means it can work independently, and is able to work with [ReBirth](https://github.com/cryptape/re-birth), another project for AppChain.
 - [x] **Internationalized**: This project supports i18n, default to 中文 and Englisgh.
 
+## Changelog since 0.1.0
+
+- [x] **Auto Fetch MetaData**: Auto fetch `https://domain` if protocol not specified.
+
 ## Getting Started
 
 - [Development](#development)
