@@ -86,7 +86,7 @@ class Account extends React.Component<AccountProps, AccountState> {
       addr,
       blockNumber: 'latest'
     }).subscribe(
-      (count: string) => this.setState(state => ({ txCount: count.slice(2), loading: state.loading - 1 })),
+      (count: string) => this.setState(state => ({ txCount: +count, loading: state.loading - 1 })),
       this.handleError
     )
 
