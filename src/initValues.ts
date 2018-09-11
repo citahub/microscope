@@ -5,7 +5,7 @@
  * @Last Modified time: 2018-08-15 18:50:45
  */
 
-import { IBlock, IBlockHeader, Transaction, Metadata, ABI } from './typings'
+import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction } from './typings'
 import widerThan from './utils/widerThan'
 import { Contract, AccountType } from './typings/account'
 import { LocalAccount } from './components/LocalAccounts'
@@ -23,6 +23,7 @@ export const initHeader: IBlockHeader = {
   transactionsRoot: '',
   receiptsRoot: '',
   gasUsed: '',
+  proposer: '',
   proof: {
     Bft: {
       proposal: ''
@@ -47,6 +48,23 @@ export const initTransaction: Transaction = {
     to: '',
     value: '',
     data: ''
+  }
+}
+export const initUnsignedTransaction: UnsignedTransaction = {
+  crypto: 0,
+  signature: '',
+  sender: {
+    address: '',
+    publicKey: ''
+  },
+  transaction: {
+    data: [] as number[],
+    nonce: '',
+    quota: 0,
+    to: '',
+    validUntilBlock: 0,
+    value: [] as number[],
+    version: 0
   }
 }
 export const initMetadata: Metadata = {
@@ -86,7 +104,6 @@ export const initPanelConfigs: PanelConfigs = {
 }
 
 export const initServerList = (process.env.CHAIN_SERVERS || '').split(',')
-console.log(initServerList)
 export const initPrivateKeyList = []
 export const initError = { message: '', code: '' }
 export const initAccountState = {
@@ -137,6 +154,7 @@ export const initBlockState = {
     transactionsRoot: '',
     receiptsRoot: '',
     gasUsed: '',
+    proposer: '',
     proof: {
       Bft: {
         proposal: ''
@@ -200,3 +218,5 @@ export const initConfigContext = {
   deletePrivkey: privkey => false,
   changePanelConfig: (config: any) => false
 }
+
+export const ContractCreation = 'Contract Creation'

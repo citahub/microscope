@@ -45,3 +45,20 @@ export interface ABIElement {
 export type ABI = ABIElement[]
 
 export interface IContainerState {}
+export interface UnsignedTransaction {
+  crypto: number
+  signature: string
+  sender: {
+    address: string
+    publicKey: string
+  }
+  transaction: {
+    data: number[]
+    nonce: string
+    quota: number
+    to: string
+    validUntilBlock: number
+    value: number[]
+    version: number
+  }
+}

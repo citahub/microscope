@@ -126,11 +126,11 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
           count: result.count,
           items: result.blocks.map(block => ({
             key: block.hash,
-            height: block.header.number,
+            height: `${+block.header.number}`,
             hash: block.hash,
             age: `${Math.round((Date.now() - block.header.timestamp) / 1000)}s ago`,
             transactions: `${block.transactionsCount}`,
-            gasUsed: block.header.gasUsed
+            gasUsed: `${+block.header.gasUsed}`
           }))
         }))
       })
