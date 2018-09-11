@@ -21,6 +21,7 @@ import ErrorNotification from '../../components/ErrorNotification'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import bytesToHex from '../../utils/bytesToHex'
+import valueFormatter from '../../utils/valueFormatter'
 
 const layouts = require('../../styles/layout.scss')
 const texts = require('../../styles/text.scss')
@@ -132,7 +133,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       const { address } = details.sender
       const hexData = bytesToHex(data as any)
       tx.basicInfo.data = hexData === '0x' ? 'null' : hexData
-      tx.basicInfo.value = '' + +bytesToHex(value as any)
+      tx.basicInfo.value = valueFormatter(bytesToHex(value as any))
       tx.basicInfo.from = '0x' + address
       tx.basicInfo.to = tx.basicInfo.to ? '0x' + tx.basicInfo.to : 'Contract Creation'
       /* eslint-enable */
@@ -155,8 +156,8 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   private basicInfo = [
     { key: 'from', label: 'From', type: 'account' },
     { key: 'to', label: 'To', type: 'account' },
-    { key: 'value', label: 'value' },
-    { key: 'data', label: 'data' }
+    { key: 'value', label: 'Value' },
+    { key: 'data', label: 'Data' }
   ]
 
   private handleError = handleError(this)
