@@ -2,7 +2,8 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
-import { Transaction, TransactionFromServer } from '../../typings/'
+import { TransactionFromServer } from '../../typings/'
+import { ContractCreation } from '../../initValues'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
@@ -41,19 +42,23 @@ export default translate('microscope')(
                 <span className={texts.ellipsis}>
                   {t('from')}:{' '}
                   <Link to={`/account/${tx.from}`} href={`/account/${tx.from}`} className={texts.addr}>
-                    {tx.from || '_'}
+                    {tx.from || 'null'}
                   </Link>
                 </span>
                 <span className={texts.ellipsis}>
                   {t('to')}:{' '}
-                  <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
-                    {tx.to || '_'}
-                  </Link>
+                  {tx.to.length === 2 ? (
+                    <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
+                      {tx.to}
+                    </Link>
+                  ) : (
+                    ContractCreation
+                  )}
                 </span>
                 <span className={texts.ellipsis}>
                   {t('value')}:{' '}
-                  <span className={styles.value} title={`${tx.value}`}>
-                    {tx.value || 0}
+                  <span className={styles.value} title={`${+tx.value}`}>
+                    {+tx.value || 0}
                   </span>
                 </span>
               </span>

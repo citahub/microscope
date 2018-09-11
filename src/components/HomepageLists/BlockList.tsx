@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
 import { Chain } from '@nervos/plugin'
-// import Avatar from '@material-ui/core/Avatar'
 import { IBlock } from '../../typings/'
 
 const texts = require('../../styles/text.scss')
@@ -59,7 +58,7 @@ export default translate('microscope')(
                   {t('including')} <b>{block.body.transactions.length}</b> {t('Transactions')}.{' '}
                 </span>
                 <span className={texts.ellipsis}>
-                  {t('proposed by')} <span className={texts.highlight}>{block.header.proof.Bft.proposal}</span>
+                  {t('proposed by')} <span className={texts.highlight}>{block.header.proposer}</span>
                 </span>
               </React.Fragment>
             }

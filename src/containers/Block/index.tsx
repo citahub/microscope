@@ -92,6 +92,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
         timestamp: `${block.header.timestamp}`
       }
     })
+    block.header.gasUsed = `${+block.header.gasUsed}`
     /* eslint-enable */
     return this.setState(state => Object.assign({}, state, { ...block, loading: state.loading - 1 }))
   }
@@ -140,7 +141,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
                 <use xlinkHref="#icon-left" />
               </svg>
             </Link>
-            # {header.number}
+            # {+header.number}
             <Link
               to={`/height/0x${(+header.number + 1).toString(16)}`}
               href={`/height/0x${(+header.number + 1).toString(16)}`}
@@ -171,9 +172,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
                 </ListItem>
                 <ListItem>
                   <span className={styles.itemTitle}>Proposer</span>
-                  <span className={texts.hash}>
-                    {header.proof && header.proof.Bft && header.proof.Bft.proposal}
-                  </span>
+                  <span className={texts.hash}>{header.proposer}</span>
                 </ListItem>
                 <ListItem>
                   <span className={styles.itemTitle}>Parent Hash</span>
@@ -193,7 +192,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
             </CardContent>
           </Card>
         </div>
-        <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="交易列表">
+        <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="Transaction List">
           <TransactionList transactions={transactions} />
         </Dialog>
         <ErrorNotification error={error} dismissError={this.dismissError} />

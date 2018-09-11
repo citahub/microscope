@@ -68,16 +68,16 @@ const InfoList = ({ infos, details }) =>
         }}
         primary={info.label}
         secondary={
-          info.type ? (
+          info.type && !['Contract Creation'].includes(details[info.key]) ? (
             <Link
               to={`/${info.type}/${details[info.key]}`}
               href={`/${info.type}/${details[info.key]}`}
               className={texts.addr}
             >
-              {details[info.key] || '_'}
+              {details[info.key] || 'null'}
             </Link>
           ) : (
-            details[info.key] || '_'
+            details[info.key] || 'null'
           )
         }
       />
@@ -130,13 +130,22 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       /* eslint-disable */
       const { data, value } = details.transaction
       const { address } = details.sender
-      tx.basicInfo.data = bytesToHex(data as any)
+      const hexData = bytesToHex(data as any)
+      tx.basicInfo.data = hexData === '0x' ? 'null' : hexData
       tx.basicInfo.value = '' + +bytesToHex(value as any)
       tx.basicInfo.from = '0x' + address
+      tx.basicInfo.to = tx.basicInfo.to ? '0x' + tx.basicInfo.to : 'Contract Creation'
       /* eslint-enable */
     }
     // return this.setState(state => ({ ...tx, loading: state.loading - 1 }))
-    return this.setState(state => Object.assign({}, state, tx, { loading: state.loading - 1 }))
+    return this.setState(state =>
+      Object.assign(
+        {},
+        state,
+        { ...tx, blockNumber: `${+tx.blockNumber}`, index: `${+tx.index}` },
+        { loading: state.loading - 1 }
+      )
+    )
   }
   private infos = [
     { key: 'blockHash', label: 'Block Hash', type: 'block' },
@@ -169,33 +178,35 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
         </Banner>
 
         <div className={layouts.main}>
-          <Card classes={{ root: styles.hashCardRoot }}>
-            <CardContent>
-              <div className={styles.attrs}>
-                {timestamp ? (
-                  <span>
-                    <svg className="icon" aria-hidden="true">
-                      <use xlinkHref="#icon-time" />
-                    </svg>
-                    <span className={styles.attrTitle}>Time: </span>
-                    {new Date(timestamp).toLocaleString()}
-                  </span>
-                ) : null}
-                {gasUsed ? (
-                  <span>
-                    <img
-                      src={`${process.env.PUBLIC}/microscopeIcons/petrol_barrel.svg`}
-                      alt="gas used"
-                      className={styles.gasIcon}
-                    />
+          {timestamp ? (
+            <Card classes={{ root: styles.hashCardRoot }}>
+              <CardContent>
+                <div className={styles.attrs}>
+                  {timestamp ? (
+                    <span>
+                      <svg className="icon" aria-hidden="true">
+                        <use xlinkHref="#icon-time" />
+                      </svg>
+                      <span className={styles.attrTitle}>Time: </span>
+                      {new Date(timestamp).toLocaleString()}
+                    </span>
+                  ) : null}
+                  {gasUsed ? (
+                    <span>
+                      <img
+                        src={`${process.env.PUBLIC}/microscopeIcons/petrol_barrel.svg`}
+                        alt="gas used"
+                        className={styles.gasIcon}
+                      />
 
-                    <span className={styles.attrTitle}>Gas Used: </span>
-                    {gasUsed}
-                  </span>
-                ) : null}
-              </div>
-            </CardContent>
-          </Card>
+                      <span className={styles.attrTitle}>Gas Used: </span>
+                      {gasUsed}
+                    </span>
+                  ) : null}
+                </div>
+              </CardContent>
+            </Card>
+          ) : null}
           <Card classes={{ root: layouts.cardContainer }}>
             <CardContent classes={{ root: styles.cardContentRoot }}>
               <div className={styles.lists}>

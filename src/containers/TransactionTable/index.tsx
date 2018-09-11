@@ -10,6 +10,7 @@ import paramsFilter from '../../utils/paramsFilter'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import { rangeSelectorText } from '../../utils/searchTextGen'
+import toText from '../../utils/toText'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -109,8 +110,6 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     const params = {
       from: '',
       to: '',
-      // valueFrom: '',
-      // valueTo: '',
       pageNo: '',
       account: ''
     }
@@ -146,13 +145,13 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
             count: result.count,
             items: result.transactions.map(tx => ({
               key: tx.hash,
-              blockNumber: tx.blockNumber,
+              blockNumber: `${+tx.blockNumber}`,
               hash: tx.hash,
               from: tx.from,
-              to: tx.to,
-              value: tx.value,
+              to: toText(tx.to),
+              value: `${+tx.value}`,
               age: `${Math.round((Date.now() - tx.timestamp) / 1000)}s ago`,
-              gasUsed: tx.gasUsed
+              gasUsed: `${+tx.gasUsed}`
             }))
           })
         )
