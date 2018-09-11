@@ -194,7 +194,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       panel: ConfigPanel.BLOCK,
       type: ConfigType.DISPLAY,
       key: 'blockGasUsed',
-      title: 'gas used'
+      title: 'quota used'
     },
     {
       panel: ConfigPanel.BLOCK,
@@ -242,7 +242,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       panel: ConfigPanel.TRANSACTION,
       type: ConfigType.DISPLAY,
       key: 'transactionGasUsed',
-      title: 'gas used'
+      title: 'quota used'
     },
     {
       panel: ConfigPanel.TRANSACTION,
@@ -266,13 +266,13 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       panel: ConfigPanel.GRAPH,
       type: ConfigType.DISPLAY,
       key: 'graphGasUsedBlock',
-      title: 'Gas Used/Block'
+      title: 'Quota Used/Block'
     },
     {
       panel: ConfigPanel.GRAPH,
       type: ConfigType.DISPLAY,
       key: 'graphGasUsedTx',
-      title: 'Gas Used/Transaction'
+      title: 'Quota Used/Transaction'
     },
     {
       panel: ConfigPanel.GRAPH,

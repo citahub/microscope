@@ -62,7 +62,7 @@ const BlockDisplay = translate('microscope')(({ block, t }: { block: IBlock; t: 
           <td>{new Date(block.header.timestamp).toLocaleDateString()}</td>
         </tr>
         <tr>
-          <td>{t('gas used')}</td>
+          <td>{t('quota used')}</td>
           <td>{block.header.gasUsed}</td>
         </tr>
       </tbody>

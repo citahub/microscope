@@ -32,7 +32,7 @@ message: string
     { key: 'to', text: 'to', href: '/account/' },
     { key: 'value', text: 'value' },
     { key: 'blockNumber', text: 'height', href: '/height/' },
-    { key: 'gasUsed', text: 'gas used' },
+    { key: 'gasUsed', text: 'quota used' },
     { key: 'age', text: 'age' }
   ],
   items: [] as any[],

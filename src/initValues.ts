@@ -175,7 +175,7 @@ export const initBlockTableState = {
     { key: 'hash', text: 'hash', href: '/block/' },
     { key: 'age', text: 'age' },
     { key: 'transactions', text: 'transactions' },
-    { key: 'gasUsed', text: 'gas used' }
+    { key: 'gasUsed', text: 'quota used' }
   ],
   items: [] as any[],
   count: 0,

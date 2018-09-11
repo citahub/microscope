@@ -60,7 +60,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
   }
 
   private onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params }))
+    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 1 }))
     this.fetchBlock(params)
   }
   private setPageSize = () => {
