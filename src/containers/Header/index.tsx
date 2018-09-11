@@ -16,7 +16,6 @@ import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
 import { withConfig } from '../../contexts/config'
 import { withObservables } from '../../contexts/observables'
-import { isIp } from '../../utils/validators'
 import { fetchStatistics, fetchServerList, fetchMetadata } from '../../utils/fetcher'
 import { initBlock, initMetadata } from '../../initValues'
 import { handleError, dismissError } from '../../utils/handleError'
@@ -79,18 +78,16 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
   private onSearch$: Subject<any>
   private getChainMetadata = ip => {
-    if (isIp(ip)) {
-      fetchMetadata(ip)
-        .then(({ result }) => {
-          this.setState({
-            otherMetadata: {
-              ...result,
-              genesisTimestamp: new Date(result.genesisTimestamp).toLocaleString()
-            }
-          })
+    fetchMetadata(ip)
+      .then(({ result }) => {
+        this.setState({
+          otherMetadata: {
+            ...result,
+            genesisTimestamp: new Date(result.genesisTimestamp).toLocaleString()
+          }
         })
-        .catch(this.handleError)
-    }
+      })
+      .catch(this.handleError)
   }
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
     this.setState({ sidebarNavs: open })
