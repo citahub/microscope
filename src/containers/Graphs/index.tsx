@@ -11,7 +11,7 @@ import {
   Timestamp,
   TransactionFromServer,
   ProposalFromServer,
-  Hash,
+  Hash
 } from '../../typings/'
 import Banner from '../../components/Banner'
 import ErrorNotification from '../../components/ErrorNotification'
@@ -31,8 +31,8 @@ const initState = {
   maxCount: 100,
   error: {
     code: '',
-    message: '',
-  },
+    message: ''
+  }
 }
 
 interface GraphsProps extends IContainerProps {}
@@ -50,28 +50,21 @@ const getBlockSource = ({ blocks = this.state.blocks }) => {
       (curr as IBlock).header.number, // height
       +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
       (curr as IBlock).body.transactions.length, // tx count
-      (curr as IBlock).header.gasUsed,
+      (curr as IBlock).header.gasUsed
     ])
     return curr
   })
-  const graphSource = [
-    ['Blocks', 'Block Interval', 'Transactions', 'Gas Used'],
-    ...source,
-  ]
+  const graphSource = [['Blocks', 'Block Interval', 'Transactions', 'Quota Used'], ...source]
   return graphSource
 }
 const getTxSource = ({ txs = this.state.transactions }) => {
-  const source: TxGraphData[] = txs.length
-    ? txs.map(tx => [tx.hash, tx.gasUsed])
-    : []
-  const graphSource = [['Transactions', 'Gas Used'], ...source]
+  const source: TxGraphData[] = txs.length ? txs.map(tx => [tx.hash, tx.gasUsed]) : []
+  const graphSource = [['Transactions', 'Quota Used'], ...source]
   return graphSource
 }
 
 const getProposalSource = ({ proposals = this.state.proposals }) => {
-  const source: ProposalData[] = proposals.length
-    ? proposals.map(p => [`${p.validator.slice(0, 5)}...`, p.count])
-    : []
+  const source: ProposalData[] = proposals.length ? proposals.map(p => [`${p.validator.slice(0, 5)}...`, p.count]) : []
   const graphSource = [['Validators', 'Count'], ...source]
   return graphSource
 }
@@ -140,12 +133,10 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
       this.gasUsedGraph = this.initGraph(this.gasUsedGraphDOM as HTMLDivElement)
     }
     if (panelConfigs.graphGasUsedTx) {
-      this.txGasUsedGraph = this.initGraph(this
-        .txGasUsedGraphDOM as HTMLDivElement)
+      this.txGasUsedGraph = this.initGraph(this.txGasUsedGraphDOM as HTMLDivElement)
     }
     if (panelConfigs.graphProposals) {
-      this.proposalsGraph = this.initGraph(this
-        .proposalsGraphDOM as HTMLDivElement)
+      this.proposalsGraph = this.initGraph(this.proposalsGraphDOM as HTMLDivElement)
     }
   }
   private initGraph = (dom: HTMLDivElement) => {
@@ -165,7 +156,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         }
       },
       // error => console.error(error),
-      this.handleError,
+      this.handleError
     )
   }
   private updateProposals = () => {
@@ -178,16 +169,16 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
           title: {
             text: 'Proposal Distribution',
             textStyle: {
-              fontSize: 16,
-            },
+              fontSize: 16
+            }
           },
           color: ['#415dfc', '#ab62f1', '#fca441', '#4db7f8'],
           radius: ['50%', '70%'],
-          dataset: { source },
+          dataset: { source }
         }
         this.updateGraph({
           graph: this.proposalsGraph,
-          option: proposalOption,
+          option: proposalOption
         })
         // this.update
       })
@@ -199,21 +190,21 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         txs.reverse()
         this.setState(state => ({
           ...state,
-          transactions: txs,
+          transactions: txs
         }))
         const source = getTxSource({ txs })
         const txGasUsedOption = {
           title: {
-            text: 'Gas Used/Transaction',
+            text: 'Quota Used/Transaction'
           },
           color: ['#ab62f1'],
           ...BarOption,
-          dataset: { source: source.map(item => [item[0], item[1]]) },
+          dataset: { source: source.map(item => [item[0], item[1]]) }
         }
         if (this.props.config.panelConfigs.graphGasUsedTx) {
           this.updateGraph({
             graph: this.txGasUsedGraph,
-            option: txGasUsedOption,
+            option: txGasUsedOption
           })
         }
       })
@@ -229,34 +220,34 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
           title: {
             text: 'Interval/Block',
             textStyle: {
-              fontSize: 16,
-            },
+              fontSize: 16
+            }
           },
           color: ['#415dfc'],
           ...BarOption,
-          dataset: { source: source.map(item => [item[0], item[1]]) },
+          dataset: { source: source.map(item => [item[0], item[1]]) }
         }
         const txCountOption = {
           title: {
             text: 'Transactions/Block',
             textStyle: {
-              fontSize: 16,
-            },
+              fontSize: 16
+            }
           },
           color: ['#fca441'],
           ...BarOption,
-          dataset: { source: source.map(item => [item[0], item[2]]) },
+          dataset: { source: source.map(item => [item[0], item[2]]) }
         }
         const gasUsedOption = {
           title: {
-            text: 'Gas Used/Block',
+            text: 'Quota Used/Block',
             textStyle: {
-              fontSize: 16,
-            },
+              fontSize: 16
+            }
           },
           color: ['#4db7f8'],
           ...BarOption,
-          dataset: { source: source.map(item => [item[0], item[3]]) },
+          dataset: { source: source.map(item => [item[0], item[3]]) }
         }
         if (panelConfigs.graphIPB) {
           this.updateGraph({ graph: this.blockGraph, option: timeCostOption })
@@ -280,57 +271,37 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   render () {
     return (
       <React.Fragment>
-        <Banner bg={`${process.env.PUBLIC}/banner/banner-Statistics.png`}>
-          Statistics
-        </Banner>
+        <Banner bg={`${process.env.PUBLIC}/banner/banner-Statistics.png`}>Statistics</Banner>
         <div className={layout.center}>
           <div className={styles.graphs}>
             <Card>
               <CardContent>
-                <div
-                  ref={el => (this.blockGraphDOM = el)}
-                  className={styles.graphContainer}
-                />
+                <div ref={el => (this.blockGraphDOM = el)} className={styles.graphContainer} />
               </CardContent>
             </Card>
             <Card>
               <CardContent>
-                <div
-                  ref={el => (this.txCountGraphDOM = el)}
-                  className={styles.graphContainer}
-                />
+                <div ref={el => (this.txCountGraphDOM = el)} className={styles.graphContainer} />
               </CardContent>
             </Card>
             <Card>
               <CardContent>
-                <div
-                  ref={el => (this.gasUsedGraphDOM = el)}
-                  className={styles.graphContainer}
-                />
+                <div ref={el => (this.gasUsedGraphDOM = el)} className={styles.graphContainer} />
               </CardContent>
             </Card>
             <Card>
               <CardContent>
-                <div
-                  ref={el => (this.txGasUsedGraphDOM = el)}
-                  className={styles.graphContainer}
-                />
+                <div ref={el => (this.txGasUsedGraphDOM = el)} className={styles.graphContainer} />
               </CardContent>
             </Card>
             <Card>
               <CardContent>
-                <div
-                  ref={el => (this.proposalsGraphDOM = el)}
-                  className={styles.graphContainer}
-                />
+                <div ref={el => (this.proposalsGraphDOM = el)} className={styles.graphContainer} />
               </CardContent>
             </Card>
           </div>
         </div>
-        <ErrorNotification
-          error={this.state.error}
-          dismissError={this.dismissError}
-        />
+        <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
       </React.Fragment>
     )
   }
