@@ -46,12 +46,12 @@ export default translate('microscope')(
                 </span>
                 <span className={texts.ellipsis}>
                   {t('to')}:{' '}
-                  {tx.to.length === 2 ? (
+                  {tx.to === '0x' ? (
+                    ContractCreation
+                  ) : (
                     <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
                       {tx.to}
                     </Link>
-                  ) : (
-                    ContractCreation
                   )}
                 </span>
                 <span className={texts.ellipsis}>

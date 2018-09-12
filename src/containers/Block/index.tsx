@@ -106,7 +106,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private headerInfo = [
-    { key: 'gasUsed', label: 'Gas Used' },
+    { key: 'gasUsed', label: 'Quota Used' },
     { key: 'receiptsRoot', label: 'Receipts Root' },
     { key: 'stateRoot', label: 'State Root' },
     { key: 'transactionsRoot', label: 'Transactions Root' }
