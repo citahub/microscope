@@ -100,4 +100,5 @@ export interface Metadata {
   genesisTimestamp: string
   validators: string[]
   blockInterval: number
+  economicalModel: number
 }
