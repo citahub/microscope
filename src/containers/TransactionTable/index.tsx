@@ -12,6 +12,7 @@ import { handleError, dismissError } from '../../utils/handleError'
 import { rangeSelectorText } from '../../utils/searchTextGen'
 import toText from '../../utils/toText'
 import { fromNow } from '../../utils/timeFormatter'
+import valueFormatter from '../../utils/valueFormatter'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -150,8 +151,8 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
               hash: tx.hash,
               from: tx.from,
               to: toText(tx.to),
-              value: `${+tx.value}`,
               age: `${fromNow(tx.timestamp)} ago`,
+              value: valueFormatter(+tx.value),
               gasUsed: `${+tx.gasUsed}`
             }))
           })

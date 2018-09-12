@@ -4,7 +4,7 @@ import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
 import { TransactionFromServer } from '../../typings/'
 import { ContractCreation } from '../../initValues'
-import { fromNow } from '../../utils/timeFormatter'
+import valueFormatter from '../../utils/valueFormatter'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
@@ -57,7 +57,7 @@ export default translate('microscope')(
                 <span className={texts.ellipsis}>
                   {t('value')}:{' '}
                   <span className={styles.value} title={`${+tx.value}`}>
-                    {+tx.value || 0}
+                    {valueFormatter(+tx.value)}
                   </span>
                 </span>
               </span>
