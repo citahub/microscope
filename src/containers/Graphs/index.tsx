@@ -28,7 +28,7 @@ const initState = {
   transactions: [] as TransactionFromServer[],
   proposals: [] as ProposalFromServer[],
   loadBlockHistory: false,
-  maxCount: 100,
+  maxCount: 10,
   error: {
     code: '',
     message: ''
@@ -47,13 +47,14 @@ const getBlockSource = ({ blocks = this.state.blocks }) => {
   // form the source , x = height, y = interval, tx count, gas used
   blocks.reduce((prev, curr) => {
     source.push([
-      (curr as IBlock).header.number, // height
+      `${+(curr as IBlock).header.number}`, // height
       +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
       (curr as IBlock).body.transactions.length, // tx count
-      (curr as IBlock).header.gasUsed
+      `${+(curr as IBlock).header.gasUsed / 1e9}`
     ])
     return curr
   })
+  // console.log(blocks.map(b => +b.header.number))
   const graphSource = [['Blocks', 'Block Interval', 'Transactions', 'Quota Used'], ...source]
   return graphSource
 }
@@ -101,9 +102,6 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   componentDidCatch (err) {
     this.handleError(err)
   }
-  // private graphSource: any[] = []
-  // private updateAllDiagram = () => {}
-  // private updateDiagram = ({ chart, data }) => {}
 
   private setMaxCount = () => {
     const { graphMaxCount: maxCount } = this.props.config.panelConfigs
@@ -145,19 +143,15 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
     return graph
   }
   private startListening = () => {
-    this.props.CITAObservables.newBlockByNumberSubject.subscribe(
-      block => {
-        if (block.hash) {
-          this.handleNewBlock(block)
-          this.updateTransactions()
-          this.updateProposals()
-        } else {
-          throw new Error(block)
-        }
-      },
-      // error => console.error(error),
-      this.handleError
-    )
+    this.props.CITAObservables.newBlockByNumberSubject.subscribe(block => {
+      if (block.hash) {
+        this.handleNewBlock(block)
+        this.updateTransactions()
+        this.updateProposals()
+      } else {
+        throw new Error(block)
+      }
+    }, this.handleError)
   }
   private updateProposals = () => {
     fetchStatistics({ type: 'proposals' })
@@ -180,7 +174,6 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
           graph: this.proposalsGraph,
           option: proposalOption
         })
-        // this.update
       })
       .catch(this.handleError)
   }
@@ -195,11 +188,11 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         const source = getTxSource({ txs })
         const txGasUsedOption = {
           title: {
-            text: 'Quota Used/Transaction'
+            text: `Quota Used in the Latest ${this.state.maxCount} Transactions`
           },
           color: ['#ab62f1'],
           ...BarOption,
-          dataset: { source: source.map(item => [item[0], item[1]]) }
+          dataset: { source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1] / 1e9] : [item[0], item[1]])) }
         }
         if (this.props.config.panelConfigs.graphGasUsedTx) {
           this.updateGraph({
@@ -213,12 +206,13 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   private handleNewBlock = block => {
     const { panelConfigs } = this.props.config
     this.setState(state => {
+      // console.log(+block.header.number)
       const blocks = [...state.blocks, block].slice(-this.state.maxCount)
       if (this.blockGraph && blocks.length > 1) {
         const source = getBlockSource({ blocks })
         const timeCostOption = {
           title: {
-            text: 'Interval/Block',
+            text: `Interval(in ms) for the Latest ${this.state.maxCount}`,
             textStyle: {
               fontSize: 16
             }
@@ -229,7 +223,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         }
         const txCountOption = {
           title: {
-            text: 'Transactions/Block',
+            text: `Transaction Count in the Latest ${this.state.maxCount} Blocks`,
             textStyle: {
               fontSize: 16
             }
@@ -240,7 +234,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         }
         const gasUsedOption = {
           title: {
-            text: 'Quota Used/Block',
+            text: `Quota Used in Latest ${this.state.maxCount} Blocks`,
             textStyle: {
               fontSize: 16
             }
