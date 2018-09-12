@@ -33,9 +33,7 @@ export default translate('microscope')(
                     {tx.hash}
                   </Link>
                 </span>
-                <span className={styles.time}>
-                  {tx.timestamp && Math.round((Date.now() - +tx.timestamp) / 1000)}s ago
-                </span>
+                <span className={styles.time}>{`${fromNow(tx.timestamp)} ago`}</span>
               </React.Fragment>
             }
             secondary={

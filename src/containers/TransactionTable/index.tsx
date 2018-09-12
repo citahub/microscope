@@ -11,6 +11,7 @@ import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import { rangeSelectorText } from '../../utils/searchTextGen'
 import toText from '../../utils/toText'
+import { fromNow } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
 
 interface AdvancedSelectors {
@@ -150,8 +151,8 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
               hash: tx.hash,
               from: tx.from,
               to: toText(tx.to),
+              age: `${fromNow(tx.timestamp)} ago`,
               value: valueFormatter(+tx.value),
-              age: `${Math.round((Date.now() - tx.timestamp) / 1000)}s ago`,
               gasUsed: `${+tx.gasUsed}`
             }))
           })
