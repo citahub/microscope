@@ -4,6 +4,7 @@ import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
 import { TransactionFromServer } from '../../typings/'
 import { ContractCreation } from '../../initValues'
+import { fromNow } from '../../utils/timeFormatter'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
@@ -32,9 +33,7 @@ export default translate('microscope')(
                     {tx.hash}
                   </Link>
                 </span>
-                <span className={styles.time}>
-                  {tx.timestamp && Math.round((Date.now() - +tx.timestamp) / 1000)}s ago
-                </span>
+                <span className={styles.time}>{`${fromNow(tx.timestamp)} ago`}</span>
               </React.Fragment>
             }
             secondary={

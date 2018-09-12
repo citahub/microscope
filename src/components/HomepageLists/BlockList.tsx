@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
 import { Chain } from '@nervos/plugin'
-import { IBlock } from '../../typings/'
+// import { IBlock } from '../../typings/'
+import { fromNow } from '../../utils/timeFormatter'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
@@ -47,9 +48,7 @@ export default translate('microscope')(
                     </span>
                   </Link>
                 </span>
-                <span className={styles.time}>
-                  {Math.round((Date.now() - +block.header.timestamp) / 1000)}s {t('ago')}
-                </span>
+                <span className={styles.time}>{`${fromNow(block.header.timestamp)} ago`}</span>
               </React.Fragment>
             }
             secondary={

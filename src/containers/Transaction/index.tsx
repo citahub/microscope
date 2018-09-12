@@ -137,7 +137,6 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       tx.basicInfo.to = tx.basicInfo.to ? '0x' + tx.basicInfo.to : 'Contract Creation'
       /* eslint-enable */
     }
-    // return this.setState(state => ({ ...tx, loading: state.loading - 1 }))
     return this.setState(state =>
       Object.assign(
         {},
