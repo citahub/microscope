@@ -100,7 +100,7 @@ export const initPanelConfigs: PanelConfigs = {
   graphGasUsedBlock: true,
   graphGasUsedTx: true,
   graphProposals: true,
-  graphMaxCount: 100
+  graphMaxCount: 10
 }
 
 export const initServerList = (process.env.CHAIN_SERVERS || '').split(',')

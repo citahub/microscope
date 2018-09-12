@@ -1,22 +1,24 @@
 export const BarOption = {
   legend: {
-    bottom: '0',
+    show: false,
+    bottom: '0'
   },
   tooltip: {},
   dataset: {
-    source: [],
+    source: []
   },
   xAxis: { type: 'category' },
   yAxis: {},
-  series: [{ type: 'bar' }],
+  series: [{ type: 'bar' }]
 }
 export const LineOption = {
   legend: {
-    bottom: '0',
+    show: false,
+    bottom: '0'
   },
   tooltip: {},
   dataset: {
-    source: [],
+    source: []
   },
   xAxis: { type: 'category' },
   yAxis: {},
@@ -30,18 +32,18 @@ export const LineOption = {
     colorStops: [
       {
         offset: 0,
-        color: 'red',
+        color: 'red'
       },
       {
         offset: 1,
-        color: 'blue',
-      },
+        color: 'blue'
+      }
     ],
-    globalCoord: false,
-  },
+    globalCoord: false
+  }
 }
 export const PieOption = {
-  legend: { bottom: '0' },
+  legend: { show: false, bottom: '0' },
   tooltip: {},
   dataset: { source: [] },
   xAxis: { show: false },
@@ -53,15 +55,15 @@ export const PieOption = {
       emphasis: {
         itemStyle: {
           shadowColor: 'rgba(0,0,0,0.5)',
-          shadowBlur: 20,
-        },
-      },
-    },
-  ],
+          shadowBlur: 20
+        }
+      }
+    }
+  ]
 }
 
 export default {
   BarOption,
   PieOption,
-  LineOption,
+  LineOption
 }
