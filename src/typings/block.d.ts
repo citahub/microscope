@@ -9,6 +9,7 @@ export interface IBlockHeader {
   transactionsRoot: string
   receiptsRoot: string
   gasUsed: string
+  proposer: string
   proof: {
     Bft: {
       proposal: string
