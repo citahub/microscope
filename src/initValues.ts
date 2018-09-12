@@ -2,7 +2,7 @@
  * @Author: Keith-CY
  * @Date: 2018-07-22 19:59:22
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-08-15 18:50:45
+ * @Last Modified time: 2018-09-11 14:27:24
  */
 
 import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction } from './typings'
@@ -185,8 +185,8 @@ export const initBlockTableState = {
     {
       type: SelectorType.RANGE,
       key: 'number',
-      text: 'number selector',
-      items: [{ key: 'numberFrom', text: 'Number From' }, { key: 'numberTo', text: 'Number To' }]
+      text: 'height selector',
+      items: [{ key: 'numberFrom', text: 'Height From' }, { key: 'numberTo', text: 'Height To' }]
     },
     {
       type: SelectorType.RANGE,

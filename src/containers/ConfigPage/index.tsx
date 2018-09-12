@@ -236,7 +236,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       panel: ConfigPanel.TRANSACTION,
       type: ConfigType.DISPLAY,
       key: 'transactionBlockNumber',
-      title: 'block number'
+      title: 'block height'
     },
     {
       panel: ConfigPanel.TRANSACTION,

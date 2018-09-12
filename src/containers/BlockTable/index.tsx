@@ -24,6 +24,7 @@ import { handleError, dismissError } from '../../utils/handleError'
 import { rangeSelectorText } from '../../utils/searchTextGen'
 
 import { initBlockTableState } from '../../initValues'
+import { fromNow } from '../../utils/timeFormatter'
 
 interface BlockSelectors {
   selectorsValue: {
@@ -60,7 +61,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
   }
 
   private onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 1 }))
+    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0 }))
     this.fetchBlock(params)
   }
   private setPageSize = () => {
@@ -128,7 +129,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
             key: block.hash,
             height: `${+block.header.number}`,
             hash: block.hash,
-            age: `${Math.round((Date.now() - block.header.timestamp) / 1000)}s ago`,
+            age: `${fromNow(block.header.timestamp)} ago`,
             transactions: `${block.transactionsCount}`,
             gasUsed: `${+block.header.gasUsed}`
           }))

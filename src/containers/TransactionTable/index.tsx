@@ -11,6 +11,8 @@ import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import { rangeSelectorText } from '../../utils/searchTextGen'
 import toText from '../../utils/toText'
+import { fromNow } from '../../utils/timeFormatter'
+import valueFormatter from '../../utils/valueFormatter'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -43,12 +45,12 @@ message: string
     {
       type: SelectorType.SINGLE,
       key: 'from',
-      text: 'From'
+      text: 'Address From'
     },
     {
       type: SelectorType.SINGLE,
       key: 'to',
-      text: 'To'
+      text: 'Address To'
     }
   ],
   selectorsValue: {
@@ -87,7 +89,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     this.handleError(err)
   }
   onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params }))
+    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0 }))
     this.fetchTransactions(params)
   }
   private setPageSize = () => {
@@ -149,8 +151,8 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
               hash: tx.hash,
               from: tx.from,
               to: toText(tx.to),
-              value: `${+tx.value}`,
-              age: `${Math.round((Date.now() - tx.timestamp) / 1000)}s ago`,
+              age: `${fromNow(tx.timestamp)} ago`,
+              value: valueFormatter(+tx.value),
               gasUsed: `${+tx.gasUsed}`
             }))
           })

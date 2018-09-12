@@ -138,9 +138,9 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
 
   private handleInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const { value } = e.currentTarget
-    this.setState(state => ({
+    this.setState({
       keyword: value
-    }))
+    })
   }
   private handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
@@ -151,7 +151,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     const { keyword } = this.state
     if (keyword === '') return
     // clear history
-    this.setState(state => ({ ...initState, keyword }))
+    this.setState({ ...initState, keyword })
 
     const { CITAObservables } = this.props
     const searches = searchGen(keyword)
@@ -163,7 +163,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
           )
         }
         case SearchType.HEIGHT: {
-          return CITAObservables.blockByNumber(keyword).subscribe(block =>
+          return CITAObservables.blockByNumber((+keyword).toString(16)).subscribe(block =>
             this.setState(state => Object.assign({}, state, { block }))
           )
         }

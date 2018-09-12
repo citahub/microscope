@@ -2,9 +2,8 @@
  * @Author: Keith-CY
  * @Date: 2018-07-22 21:41:37
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-07-22 22:25:04
+ * @Last Modified time: 2018-09-11 14:49:56
  */
-// TODO: use contract instance for eth call
 
 import * as React from 'react'
 import * as web3Utils from 'web3-utils'
@@ -21,12 +20,13 @@ import ErrorNotification from '../../components/ErrorNotification'
 import LocalAccounts from '../../components/LocalAccounts'
 
 import { AccountType } from '../../typings/account'
-import { IContainerProps, Transaction, ABI } from '../../typings'
+import { IContainerProps } from '../../typings'
 import { withObservables } from '../../contexts/observables'
 
 import { initAccountState } from '../../initValues'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
+import valueFormatter from '../../utils/valueFormatter'
 
 const layouts = require('../../styles/layout.scss')
 
@@ -253,7 +253,7 @@ class Account extends React.Component<AccountProps, AccountState> {
             Account: <span>{addr}</span>
           </div>
           <div style={{ fontSize: '14px' }}>
-            Balance: <span>{balance}</span>
+            Balance: <span>{valueFormatter(balance)}</span>
           </div>
         </Banner>
         <div className={layouts.main}>
