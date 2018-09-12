@@ -2,7 +2,7 @@
  * @Author: Keith-CY
  * @Date: 2018-08-02 11:37:01
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-08-02 12:05:04
+ * @Last Modified time: 2018-09-11 14:28:32
  */
 
 import * as React from 'react'
@@ -141,7 +141,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
                 <use xlinkHref="#icon-left" />
               </svg>
             </Link>
-            # {+header.number}
+            Height: {+header.number}
             <Link
               to={`/height/0x${(+header.number + 1).toString(16)}`}
               href={`/height/0x${(+header.number + 1).toString(16)}`}
@@ -192,7 +192,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
             </CardContent>
           </Card>
         </div>
-        <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="Transaction List">
+        <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="Transactions List">
           <TransactionList transactions={transactions} />
         </Dialog>
         <ErrorNotification error={error} dismissError={this.dismissError} />

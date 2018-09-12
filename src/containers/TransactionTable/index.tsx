@@ -44,12 +44,12 @@ message: string
     {
       type: SelectorType.SINGLE,
       key: 'from',
-      text: 'From'
+      text: 'Address From'
     },
     {
       type: SelectorType.SINGLE,
       key: 'to',
-      text: 'To'
+      text: 'Address To'
     }
   ],
   selectorsValue: {
@@ -88,7 +88,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     this.handleError(err)
   }
   onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params }))
+    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0 }))
     this.fetchTransactions(params)
   }
   private setPageSize = () => {
