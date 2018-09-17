@@ -74,7 +74,8 @@ export const initMetadata: Metadata = {
   website: '',
   genesisTimestamp: '',
   validators: [],
-  blockInterval: 0
+  blockInterval: 0,
+  version: null
 }
 
 // init config values
