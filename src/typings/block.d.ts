@@ -101,4 +101,5 @@ export interface Metadata {
   validators: string[]
   blockInterval: number
   economicalModel: number
+  version: number | null
 }
