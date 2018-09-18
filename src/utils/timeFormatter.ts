@@ -27,7 +27,8 @@ export const fromNow = time => {
   r -= m * minute
   const s = Math.floor(r / second)
   const sText = tGen(s, 'sec')
-  return dText + hText + mText + sText
+  const t = dText + hText + mText + sText
+  return t.trim().length ? t : '0 sec'
 }
 
 export default {

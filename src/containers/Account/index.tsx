@@ -29,6 +29,7 @@ import { handleError, dismissError } from '../../utils/handleError'
 import valueFormatter from '../../utils/valueFormatter'
 
 const layouts = require('../../styles/layout.scss')
+const text = require('../../styles/text.scss')
 
 const accountFormatter = (addr: string) => (addr.startsWith('0x') ? addr : `0x${addr}`)
 interface AccountProps extends IContainerProps {}
@@ -249,11 +250,11 @@ class Account extends React.Component<AccountProps, AccountState> {
         ) : null}
 
         <Banner bg={`${process.env.PUBLIC}/banner/banner-Account.png`}>
-          <div style={{ fontSize: '14px' }}>
-            Account: <span>{addr}</span>
+          <div className={text.bannerText}>
+            Account: <span style={{ fontWeight: 100 }}>{addr}</span>
           </div>
-          <div style={{ fontSize: '14px' }}>
-            Balance: <span>{valueFormatter(balance)}</span>
+          <div className={text.bannerText}>
+            Balance: <span style={{ fontWeight: 100 }}>{valueFormatter(balance)}</span>
           </div>
         </Banner>
         <div className={layouts.main}>

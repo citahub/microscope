@@ -107,7 +107,6 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
     if (transaction) {
       this.setState(state => ({ loading: state.loading + 1 }))
       this.props.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
-        console.log(tx)
         this.handleReturnedTx(tx)
       }, this.handleError)
     }
