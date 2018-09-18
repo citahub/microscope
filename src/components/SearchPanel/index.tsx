@@ -7,6 +7,8 @@ import { withObservables } from '../../contexts/observables'
 import { IContainerProps, IBlock, UnsignedTransaction } from '../../typings'
 import { initBlock, initUnsignedTransaction } from '../../initValues'
 import toText from '../../utils/toText'
+import bytesToHex from '../../utils/bytesToHex'
+import valueFormatter from '../../utils/valueFormatter'
 
 const styles = require('./styles.scss')
 
@@ -89,7 +91,7 @@ const TransactionDisplay = translate('microscope')(
           </tr>
           <tr>
             <td>{t('value')}</td>
-            <td>{+tx.transaction.value.join('')}</td>
+            <td>{valueFormatter(bytesToHex(tx.transaction.value as any))}</td>
           </tr>
         </tbody>
       </table>
