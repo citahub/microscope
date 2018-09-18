@@ -75,7 +75,8 @@ export const initMetadata: Metadata = {
   genesisTimestamp: '',
   validators: [],
   blockInterval: 0,
-  economicalModel: 0
+  economicalModel: 0,
+  version: null
 }
 
 // init config values

@@ -247,9 +247,11 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                   <use xlinkHref="#icon-magnifier" />
                 </svg>
               </IconButton>
-              <IconButton onClick={this.toggleLngMenu(true)}>
-                <TranslateIcon />
-              </IconButton>
+              {this.translations.length > 1 ? (
+                <IconButton onClick={this.toggleLngMenu(true)}>
+                  <TranslateIcon />
+                </IconButton>
+              ) : null}
               <Menu open={lngOpen} anchorEl={anchorEl} onClose={this.toggleLngMenu()}>
                 {this.translations.map(lng => (
                   <MenuItem onClick={this.changeLng(lng)} key={lng}>

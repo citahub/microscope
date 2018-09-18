@@ -78,8 +78,8 @@
     "@reactivex/rxjs" "^5.5.8"
 
 "@nervos/plugin@^0.18.1":
-  version "0.18.2"
-  resolved "https://registry.npmjs.org/@nervos/plugin/-/plugin-0.18.2.tgz#950a05ae3343acf020c3e88d5aaac2a0dbac1e5a"
+  version "0.18.3"
+  resolved "https://registry.npmjs.org/@nervos/plugin/-/plugin-0.18.3.tgz#ac96c456df2bb23cb62bd7f32ae2e98866b69705"
   dependencies:
     "@types/google-protobuf" "^3.2.7"
     axios "^0.18.0"
