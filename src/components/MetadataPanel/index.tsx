@@ -15,7 +15,8 @@ const list = [
   { name: 'Version', value: 'version' },
   { name: 'Block Interval', value: 'blockInterval' },
   { name: 'Token Name', value: 'tokenName' },
-  { name: 'Token Symbol', value: 'tokenSymbol' }
+  { name: 'Token Symbol', value: 'tokenSymbol' },
+  { name: 'Economical Model', value: 'economicalModel' }
 ]
 
 const MetadataRender = translate('microscope')(
