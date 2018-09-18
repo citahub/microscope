@@ -106,7 +106,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
     const { transaction } = this.props.match.params
     if (transaction) {
       this.setState(state => ({ loading: state.loading + 1 }))
-      this.props.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.TransactionInBlock) => {
+      this.props.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
         this.handleReturnedTx(tx)
       }, this.handleError)
     }
@@ -117,7 +117,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   componentDidCatch (err) {
     this.handleError(err)
   }
-  private handleReturnedTx = (tx: Chain.TransactionInBlock) => {
+  private handleReturnedTx = (tx: Chain.Transaction) => {
     if (!tx) {
       this.handleError({
         error: {

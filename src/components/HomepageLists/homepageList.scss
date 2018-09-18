@@ -1,10 +1,12 @@
 @import '../../styles/color.scss';
+
 .primary {
   color: $text;
   display: flex !important;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+
   a {
     word-break: break-all;
   }
@@ -13,6 +15,7 @@
 .secondary {
   color: $text;
   word-break: break-all;
+
   &>span {
     display: block;
   }
@@ -31,6 +34,7 @@
   height: 115px;
   border-bottom: 1px solid $divider;
   text-transform: capitalize;
+
   svg {
     font-size: 1.5rem;
   }
@@ -56,9 +60,11 @@
   border-radius: 4px;
   box-sizing: border-box;
   line-height: 1.4;
+
   span {
     color: inherit;
   }
+
   a {
     color: inherit !important;
   }
@@ -70,6 +76,7 @@
   position: absolute;
   top: 0;
   right: 0;
+  text-transform: lowercase !important;
 }
 
 .txInfo {
@@ -89,6 +96,7 @@
   .listItemContainer {
     margin-left: 0;
     padding: 16px 0 !important;
+
     &:last-child {
       border-bottom: none;
     }
