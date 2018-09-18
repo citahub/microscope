@@ -4,6 +4,7 @@ import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
 import { TransactionFromServer } from '../../typings/'
 import { ContractCreation } from '../../initValues'
+import { fromNow } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
 
 const texts = require('../../styles/text.scss')
