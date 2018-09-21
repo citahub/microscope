@@ -53,7 +53,7 @@ export const fetchStatistics = params =>
 
 export const fetchServerList = () =>
   axios
-    .get(`${process.env.PUBLIC}/defaultServerList.json`)
+    .get(`${process.env.PUBLIC}/defaultServerList.json?${new Date().getTime}`)
     .then((res: AxiosResponse) => res.data)
     .catch(() => {
       throw new Error(ErrorTexts.SERVER_LIST_NOT_FOUND)
