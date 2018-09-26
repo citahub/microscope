@@ -4,7 +4,7 @@ import { translate } from 'react-i18next'
 import { Subject, Subscription } from '@reactivex/rxjs'
 import { AppBar, Toolbar, Menu, MenuItem, Typography, Button, IconButton } from '@material-ui/core'
 import { Translate as TranslateIcon, Close as CloseIcon } from '@material-ui/icons'
-import { Chain } from '@nervos/web3-plugin'
+import { Chain } from '@nervos/plugin'
 import containers from '../../Routes/containers'
 import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
@@ -16,7 +16,6 @@ import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
 import { withConfig } from '../../contexts/config'
 import { withObservables } from '../../contexts/observables'
-import { isIp } from '../../utils/validators'
 import { fetchStatistics, fetchServerList, fetchMetadata } from '../../utils/fetcher'
 import { initBlock, initMetadata } from '../../initValues'
 import { handleError, dismissError } from '../../utils/handleError'
@@ -79,18 +78,16 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
   private onSearch$: Subject<any>
   private getChainMetadata = ip => {
-    if (isIp(ip)) {
-      fetchMetadata(ip)
-        .then(({ result }) => {
-          this.setState({
-            otherMetadata: {
-              ...result,
-              genesisTimestamp: new Date(result.genesisTimestamp).toLocaleString()
-            }
-          })
+    fetchMetadata(ip)
+      .then(({ result }) => {
+        this.setState({
+          otherMetadata: {
+            ...result,
+            genesisTimestamp: new Date(result.genesisTimestamp).toLocaleString()
+          }
         })
-        .catch(this.handleError)
-    }
+      })
+      .catch(this.handleError)
   }
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
     this.setState({ sidebarNavs: open })
@@ -250,9 +247,11 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                   <use xlinkHref="#icon-magnifier" />
                 </svg>
               </IconButton>
-              <IconButton onClick={this.toggleLngMenu(true)}>
-                <TranslateIcon />
-              </IconButton>
+              {this.translations.length > 1 ? (
+                <IconButton onClick={this.toggleLngMenu(true)}>
+                  <TranslateIcon />
+                </IconButton>
+              ) : null}
               <Menu open={lngOpen} anchorEl={anchorEl} onClose={this.toggleLngMenu()}>
                 {this.translations.map(lng => (
                   <MenuItem onClick={this.changeLng(lng)} key={lng}>
@@ -294,7 +293,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 peerCount={this.state.peerCount}
                 number={this.state.block.header.number}
                 timestamp={this.state.block.header.timestamp}
-                proposal={this.state.block.header.proof.Tendermint.proposal}
+                proposal={this.state.block.header.proof.Bft.proposal}
                 tps={this.state.tps}
                 tpb={this.state.tpb}
                 ipb={this.state.ipb}

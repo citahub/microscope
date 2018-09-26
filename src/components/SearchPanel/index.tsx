@@ -2,9 +2,13 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { translate } from 'react-i18next'
 import { Search as SearchIcon } from '@material-ui/icons'
+import { unsigner } from '@nervos/signer'
 import { withObservables } from '../../contexts/observables'
-import { IContainerProps, IBlock, Transaction } from '../../typings'
-import { initBlock, initTransaction } from '../../initValues'
+import { IContainerProps, IBlock, UnsignedTransaction } from '../../typings'
+import { initBlock, initUnsignedTransaction } from '../../initValues'
+import toText from '../../utils/toText'
+import bytesToHex from '../../utils/bytesToHex'
+import valueFormatter from '../../utils/valueFormatter'
 
 const styles = require('./styles.scss')
 
@@ -12,7 +16,7 @@ enum SearchType {
   BLOCK,
   TRANSACTION,
   ACCOUNT,
-  HEIGHT,
+  HEIGHT
 }
 
 const searchGen = keyword => {
@@ -21,7 +25,7 @@ const searchGen = keyword => {
     case 66: {
       return [
         { type: SearchType.BLOCK, url: `/block/${keyword}` },
-        { type: SearchType.TRANSACTION, url: `/transactions/${keyword}` },
+        { type: SearchType.TRANSACTION, url: `/transactions/${keyword}` }
       ]
     }
     case 40:
@@ -34,112 +38,72 @@ const searchGen = keyword => {
   }
 }
 
-const BlockDisplay = translate('microscope')(
-  ({ block, t }: { block: IBlock; t: (key: string) => string }) => (
+const BlockDisplay = translate('microscope')(({ block, t }: { block: IBlock; t: (key: string) => string }) => (
+  <div className={styles.display}>
+    <div className={styles.title}>Block</div>
+    <table className={styles.items}>
+      <tbody>
+        <tr>
+          <td>{t('hash')}</td>
+          <td>{block.hash}</td>
+        </tr>
+        <tr>
+          <td>{t('height')}</td>
+          <td>{+block.header.number}</td>
+        </tr>
+        <tr>
+          <td>{t('prev hash')}</td>
+          <td>{block.header.prevHash}</td>
+        </tr>
+        <tr>
+          <td>{t('validator')}</td>
+          <td>{block.header.proposer}</td>
+        </tr>
+        <tr>
+          <td>{t('time')}</td>
+          <td>{new Date(block.header.timestamp).toLocaleDateString()}</td>
+        </tr>
+        <tr>
+          <td>{t('quota used')}</td>
+          <td>{block.header.gasUsed}</td>
+        </tr>
+      </tbody>
+    </table>
+    <Link to={`/block/${block.hash}`} href={`/block/${block.hash}`} className={styles.more}>
+      {t('detail')}
+    </Link>
+  </div>
+))
+
+const TransactionDisplay = translate('microscope')(
+  ({ tx, t }: { tx: UnsignedTransaction & { hash: string }; t: (key: string) => string }) => (
     <div className={styles.display}>
-      <div className={styles.title}>Block</div>
+      <div className={styles.title}>Transaction</div>
       <table className={styles.items}>
         <tbody>
           <tr>
-            <td>{t('hash')}</td>
-            <td>{block.hash}</td>
+            <td>{t('from')}</td>
+            <td>{tx.sender.address}</td>
           </tr>
           <tr>
-            <td>{t('height')}</td>
-            <td>{+block.header.number}</td>
+            <td>{t('to')}</td>
+            <td>{toText(tx.transaction.to)}</td>
           </tr>
           <tr>
-            <td>{t('prev hash')}</td>
-            <td>{block.header.prevHash}</td>
-          </tr>
-          <tr>
-            <td>{t('validator')}</td>
-            <td>{block.header.proof.Tendermint.proposal}</td>
-          </tr>
-          <tr>
-            <td>{t('time')}</td>
-            <td>{new Date(block.header.timestamp).toLocaleDateString()}</td>
-          </tr>
-          <tr>
-            <td>{t('gas used')}</td>
-            <td>{block.header.gasUsed}</td>
+            <td>{t('value')}</td>
+            <td>{valueFormatter(bytesToHex(tx.transaction.value as any))}</td>
           </tr>
         </tbody>
       </table>
-      <Link
-        to={`/block/${block.hash}`}
-        href={`/block/${block.hash}`}
-        className={styles.more}
-      >
+      <Link to={`/transaction/${tx.hash}`} href={`/transaction/${tx.hash}`} className={styles.more}>
         {t('detail')}
       </Link>
     </div>
-  ),
-)
-
-const TransactionDisplay = translate('microscope')(
-  ({ tx, t }: { tx: Transaction; t: (key: string) => string }) =>
-    tx.basicInfo ? (
-      <div className={styles.display}>
-        <div className={styles.title}>Transaction</div>
-        <table className={styles.items}>
-          <tbody>
-            <tr>
-              <td>{t('from')}</td>
-              <td>{tx.basicInfo.from}</td>
-            </tr>
-            <tr>
-              <td>{t('to')}</td>
-              <td>{tx.basicInfo.to}</td>
-            </tr>
-            <tr>
-              <td>{t('value')}</td>
-              <td>{tx.basicInfo.value}</td>
-            </tr>
-          </tbody>
-        </table>
-        <Link
-          to={`/transaction/${tx.hash}`}
-          href={`/transaction/${tx.hash}`}
-          className={styles.more}
-        >
-          {t('detail')}
-        </Link>
-      </div>
-    ) : (
-      <div className={styles.display}>
-        <div className={styles.title}>Transaction</div>
-        <table className={styles.items}>
-          <tbody>
-            <tr>
-              <td>{t('content')}</td>
-              <td>{tx.content}</td>
-            </tr>
-          </tbody>
-        </table>
-        <Link
-          to={`/transaction/${tx.hash}`}
-          href={`/transaction/${tx.hash}`}
-          className={styles.more}
-        >
-          {t('detail')}
-        </Link>
-      </div>
-    ),
+  )
 )
 
 const AccountDisplay = translate('microscope')(
-  ({
-    balance,
-    txCount,
-    addr,
-    t,
-  }: {
-  balance: string
-  txCount: number
-  addr: string
-  t: (key: string) => string
-  }) => (
+  ({ balance, txCount, addr, t }: { balance: string; txCount: number; addr: string; t: (key: string) => string }) => (
     <div className={styles.display}>
       <div className={styles.title}>{t('account')}</div>
       <table className={styles.items}>
@@ -154,23 +118,19 @@ const AccountDisplay = translate('microscope')(
           </tr>
         </tbody>
       </table>
-      <Link
-        to={`/account/${addr}`}
-        href={`/account/${addr}`}
-        className={styles.more}
-      >
+      <Link to={`/account/${addr}`} href={`/account/${addr}`} className={styles.more}>
         {t('detail')}
       </Link>
     </div>
-  ),
+  )
 )
 
 const initState = {
   keyword: '',
   block: initBlock,
-  transaction: initTransaction,
+  transaction: { ...initUnsignedTransaction, hash: '' },
   txCount: '',
-  balance: '',
+  balance: ''
 }
 
 type SearchPanelState = typeof initState
@@ -180,9 +140,9 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
 
   private handleInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
     const { value } = e.currentTarget
-    this.setState(state => ({
-      keyword: value,
-    }))
+    this.setState({
+      keyword: value
+    })
   }
   private handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
@@ -193,7 +153,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     const { keyword } = this.state
     if (keyword === '') return
     // clear history
-    this.setState(state => ({ ...initState, keyword }))
+    this.setState({ ...initState, keyword })
 
     const { CITAObservables } = this.props
     const searches = searchGen(keyword)
@@ -201,20 +161,20 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
       switch (search.type) {
         case SearchType.BLOCK: {
           return CITAObservables.blockByHash(keyword).subscribe(block =>
-            this.setState(state => Object.assign({}, state, { block })),
+            this.setState(state => Object.assign({}, state, { block }))
           )
         }
         case SearchType.HEIGHT: {
-          return CITAObservables.blockByNumber(keyword).subscribe(block =>
-            this.setState(state => Object.assign({}, state, { block })),
+          return CITAObservables.blockByNumber((+keyword).toString(16)).subscribe(block =>
+            this.setState(state => Object.assign({}, state, { block }))
           )
         }
         case SearchType.TRANSACTION: {
-          return CITAObservables.getTransaction(keyword).subscribe(
-            transaction => {
-              this.setState(state => Object.assign({}, state, { transaction }))
-            },
-          )
+          return CITAObservables.getTransaction(keyword).subscribe(transaction => {
+            const unsignedTransaction = unsigner(transaction.content)
+            unsignedTransaction.hash = transaction.hash
+            this.setState(state => Object.assign({}, state, { transaction: unsignedTransaction }))
+          })
         }
         case SearchType.ACCOUNT: {
           // CITAObservables.getBalance({ addr: keyword, blockNumber: "latest" }).subscribe(balance => {
@@ -222,13 +182,13 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
           // })
           CITAObservables.getTransactionCount({
             addr: keyword,
-            blockNumber: 'latest',
+            blockNumber: 'latest'
           }).subscribe(txCount => {
             this.setState(state => Object.assign({}, state, { txCount }))
           })
           return CITAObservables.getBalance({
             addr: keyword,
-            blockNumber: 'latest',
+            blockNumber: 'latest'
           }).subscribe(balance => {
             this.setState(state => Object.assign({}, state, { balance }))
           })
@@ -244,21 +204,14 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     return (
       <div>
         <div className={styles.fields}>
-          <input
-            type="text"
-            value={keyword}
-            onChange={this.handleInput}
-            onKeyUp={this.handleKeyUp}
-          />
+          <input type="text" value={keyword} onChange={this.handleInput} onKeyUp={this.handleKeyUp} />
           <button onClick={this.handleSearch}>
             <SearchIcon />
           </button>
         </div>
         {block.hash ? <BlockDisplay block={block} /> : null}
         {transaction.hash ? <TransactionDisplay tx={transaction} /> : null}
-        {balance !== '' ? (
-          <AccountDisplay balance={balance} txCount={+txCount} addr={keyword} />
-        ) : null}
+        {balance !== '' ? <AccountDisplay balance={balance} txCount={+txCount} addr={keyword} /> : null}
       </div>
     )
   }

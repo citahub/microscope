@@ -4,6 +4,7 @@ import { translate } from 'react-i18next'
 import { Paper } from '@material-ui/core'
 import Pager from 'react-pager'
 import { KeyboardArrowLeft, KeyboardArrowRight, SkipNext, SkipPrevious } from '@material-ui/icons'
+import { ContractCreation } from '../../initValues'
 
 import Dialog from '../../containers/Dialog'
 import paramsFilter from '../../utils//paramsFilter'
@@ -90,7 +91,9 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
           <div className={styles.dialog}>
             <div className={styles.fields}>
               <div className={styles.titles}>
-                {selectors.map(selector => <span className={styles.title}>{t(selector.text)}</span>)}
+                {selectors.map(selector => (
+                  <span className={styles.title}>{t(selector.text)}</span>
+                ))}
               </div>
               <div className={styles.inputs}>
                 {selectors.map(
@@ -129,14 +132,18 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
         </div>
         <table className={styles.table}>
           <thead>
-            <tr>{headers.map(header => <th key={header.key}>{t(header.text)}</th>)}</tr>
+            <tr>
+              {headers.map(header => (
+                <th key={header.key}>{t(header.text)}</th>
+              ))}
+            </tr>
           </thead>
           <tbody>
             {items.map(item => (
               <tr key={item.key}>
                 {headers.map(header => (
                   <td key={header.key} className={text.ellipsis} title={item[header.key]}>
-                    {header.href === undefined ? (
+                    {header.href === undefined || (header.key === 'to' && [ContractCreation].includes(item.to)) ? (
                       item[header.key] === null ? (
                         '/'
                       ) : (

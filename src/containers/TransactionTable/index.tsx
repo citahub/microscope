@@ -10,6 +10,9 @@ import paramsFilter from '../../utils/paramsFilter'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import { rangeSelectorText } from '../../utils/searchTextGen'
+import toText from '../../utils/toText'
+import { fromNow } from '../../utils/timeFormatter'
+import valueFormatter from '../../utils/valueFormatter'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -31,7 +34,7 @@ message: string
     { key: 'to', text: 'to', href: '/account/' },
     { key: 'value', text: 'value' },
     { key: 'blockNumber', text: 'height', href: '/height/' },
-    { key: 'gasUsed', text: 'gas used' },
+    { key: 'gasUsed', text: 'quota used' },
     { key: 'age', text: 'age' }
   ],
   items: [] as any[],
@@ -42,12 +45,12 @@ message: string
     {
       type: SelectorType.SINGLE,
       key: 'from',
-      text: 'From'
+      text: 'Address From'
     },
     {
       type: SelectorType.SINGLE,
       key: 'to',
-      text: 'To'
+      text: 'Address To'
     }
   ],
   selectorsValue: {
@@ -86,7 +89,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     this.handleError(err)
   }
   onSearch = params => {
-    this.setState(state => Object.assign({}, state, { selectorsValue: params }))
+    this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0 }))
     this.fetchTransactions(params)
   }
   private setPageSize = () => {
@@ -109,8 +112,6 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     const params = {
       from: '',
       to: '',
-      // valueFrom: '',
-      // valueTo: '',
       pageNo: '',
       account: ''
     }
@@ -146,13 +147,13 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
             count: result.count,
             items: result.transactions.map(tx => ({
               key: tx.hash,
-              blockNumber: tx.blockNumber,
+              blockNumber: `${+tx.blockNumber}`,
               hash: tx.hash,
               from: tx.from,
-              to: tx.to,
-              value: tx.value,
-              age: `${Math.round((Date.now() - tx.timestamp) / 1000)}s ago`,
-              gasUsed: tx.gasUsed
+              to: toText(tx.to),
+              age: `${fromNow(tx.timestamp)} ago`,
+              value: valueFormatter(+tx.value),
+              gasUsed: `${+tx.gasUsed}`
             }))
           })
         )

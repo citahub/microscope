@@ -1,15 +1,19 @@
 @import '../../styles/color.scss';
 $col-span: 92px;
+
 .footer {
   display: flex;
+
   @media (max-width: 800px) {
     flex-direction: column;
     align-items: center;
+
     &>div {
       max-width: 90vw;
       text-align: center;
       padding: 0;
     }
+
     .products {
       div {
         display: flex;
@@ -22,6 +26,7 @@ $col-span: 92px;
 .overview {
   flex: 1;
   padding-right: $col-span;
+
   div {
     line-height: 2;
   }
@@ -29,29 +34,37 @@ $col-span: 92px;
 
 .products {
   width: 584px;
+
   @media (max-width: 800px) {
     width: 100vw;
+
     &>div {
       display: flex;
       flex-wrap: wrap;
       margin: 0;
     }
   }
+
   padding: 0 $col-span;
   box-sizing: border-box;
+
   &>div {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     margin: 0 -10px;
+
     &>div {
       width: 190px;
       margin: 0 10px;
+
       img {
         height: 74px;
       }
+
       &:last-child {
         filter: brightness(100);
+
         img {
           filter: contrast(0)
         }
@@ -63,12 +76,14 @@ $col-span: 92px;
 .contacts {
   flex: 1;
   padding-left: $col-span;
+
   a {
     display: flex;
     align-items: center;
     font-size: inherit; // line-height: 2.35em;
     // height: 2.35em;
     color: inherit;
+
     svg {
       margin-right: 0.7rem;
     }
@@ -83,13 +98,14 @@ $col-span: 92px;
     padding: 0.25rem 0.5rem;
     padding-left: 0;
     font-size: 1.125rem;
-    border-bottom: 2px solid $primary;
+    border-bottom: 2px solid #fff;
     height: 1.5rem;
     line-height: 1.5rem;
     margin-bottom: 1.75rem;
     text-transform: capitalize;
+
     @media (max-width: 800px) {
-      padding-right:0;
+      padding-right: 0;
     }
   }
 }
@@ -104,6 +120,7 @@ $col-span: 92px;
     justify-content: space-between;
     align-items: flex-start
   }
+
   @media (max-width:800px) {
     p {
       display: none;

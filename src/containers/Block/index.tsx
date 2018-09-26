@@ -2,7 +2,7 @@
  * @Author: Keith-CY
  * @Date: 2018-08-02 11:37:01
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-08-02 12:05:04
+ * @Last Modified time: 2018-09-11 14:28:32
  */
 
 import * as React from 'react'
@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { LinearProgress, Card, CardContent, List, ListItem } from '@material-ui/core'
 
 import { unsigner } from '@nervos/signer'
-import { RpcResult, Chain } from '@nervos/web3-plugin/lib/typings/index.d'
+import { RpcResult, Chain } from '@nervos/plugin/lib/typings/index.d'
 import { IContainerProps, IBlock } from '../../typings'
 
 import { initBlockState } from '../../initValues'
@@ -92,6 +92,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
         timestamp: `${block.header.timestamp}`
       }
     })
+    block.header.gasUsed = `${+block.header.gasUsed}`
     /* eslint-enable */
     return this.setState(state => Object.assign({}, state, { ...block, loading: state.loading - 1 }))
   }
@@ -105,7 +106,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private headerInfo = [
-    { key: 'gasUsed', label: 'Gas Used' },
+    { key: 'gasUsed', label: 'Quota Used' },
     { key: 'receiptsRoot', label: 'Receipts Root' },
     { key: 'stateRoot', label: 'State Root' },
     { key: 'transactionsRoot', label: 'Transactions Root' }
@@ -140,7 +141,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
                 <use xlinkHref="#icon-left" />
               </svg>
             </Link>
-            # {header.number}
+            Height: {+header.number}
             <Link
               to={`/height/0x${(+header.number + 1).toString(16)}`}
               href={`/height/0x${(+header.number + 1).toString(16)}`}
@@ -171,9 +172,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
                 </ListItem>
                 <ListItem>
                   <span className={styles.itemTitle}>Proposer</span>
-                  <span className={texts.hash}>
-                    {header.proof && header.proof.Tendermint && header.proof.Tendermint.proposal}
-                  </span>
+                  <span className={texts.hash}>{header.proposer}</span>
                 </ListItem>
                 <ListItem>
                   <span className={styles.itemTitle}>Parent Hash</span>
@@ -193,7 +192,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
             </CardContent>
           </Card>
         </div>
-        <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="交易列表">
+        <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="Transactions List">
           <TransactionList transactions={transactions} />
         </Dialog>
         <ErrorNotification error={error} dismissError={this.dismissError} />
