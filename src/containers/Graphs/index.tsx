@@ -54,7 +54,6 @@ const getBlockSource = ({ blocks = this.state.blocks }) => {
     ])
     return curr
   })
-  // console.log(blocks.map(b => +b.header.number))
   const graphSource = [['Blocks', 'Block Interval', 'Transactions', 'Quota Used'], ...source]
   return graphSource
 }
@@ -187,17 +186,33 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         }))
         const source = getTxSource({ txs })
         const txGasUsedOption = {
+          ...BarOption,
           title: {
             text: `Quota Used in the Latest ${this.state.maxCount} Transactions`
           },
           color: ['#ab62f1'],
-          ...BarOption,
+          xAxis: {
+            ...BarOption.xAxis,
+            axisLabel: {
+              show: false
+            }
+          },
+          formatter: (param: { seriesName: string; value: any[] }) => {
+            const label = `<span>${param.seriesName}</span><br/><span>${param.value[0].slice(
+              0,
+              6
+            )}...${param.value[0].slice(-4)} : ${param.value[1]}</span>`
+            return label
+          },
           dataset: { source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1] / 1e9] : [item[0], item[1]])) }
         }
         if (this.props.config.panelConfigs.graphGasUsedTx) {
           this.updateGraph({
             graph: this.txGasUsedGraph,
             option: txGasUsedOption
+          })
+          this.txGasUsedGraph.on('click', (param: any) => {
+            this.props.history.push(`/transaction/${param.value[0]}`)
           })
         }
       })
