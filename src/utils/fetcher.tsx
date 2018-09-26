@@ -53,7 +53,7 @@ export const fetchStatistics = params =>
 
 export const fetchServerList = () =>
   axios
-    .get(`${process.env.PUBLIC}/defaultServerList.json`)
+    .get(`${process.env.PUBLIC}/defaultServerList.json?${new Date().getTime}`)
     .then((res: AxiosResponse) => res.data)
     .catch(() => {
       throw new Error(ErrorTexts.SERVER_LIST_NOT_FOUND)
@@ -61,7 +61,7 @@ export const fetchServerList = () =>
 
 export const fetchMetadata = ip =>
   axios
-    .post(`http://${ip}`, {
+    .post(ip.startsWith('http') ? ip : `https://${ip}`, {
       jsonrpc: '2.0',
       method: 'getMetaData',
       params: ['latest'],

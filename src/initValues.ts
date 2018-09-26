@@ -2,10 +2,10 @@
  * @Author: Keith-CY
  * @Date: 2018-07-22 19:59:22
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-08-15 18:50:45
+ * @Last Modified time: 2018-09-11 14:27:24
  */
 
-import { IBlock, IBlockHeader, Transaction, Metadata, ABI } from './typings'
+import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction } from './typings'
 import widerThan from './utils/widerThan'
 import { Contract, AccountType } from './typings/account'
 import { LocalAccount } from './components/LocalAccounts'
@@ -23,8 +23,9 @@ export const initHeader: IBlockHeader = {
   transactionsRoot: '',
   receiptsRoot: '',
   gasUsed: '',
+  proposer: '',
   proof: {
-    Tendermint: {
+    Bft: {
       proposal: ''
     }
   }
@@ -49,6 +50,23 @@ export const initTransaction: Transaction = {
     data: ''
   }
 }
+export const initUnsignedTransaction: UnsignedTransaction = {
+  crypto: 0,
+  signature: '',
+  sender: {
+    address: '',
+    publicKey: ''
+  },
+  transaction: {
+    data: [] as number[],
+    nonce: '',
+    quota: 0,
+    to: '',
+    validUntilBlock: 0,
+    value: [] as number[],
+    version: 0
+  }
+}
 export const initMetadata: Metadata = {
   chainId: -1,
   chainName: '',
@@ -56,7 +74,9 @@ export const initMetadata: Metadata = {
   website: '',
   genesisTimestamp: '',
   validators: [],
-  blockInterval: 0
+  blockInterval: 0,
+  economicalModel: 0,
+  version: null
 }
 
 // init config values
@@ -82,7 +102,7 @@ export const initPanelConfigs: PanelConfigs = {
   graphGasUsedBlock: true,
   graphGasUsedTx: true,
   graphProposals: true,
-  graphMaxCount: 100
+  graphMaxCount: 10
 }
 
 export const initServerList = (process.env.CHAIN_SERVERS || '').split(',')
@@ -95,7 +115,7 @@ export const initAccountState = {
   abi: [] as ABI,
   contract: { _jsonInterface: [], methods: [] } as Contract,
   balance: '',
-  txCount: '',
+  txCount: 0,
   creator: '',
   transactions: [] as Transaction[],
   customToken: {
@@ -136,8 +156,9 @@ export const initBlockState = {
     transactionsRoot: '',
     receiptsRoot: '',
     gasUsed: '',
+    proposer: '',
     proof: {
-      Tendermint: {
+      Bft: {
         proposal: ''
       }
     }
@@ -156,7 +177,7 @@ export const initBlockTableState = {
     { key: 'hash', text: 'hash', href: '/block/' },
     { key: 'age', text: 'age' },
     { key: 'transactions', text: 'transactions' },
-    { key: 'gasUsed', text: 'gas used' }
+    { key: 'gasUsed', text: 'quota used' }
   ],
   items: [] as any[],
   count: 0,
@@ -166,8 +187,8 @@ export const initBlockTableState = {
     {
       type: SelectorType.RANGE,
       key: 'number',
-      text: 'number selector',
-      items: [{ key: 'numberFrom', text: 'Number From' }, { key: 'numberTo', text: 'Number To' }]
+      text: 'height selector',
+      items: [{ key: 'numberFrom', text: 'Height From' }, { key: 'numberTo', text: 'Height To' }]
     },
     {
       type: SelectorType.RANGE,
@@ -199,3 +220,5 @@ export const initConfigContext = {
   deletePrivkey: privkey => false,
   changePanelConfig: (config: any) => false
 }
+
+export const ContractCreation = 'Contract Creation'

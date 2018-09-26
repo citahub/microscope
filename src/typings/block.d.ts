@@ -9,8 +9,9 @@ export interface IBlockHeader {
   transactionsRoot: string
   receiptsRoot: string
   gasUsed: string
+  proposer: string
   proof: {
-    Tendermint: {
+    Bft: {
       proposal: string
     }
   }
@@ -76,7 +77,7 @@ export interface BlockFromServer {
     stateRoot: string
     receiptsRoot: string
     proof: {
-      Tendermint: {
+      Bft: {
         proposal: string
       }
     }
@@ -99,4 +100,6 @@ export interface Metadata {
   genesisTimestamp: string
   validators: string[]
   blockInterval: number
+  economicalModel: number
+  version: number | null
 }

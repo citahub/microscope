@@ -2,7 +2,10 @@ import * as React from 'react'
 import { Link } from 'react-router-dom'
 import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
-import { Transaction, TransactionFromServer } from '../../typings/'
+import { TransactionFromServer } from '../../typings/'
+import { ContractCreation } from '../../initValues'
+import { fromNow } from '../../utils/timeFormatter'
+import valueFormatter from '../../utils/valueFormatter'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
@@ -31,9 +34,7 @@ export default translate('microscope')(
                     {tx.hash}
                   </Link>
                 </span>
-                <span className={styles.time}>
-                  {tx.timestamp && Math.round((Date.now() - +tx.timestamp) / 1000)}s ago
-                </span>
+                <span className={styles.time}>{`${fromNow(tx.timestamp)} ago`}</span>
               </React.Fragment>
             }
             secondary={
@@ -41,19 +42,23 @@ export default translate('microscope')(
                 <span className={texts.ellipsis}>
                   {t('from')}:{' '}
                   <Link to={`/account/${tx.from}`} href={`/account/${tx.from}`} className={texts.addr}>
-                    {tx.from || '_'}
+                    {tx.from || 'null'}
                   </Link>
                 </span>
                 <span className={texts.ellipsis}>
                   {t('to')}:{' '}
-                  <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
-                    {tx.to || '_'}
-                  </Link>
+                  {tx.to === '0x' ? (
+                    ContractCreation
+                  ) : (
+                    <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
+                      {tx.to}
+                    </Link>
+                  )}
                 </span>
                 <span className={texts.ellipsis}>
                   {t('value')}:{' '}
-                  <span className={styles.value} title={`${tx.value}`}>
-                    {tx.value || 0}
+                  <span className={styles.value} title={`${+tx.value}`}>
+                    {valueFormatter(+tx.value)}
                   </span>
                 </span>
               </span>

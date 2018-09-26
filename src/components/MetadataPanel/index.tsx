@@ -12,9 +12,11 @@ const list = [
   { name: 'Operator', value: 'operator' },
   { name: 'Website', value: 'website' },
   { name: 'Genesis Time', value: 'genesisTimestamp' },
+  // { name: 'Version', value: 'version' },
   { name: 'Block Interval', value: 'blockInterval' },
   { name: 'Token Name', value: 'tokenName' },
   { name: 'Token Symbol', value: 'tokenSymbol' }
+  // { name: 'Economical Model', value: 'economicalModel' }
 ]
 
 const MetadataRender = translate('microscope')(
