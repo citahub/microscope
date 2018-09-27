@@ -14,6 +14,8 @@ lib
 
 # Build
 dist
+Microscope
+*.tar.gz
 
 # Optional npm cache directory
 .npm
