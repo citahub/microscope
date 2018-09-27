@@ -227,7 +227,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
         const source = getBlockSource({ blocks })
         const timeCostOption = {
           title: {
-            text: `Interval(in ms) for the Latest ${this.state.maxCount}`,
+            text: `Interval (in ms) for the Latest ${this.state.maxCount} Blocks`,
             textStyle: {
               fontSize: 16
             }
