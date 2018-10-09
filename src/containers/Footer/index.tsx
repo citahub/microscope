@@ -44,6 +44,11 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
       title: 'contact us',
       items: [
         {
+          icon: 'github',
+          title: 'Github',
+          url: 'https://github.com/cryptape/microscope'
+        },
+        {
           icon: 'email',
           title: 'appchain.contact@cryptape.com',
           url: 'mailto:appchain.contact@cryptape.com'
@@ -73,7 +78,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         <div className={styles.products}>
           <h1>{t(products.title)}</h1>
           <div>
-            {products.items.map(item => (
+            {products.items.map((item) => (
               <div key={item.title}>
                 <a href={item.url} rel="noreferrer noopener" target="_blank">
                   <img src={item.logo} alt={item.title} />
@@ -86,7 +91,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         <div className={styles.contacts}>
           <h1>{t(contacts.title)}</h1>
           <div>
-            {contacts.items.map(item => (
+            {contacts.items.map((item) => (
               <a key={item.title} href={item.url} rel="noreferrer noopener" target="_blank">
                 <svg className="icon" aria-hidden="true">
                   <use xlinkHref={`#icon-${item.icon}`} />
