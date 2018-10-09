@@ -24,7 +24,10 @@ const MetadataRender = translate('microscope')(
     <div className={styles.display}>
       {list.map((item) => (
         <div key={item.name} className={`${styles.item} ${text.ellipsis}`}>
-          {t(item.name)}: <span className={styles.itemValue}>{metadata[item.value]} {item.unitName || ''}</span>
+          {t(item.name)}:{' '}
+          <span className={styles.itemValue}>
+            {metadata[item.value]} {item.unitName || ''}
+          </span>
         </div>
       ))}
       <div className={styles.validators}>
@@ -73,6 +76,10 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
     <MetadataRender metadata={metadata} />
     <div className={styles.title}>
       {t('other')} {t('chain')}
+    </div>
+    <div>
+      If you connect to an AppChain node instead of a <a href="https://github.com/cryptape/re-birth">ReBirth</a> server,
+      Microscope will NOT be fully functional.
     </div>
     <div className={styles.fields}>
       <input
