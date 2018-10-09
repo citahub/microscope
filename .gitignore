@@ -33,3 +33,6 @@ cita-toys-wallet
 
 # default server list
 defaultServerList.json
+
+# vscode setting
+.vscode
