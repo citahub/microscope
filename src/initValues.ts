@@ -193,8 +193,8 @@ export const initBlockTableState = {
     {
       type: SelectorType.RANGE,
       key: 'transaction',
-      text: 'transactions selector',
-      items: [{ key: 'transactionFrom', text: 'Transaction From' }, { key: 'transactionTo', text: 'Transaction To' }]
+      text: 'transactions counts',
+      items: [{ key: 'transactionFrom', text: 'From' }, { key: 'transactionTo', text: 'To' }]
     }
   ],
   selectorsValue: {
