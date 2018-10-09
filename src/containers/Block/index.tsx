@@ -166,6 +166,10 @@ class Block extends React.Component<IBlockProps, IBlockState> {
           <Card classes={{ root: layouts.cardContainer }}>
             <CardContent>
               <List className={styles.items}>
+                <ListItem>
+                  <span className={styles.itemTitle}>TimeStamp</span>
+                  <span>{(new Date(header.timestamp)).toLocaleString()}</span>
+                </ListItem>
                 <ListItem onClick={this.toggleTransaction(true)} style={{ cursor: 'pointer' }}>
                   <span className={styles.itemTitle}>Transactions</span>
                   <span>{transactions.length}</span>
