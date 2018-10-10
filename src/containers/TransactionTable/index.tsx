@@ -66,7 +66,7 @@ message: string
 }
 
 interface setTransactionsCount {
-  (count: string|number|undefined|null): null
+  (count: string|number): undefined
 }
 
 interface TransactionTableProps extends IContainerProps {
