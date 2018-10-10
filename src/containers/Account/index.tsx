@@ -60,6 +60,7 @@ class Account extends React.Component<AccountProps, AccountState> {
     this.setState({ panelOn: !!value })
   }
 
+  private setTransactionsCount = (count) => this.setState({ txCount: count })
   protected readonly addrGroups = [
     {
       key: 'normals',
@@ -273,7 +274,7 @@ class Account extends React.Component<AccountProps, AccountState> {
                   handleEthCall={this.handleEthCall}
                 />
               ) : (
-                <TransactionTable {...this.props} key={addr} inset />
+                <TransactionTable {...this.props} key={addr} setTransactionsCount={this.setTransactionsCount} inset />
               )}
             </CardContent>
           </Card>

@@ -65,9 +65,14 @@ message: string
   }
 }
 
+interface setTransactionsCount {
+  (count: string|number|undefined|null): null
+}
+
 interface TransactionTableProps extends IContainerProps {
   inset?: boolean
   showInOut?: boolean
+  setTransactionsCount?: setTransactionsCount
 }
 type TransactionTableState = typeof initialState
 class TransactionTable extends React.Component<TransactionTableProps, TransactionTableState> {
@@ -158,6 +163,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
           })
         )
       )
+      .then(() => this.props.setTransactionsCount && this.props.setTransactionsCount(this.state.count))
       .catch(err => {
         this.handleError(err)
       })
