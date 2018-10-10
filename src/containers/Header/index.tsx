@@ -209,6 +209,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       location: { pathname },
       t
     } = this.props
+    const ignoredContainer = [this.props.config.panelConfigs.debugger ? '' : 'Debugger']
+    const displayedContainers = containers.filter(container => !ignoredContainer.includes(container.name))
     return createPortal(
       <React.Fragment>
         <AppBar position="static" elevation={0}>
@@ -225,10 +227,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             >
               <img src={`${process.env.PUBLIC}/microscopeIcons/expand.png`} alt="expand" />
             </IconButton>
-            <HeaderNavs containers={containers} pathname={pathname} logo={LOGO} />
+            <HeaderNavs containers={displayedContainers} pathname={pathname} logo={LOGO} />
             <SidebarNavs
               open={this.state.sidebarNavs}
-              containers={containers}
+              containers={displayedContainers}
               pathname={pathname}
               toggleSideNavs={this.toggleSideNavs}
               logo={LOGO}

@@ -47,7 +47,8 @@ enum ConfigPanel {
   HEADER = 'header',
   BLOCK = 'block',
   TRANSACTION = 'transaction',
-  GRAPH = 'graph'
+  GRAPH = 'graph',
+  DEBUGGER = 'debugger'
 }
 
 export interface ConfigPageProps {
@@ -151,7 +152,8 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
     // ConfigPanel.HEADER,
     ConfigPanel.BLOCK,
     ConfigPanel.TRANSACTION,
-    ConfigPanel.GRAPH
+    ConfigPanel.GRAPH,
+    ConfigPanel.DEBUGGER
   ]
   static configs = [
     {
@@ -285,6 +287,12 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       type: ConfigType.VALUE,
       key: 'graphMaxCount',
       title: 'MaxCount'
+    },
+    {
+      panel: ConfigPanel.DEBUGGER,
+      type: ConfigType.DISPLAY,
+      key: 'debugger',
+      title: 'Debugger'
     }
   ] as ConfigDetail[]
   public constructor (props) {

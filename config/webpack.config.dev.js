@@ -55,7 +55,7 @@ const devConfig = {
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: JSON.stringify('development'),
-        OBSERVABLE_INTERVAL: 10000,
+        OBSERVABLE_INTERVAL: 1000,
         PUBLIC: JSON.stringify(process.env.PUBLIC),
       },
     }),
