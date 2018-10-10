@@ -1,0 +1,92 @@
+@import '../../styles/color.scss';
+.infoblock {
+  max-width: 650px;
+  margin: 0 auto 57px;
+  &:first-child {
+    margin-top: 102px;
+  }
+  // input {
+  //   border: 1px solid #d3ddec;
+  //   width: 120px;
+  //   height: 34px;
+  //   line-height: 34px;
+  //   border-radius: 4px;
+  //   padding: 7px;
+  //   margin: 8px;
+  //   box-sizing: border-box;
+  // }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 10px;
+  }
+  .title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    color: #2e313e;
+  }
+  .button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    background: $active;
+    color: #fff;
+    font-size: 0.875rem;
+  }
+  .code {
+    font-size: 0.875rem;
+    line-height: 1.71;
+    color: #2e313e;
+    border-radius: 4px;
+    border: solid 1px #e7edf5;
+    background-color: #fafbff;
+    padding: 14px 77px 16px 18px;
+    word-break: break-word;
+    max-height: 280px;
+    overflow: auto;
+  }
+}
+
+// .title {
+//   line-height: 34px;
+//   margin-top: 8px;
+//   text-transform: capitalize;
+//   &:after {
+//     content: ' Method';
+//   }
+// }
+
+// .inputs,
+// .outputs {
+//   position: relative;
+//   line-height: 34px;
+//   min-height: 34px;
+//   margin-left: 65px;
+//   &:before {
+//     position: absolute;
+//     top: 8px;
+//     right: 100%;
+//     display: inline-block;
+//     width: 65px;
+//   }
+// }
+
+// .inputs {
+//   &:before {
+//     content: 'Inputs: ';
+//   }
+// }
+
+// .outputs {
+//   &:before {
+//     content: 'Outputs: ';
+//   }
+// }
+
+// .noEls {
+//   display: inline-block;
+//   margin: 8px;
+//   color: #ccc;
+// }
