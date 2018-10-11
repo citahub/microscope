@@ -168,9 +168,12 @@ class Block extends React.Component<IBlockProps, IBlockState> {
               <List className={styles.items}>
                 <ListItem>
                   <span className={styles.itemTitle}>TimeStamp</span>
-                  <span>{(new Date(header.timestamp)).toLocaleString()}</span>
+                  <span>{new Date(header.timestamp).toLocaleString()}</span>
                 </ListItem>
-                <ListItem onClick={this.toggleTransaction(true)} style={{ cursor: 'pointer' }}>
+                <ListItem
+                  onClick={transactions.length ? this.toggleTransaction(true) : undefined}
+                  style={transactions.length ? { cursor: 'pointer' } : undefined}
+                >
                   <span className={styles.itemTitle}>Transactions</span>
                   <span>{transactions.length}</span>
                 </ListItem>
