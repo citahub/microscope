@@ -45,10 +45,17 @@ const initState: TransactionState = {
   index: '',
   content: '',
   basicInfo: {
-    to: '',
     from: '',
+    to: '',
+    nonce: '',
+    validUntilBlock: '',
+    value: '',
     data: '',
-    value: ''
+    quotaLimit: '',
+    quotaPrice: '',
+    quotaUsed: '',
+    CreatedContractAddress: '',
+    ErrorMessage: ''
   },
   error: {
     message: '',
@@ -100,6 +107,7 @@ const Info = ({ title, infos, details }) => (
     <InfoList infos={infos} details={details} />
   </List>
 )
+
 class Transaction extends React.Component<TransactionProps, TransactionState> {
   readonly state = initState
   componentWillMount () {
@@ -127,15 +135,19 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       })
     }
     const details = unsigner(tx.content)
-    if (tx.basicInfo && typeof tx.basicInfo !== 'string') {
+    const basicInfo = {} as DetailedTransaction['basicInfo']
+    if (basicInfo && tx.basicInfo && typeof tx.basicInfo !== 'string') {
       /* eslint-disable */
-      const { data, value } = details.transaction
+      const { data, value, nonce, quota, validUntilBlock } = details.transaction
       const { address } = details.sender
       const hexData = bytesToHex(data as any)
-      tx.basicInfo.data = hexData === '0x' ? 'null' : hexData
-      tx.basicInfo.value = valueFormatter(bytesToHex(value as any))
-      tx.basicInfo.from = '0x' + address
-      tx.basicInfo.to = tx.basicInfo.to ? '0x' + tx.basicInfo.to : 'Contract Creation'
+      basicInfo.data = hexData === '0x' ? 'null' : hexData
+      basicInfo.value = valueFormatter(bytesToHex(value as any))
+      basicInfo.from = '0x' + address
+      basicInfo.nonce = nonce
+      basicInfo.quotaLimit = quota
+      basicInfo.validUntilBlock = validUntilBlock
+      basicInfo.to = tx.basicInfo.to ? '0x' + tx.basicInfo.to : 'Contract Creation'
       /* eslint-enable */
     }
     return this.setState(state =>
@@ -143,6 +155,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
         {},
         state,
         { ...tx, blockNumber: `${+tx.blockNumber}`, index: `${+tx.index}` },
+        { basicInfo },
         { loading: state.loading - 1 }
       )
     )
@@ -155,8 +168,15 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   private basicInfo = [
     { key: 'from', label: 'From', type: 'account' },
     { key: 'to', label: 'To', type: 'account' },
+    { key: 'nonce', label: 'Nonce' },
+    { key: 'validUntilBlock', label: 'ValidUntilBlock' },
     { key: 'value', label: 'Value' },
-    { key: 'data', label: 'Data' }
+    { key: 'data', label: 'Data' },
+    { key: 'quotaLimit', label: 'Quota Limit' },
+    { key: 'quotaPrice', label: 'Quota Price' },
+    { key: 'quotaUsed', label: 'Quota Used' },
+    { key: 'CreatedContractAddress', label: 'Created Contract Address' },
+    { key: 'Error Message', label: 'Error Message' }
   ]
 
   private handleError = handleError(this)
