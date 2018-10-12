@@ -2,6 +2,7 @@ import * as React from 'react'
 import { List, ListItem, ListItemText } from '@material-ui/core'
 import { translate } from 'react-i18next'
 import { Metadata } from '../../typings'
+import { Loading } from '../../components/Icons'
 
 const styles = require('./metadata.scss')
 const text = require('../../styles/text.scss')
@@ -95,13 +96,7 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
         onKeyUp={handleKeyUp}
       />
       <button onClick={switchChain('')} disabled={!searchIp}>
-        {waitingMetadata ? (
-          <svg className="icon" aria-hidden="true">
-            <use xlinkHref="#icon-loading" />
-          </svg>
-        ) : (
-          t('switch')
-        )}
+        {waitingMetadata ? <Loading /> : t('switch')}
       </button>
       {inputChainError ? (
         <div className={styles.chainerror}>Please enter a URL to AppChain node or ReBirth server</div>
