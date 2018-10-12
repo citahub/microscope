@@ -85,7 +85,7 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
       <input
         type="text"
         onChange={handleInput('searchIp')}
-        placeholder="ip:port"
+        placeholder="Please enter chain URL"
         value={searchIp}
         onKeyUp={handleKeyUp}
       />
