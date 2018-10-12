@@ -82,6 +82,22 @@ $sidebar-padding: 29px;
       color: #aaa;
       cursor: default;
     }
+    svg {
+      @keyframes rotation {
+        from {
+          -webkit-transform: rotate(0deg);
+        }
+        to {
+          -webkit-transform: rotate(360deg);
+        }
+      }
+      animation: rotation 2s linear infinite;
+    }
+  }
+  .chainerror {
+    color: $form-error;
+    position: absolute;
+    bottom: 0;
   }
   .chainerror {
     color: $form-error;

@@ -82,7 +82,13 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
     <div className={styles.title}>
       {t('other')} {t('chain')}
     </div>
-    <div>
+    <div
+      style={{
+        padding: '10px 20px 0',
+        maxWidth: '500px',
+        lineHeight: '1.75'
+      }}
+    >
       If you connect to an AppChain node instead of a <a href="https://github.com/cryptape/re-birth">ReBirth</a> server,
       Microscope will NOT be fully functional.
     </div>

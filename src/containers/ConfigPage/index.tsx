@@ -58,6 +58,8 @@ export interface ConfigPageProps {
 
 export interface ConfigPageState {
   configs: PanelConfigs
+  inputTimeout?: any
+  saving?: boolean
 }
 
 const ConfigDetail = translate('microscope')(
@@ -66,12 +68,16 @@ const ConfigDetail = translate('microscope')(
     value,
     handleSwitch,
     handleInput,
+    controlInputScope,
+    saving,
     t
   }: {
   config: ConfigDetail
   value: number | string | boolean | undefined
   handleSwitch: (key: string) => (e: any) => void
   handleInput: (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => void
+  controlInputScope: any
+  saving: any
   t: (key: string) => string
   }) => (
     <ListItem key={config.key}>
@@ -97,7 +103,8 @@ const ConfigDetail = translate('microscope')(
           />
         ) : (
           <div>
-            <TextField value={`${value}`} onChange={handleInput(config.key)} />
+            <TextField value={`${value}`} onChange={controlInputScope(config.key)} />
+            {/* {saving ? <div>saving</div> : <div>ok</div>} */}
           </div>
         )}
       </ListItemSecondaryAction>
@@ -112,6 +119,8 @@ const ConfigItem = translate('microscope')(
     values,
     handleSwitch,
     handleInput,
+    controlInputScope,
+    saving,
     t
   }: {
   title: any
@@ -119,6 +128,8 @@ const ConfigItem = translate('microscope')(
   values: any
   handleSwitch: any
   handleInput: any
+  controlInputScope: any
+  saving: any
   t: any
   }) => (
     <ExpansionPanel defaultExpanded classes={{ root: styles.panel }} elevation={0}>
@@ -137,6 +148,8 @@ const ConfigItem = translate('microscope')(
               value={values[config.key]}
               handleSwitch={handleSwitch}
               handleInput={handleInput}
+              controlInputScope={controlInputScope}
+              saving={saving}
             />
           ))}
         </List>
@@ -298,7 +311,9 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
   public constructor (props) {
     super(props)
     this.state = {
-      configs: props.config.panelConfigs
+      configs: props.config.panelConfigs,
+      inputTimeout: null,
+      saving: false
     }
   }
 
@@ -316,7 +331,9 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
     })
   }
   private handleInput = key => (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('handle input', e.currentTarget)
     const { value } = e.currentTarget
+    console.log('state', this.state.configs)
     this.setState(state => {
       const { configs } = state
       const newConfig = { ...configs, [key]: value }
@@ -325,6 +342,25 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       }
       return state
     })
+  }
+  private controlInputScope = key => e => {
+    const { configs, inputTimeout } = this.state
+    const { value } = e.currentTarget
+    let v = Number(value)
+    this.setState({ configs: { ...configs, [key]: v }, saving: true })
+
+    clearTimeout(inputTimeout)
+    if (Math.round(v) === v && v >= 10 && v <= 100) {
+      this.props.config.changePanelConfig({ ...configs, [key]: v })
+      this.setState({ saving: false})
+    } else {
+      const t = setTimeout(() => {
+        v = 10
+        this.props.config.changePanelConfig({ ...configs, [key]: v })
+        this.setState({ configs: { ...configs, [key]: v }, saving: false })
+      }, 1000)
+      this.setState({ inputTimeout: t, saving: true })
+    }
   }
   public render () {
     return (
@@ -339,6 +375,8 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
               values={this.state.configs}
               handleSwitch={this.handleSwitch}
               handleInput={this.handleInput}
+              controlInputScope={this.controlInputScope}
+              saving={this.state.saving}
             />
           ))}
         </div>
