@@ -7,8 +7,6 @@
   }
 }
 
-.icon {
-  &.loading {
-    animation: rotation 2s linear infinite;
-  }
+.loading {
+  animation: rotation 2s linear infinite;
 }
