@@ -40,6 +40,8 @@ const initState = {
   anchorEl: undefined,
   lngOpen: false,
   lng: window.localStorage.getItem('i18nextLng'),
+  inputChainError: false,
+  waitingMetadata: false,
   error: {
     code: '',
     message: ''
@@ -192,11 +194,22 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     window.location.reload()
   }
   private switchChain = (chain: string = '') => (e?: any) => {
-    const ip = chain || this.state.searchIp
-    this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
-    const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
-    window.localStorage.setItem('chainIp', chainIp)
-    window.location.reload()
+    const { otherMetadata } = this.state
+    this.setState({ inputChainError: false })
+    this.setState({ waitingMetadata: true })
+    setTimeout(() => {
+      if (otherMetadata.chainId !== -1) {
+        const ip = chain || this.state.searchIp
+        this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
+        const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
+        window.localStorage.setItem('chainIp', chainIp)
+        window.location.reload()
+      } else {
+        this.setState({ inputChainError: true })
+        this.setState({ waitingMetadata: false })
+        console.log(otherMetadata)
+      }
+    }, 1000)
   }
 
   private handleError = handleError(this)
@@ -204,7 +217,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private searchSubscription: Subscription
   private translations = process.env.LNGS ? process.env.LNGS.split(',') : ['zh', 'en', 'ja-JP', 'ko', 'de', 'it', 'fr']
   render () {
-    const { anchorEl, lngOpen, error, serverList } = this.state
+    const { anchorEl, lngOpen, error, serverList, inputChainError, waitingMetadata } = this.state
     const {
       location: { pathname },
       t
@@ -289,6 +302,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 switchChain={this.switchChain}
                 handleKeyUp={this.handleKeyUp}
                 serverList={serverList}
+                inputChainError={inputChainError}
+                waitingMetadata={waitingMetadata}
               />
             ) : this.state.activePanel === 'statistics' ? (
               <BriefStatisticsPanel

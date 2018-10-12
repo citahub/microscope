@@ -22,7 +22,7 @@ const list = [
 const MetadataRender = translate('microscope')(
   ({ metadata, t }: { metadata: Metadata; t: (key: string) => string }) => (
     <div className={styles.display}>
-      {list.map((item) => (
+      {list.map(item => (
         <div key={item.name} className={`${styles.item} ${text.ellipsis}`}>
           {t(item.name)}:{' '}
           <span className={styles.itemValue}>
@@ -52,6 +52,8 @@ interface MetadataPanelProps {
   metadata: Metadata
   searchIp: string
   searchResult: Metadata
+  waitingMetadata: boolean
+  inputChainError: boolean
   handleInput: (key: string) => (e: any) => void
   switchChain: (ip?: string) => (e) => void
   handleKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void
@@ -63,6 +65,8 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
   metadata,
   searchIp,
   searchResult,
+  inputChainError,
+  waitingMetadata,
   handleInput,
   handleKeyUp,
   switchChain,
@@ -83,6 +87,7 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
     </div>
     <div className={styles.fields}>
       <input
+        className={inputChainError ? styles.error : ''}
         type="text"
         onChange={handleInput('searchIp')}
         placeholder="Please enter chain URL"
@@ -90,9 +95,19 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
         onKeyUp={handleKeyUp}
       />
       <button onClick={switchChain('')} disabled={!searchIp}>
-        {t('switch')}
+        {waitingMetadata ? (
+          <svg className="icon" aria-hidden="true">
+            <use xlinkHref="#icon-loading" />
+          </svg>
+        ) : (
+          t('switch')
+        )}
       </button>
+      {inputChainError ? (
+        <div className={styles.chainerror}>Please enter a URL to AppChain node or ReBirth server</div>
+      ) : null}
     </div>
+
     {searchResult.chainId !== -1 ? (
       <MetadataRender metadata={searchResult} />
     ) : (
