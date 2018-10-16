@@ -10,6 +10,6 @@ const IconBase = ({ name, className = '' }) => (
 
 const Loading = () => <IconBase name="loading" className={styles.loading} />
 
-export { Loading }
+export { Loading, IconBase }
 
 export default IconBase

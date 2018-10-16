@@ -17,6 +17,7 @@ import {
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons'
 
 import Banner from '../../components/Banner'
+import Icon, {Loading} from '../../components/Icons'
 
 import { PanelConfigs } from '../../config/localstorage'
 
@@ -104,7 +105,7 @@ const ConfigDetail = translate('microscope')(
         ) : (
           <div>
             <TextField value={`${value}`} onChange={controlInputScope(config.key)} />
-            {/* {saving ? <div>saving</div> : <div>ok</div>} */}
+            {saving ? <Loading /> : <Icon name="ok" />}
           </div>
         )}
       </ListItemSecondaryAction>
