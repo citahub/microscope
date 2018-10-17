@@ -1,4 +1,5 @@
 import * as web3utils from 'web3-utils'
+import transitions from '@material-ui/core/styles/transitions'
 
 if (!Number.isInteger) {
   Number.isInteger = function (value) {
@@ -8,9 +9,6 @@ if (!Number.isInteger) {
   }
 }
 
-const checkAddress = address => web3utils.isAddress(address)
-// const checkHeight = address => web3utils.isAddress(address)
-// const checkTransaction = address => web3utils.isAddress(address)
 const checkDigitsString = number => {
   console.log('checkDigitsString', number)
   let n = number
@@ -20,11 +18,30 @@ const checkDigitsString = number => {
   return Number.isInteger(n)
 }
 
+const checkAddress = address => web3utils.isAddress(address)
+
+const checkHeight = height => {
+  let h = height
+  if (checkDigitsString(h)) {
+    return true
+  }
+  h = `0x${height}`
+  return checkDigitsString(h)
+}
+
+const checkTransaction = transitionHash => {
+  let hx = transitionHash.toString()
+  if (hx.slice(0, 2) !== '0x') {
+    hx = `0x${hx}`
+  }
+  return hx.length === 66 && checkDigitsString(hx)
+}
+
 const check = {
   address: checkAddress,
-  // height: checkHeight,
+  height: checkHeight,
   digits: checkDigitsString,
-  // transaction: checkTransaction
+  transaction: checkTransaction
 }
 
 const errorMessages = {

@@ -9,6 +9,7 @@ import { initBlock, initUnsignedTransaction } from '../../initValues'
 import toText from '../../utils/toText'
 import bytesToHex from '../../utils/bytesToHex'
 import valueFormatter from '../../utils/valueFormatter'
+import check from '../../utils/check'
 
 const styles = require('./styles.scss')
 
@@ -16,26 +17,44 @@ enum SearchType {
   BLOCK,
   TRANSACTION,
   ACCOUNT,
-  HEIGHT
+  HEIGHT,
+  ERROR
 }
 
 const searchGen = keyword => {
-  switch (keyword.length) {
-    case 64:
-    case 66: {
-      return [
-        { type: SearchType.BLOCK, url: `/block/${keyword}` },
-        { type: SearchType.TRANSACTION, url: `/transactions/${keyword}` }
-      ]
-    }
-    case 40:
-    case 42: {
-      return [{ type: SearchType.ACCOUNT, url: `/account/${keyword}` }]
-    }
-    default: {
-      return [{ type: SearchType.HEIGHT, url: `/height/${keyword}` }]
-    }
+  let word = keyword
+  if (word.slice(0, 2) !== '0x') {
+    word = `0x${word}`
   }
+  if (check.address(word)) {
+    return [{ type: SearchType.ACCOUNT, url: `/account/${word}` }, { type: SearchType.HEIGHT, url: `/height/${word}` }]
+  } else if (check.transaction(word)) {
+    return [
+      { type: SearchType.BLOCK, url: `/block/${word}` },
+      { type: SearchType.TRANSACTION, url: `/transactions/${word}` },
+      { type: SearchType.HEIGHT, url: `/height/${word}` }
+    ]
+  } else if (check.height(word)) {
+    return [{ type: SearchType.HEIGHT, url: `/height/${word}` }]
+  }
+  return [{ type: SearchType.ERROR, url: '' }]
+
+  // switch (keyword.length) {
+  //   case 64:
+  //   case 66: {
+  //     return [
+  //       { type: SearchType.BLOCK, url: `/block/${keyword}` },
+  //       { type: SearchType.TRANSACTION, url: `/transactions/${keyword}` }
+  //     ]
+  //   }
+  //   case 40:
+  //   case 42: {
+  //     return [{ type: SearchType.ACCOUNT, url: `/account/${keyword}` }]
+  //   }
+  //   default: {
+  //     return [{ type: SearchType.HEIGHT, url: `/height/${keyword}` }]
+  //   }
+  // }
 }
 
 const BlockDisplay = translate('microscope')(({ block, t }: { block: IBlock; t: (key: string) => string }) => (
@@ -130,7 +149,8 @@ const initState = {
   block: initBlock,
   transaction: { ...initUnsignedTransaction, hash: '' },
   txCount: '',
-  balance: ''
+  balance: '',
+  searchValueError: false
 }
 
 type SearchPanelState = typeof initState
@@ -193,6 +213,13 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
             this.setState(state => Object.assign({}, state, { balance }))
           })
         }
+        case SearchType.ERROR: {
+          console.log('error')
+          this.setState({
+            searchValueError: true
+          })
+          return false
+        }
         default: {
           return false
         }
@@ -200,15 +227,29 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     })
   }
   render () {
-    const { keyword, block, transaction, balance, txCount } = this.state
+    const { keyword, block, transaction, balance, txCount, searchValueError } = this.state
     return (
       <div>
-        <div className={styles.fields}>
-          <input type="text" value={keyword} onChange={this.handleInput} onKeyUp={this.handleKeyUp} />
-          <button onClick={this.handleSearch}>
-            <SearchIcon />
-          </button>
+        <div className={`${styles.fields} ${searchValueError ? styles.error : ''}`}>
+          <div className={styles.search}>
+            <input
+              type="text"
+              value={keyword}
+              onChange={this.handleInput}
+              onKeyUp={this.handleKeyUp}
+              placeholder="Account Address, Tx Hash, Block Hash or Height"
+            />
+            <button onClick={this.handleSearch}>
+              <SearchIcon />
+            </button>
+          </div>
+          {searchValueError ? (
+            <div className={styles.errormessage}>
+              Please enter Address or Transaction Hash or Block Hash or Block Height
+            </div>
+          ) : null}
         </div>
+
         {block.hash ? <BlockDisplay block={block} /> : null}
         {transaction.hash ? <TransactionDisplay tx={transaction} /> : null}
         {balance !== '' ? <AccountDisplay balance={balance} txCount={+txCount} addr={keyword} /> : null}
