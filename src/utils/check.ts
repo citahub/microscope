@@ -1,5 +1,14 @@
 import * as web3utils from 'web3-utils'
 
+if (!Number.isInteger) {
+  Number.isInteger =
+    function (value) {
+      /* eslint-disable */
+      return typeof value === 'number' && isFinite(value) && Math.floor(value) === value
+      /* eslint-enable */
+    }
+}
+
 const checkAddress = address => web3utils.isAddress(address)
 // const checkHeight = address => web3utils.isAddress(address)
 // const checkTransaction = address => web3utils.isAddress(address)
