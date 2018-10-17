@@ -13,6 +13,7 @@ import { LocalAccount } from './components/LocalAccounts'
 import { SelectorType } from './components/TableWithSelector'
 import LOCAL_STORAGE, { PanelConfigs } from './config/localstorage'
 import { getServerList, getPrivkeyList, getPanelConfigs } from './utils/accessLocalstorage'
+import check, { errorMessages } from './utils/check'
 
 const isDesktop = widerThan(800)
 export const initHeader: IBlockHeader = {
@@ -188,13 +189,39 @@ export const initBlockTableState = {
       type: SelectorType.RANGE,
       key: 'number',
       text: 'height selector',
-      items: [{ key: 'numberFrom', text: 'Height From' }, { key: 'numberTo', text: 'Height To' }]
+      items: [
+        {
+          key: 'numberFrom',
+          text: 'Height From',
+          check: check.digits,
+          errorMessage: errorMessages.digits
+        },
+        {
+          key: 'numberTo',
+          text: 'Height To',
+          check: check.digits,
+          errorMessage: errorMessages.digits
+        }
+      ]
     },
     {
       type: SelectorType.RANGE,
       key: 'transaction',
       text: 'transactions counts',
-      items: [{ key: 'transactionFrom', text: 'From' }, { key: 'transactionTo', text: 'To' }]
+      items: [
+        {
+          key: 'transactionFrom',
+          text: 'From',
+          check: check.digits,
+          errorMessage: errorMessages.digits
+        },
+        {
+          key: 'transactionTo',
+          text: 'To',
+          check: check.digits,
+          errorMessage: errorMessages.digits
+        }
+      ]
     }
   ],
   selectorsValue: {

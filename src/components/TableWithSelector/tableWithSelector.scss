@@ -196,3 +196,28 @@
     }
   }
 }
+
+.inputouter {
+  & {
+    position: relative;
+  }
+  input:focus {
+    border-color: $form-focus;
+    box-shadow: 0 0 4px 0 $form-focus;
+  }
+}
+
+.inputouter.error {
+  // input {
+  //   border: $form-error;
+  // }
+  input:focus {
+    border-color: $form-error;
+    box-shadow: 0 0 4px 0 $form-error;
+  }
+  .errormessage {
+    color: $form-error;
+    position: absolute;
+    bottom: 0;
+  }
+}
