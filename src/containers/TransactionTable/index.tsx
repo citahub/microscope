@@ -13,6 +13,7 @@ import { rangeSelectorText } from '../../utils/searchTextGen'
 import toText from '../../utils/toText'
 import { fromNow } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
+import check, {errorMessages} from '../../utils/check'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -45,12 +46,16 @@ message: string
     {
       type: SelectorType.SINGLE,
       key: 'from',
-      text: 'Address From'
+      text: 'Address From',
+      check: check.address,
+      errorMessage: errorMessages.address
     },
     {
       type: SelectorType.SINGLE,
       key: 'to',
-      text: 'Address To'
+      text: 'Address To',
+      check: check.address,
+      errorMessage: errorMessages.address
     }
   ],
   selectorsValue: {
@@ -65,9 +70,14 @@ message: string
   }
 }
 
+interface setTransactionsCount {
+  (count: string | number): undefined
+}
+
 interface TransactionTableProps extends IContainerProps {
   inset?: boolean
   showInOut?: boolean
+  setTransactionsCount?: setTransactionsCount
 }
 type TransactionTableState = typeof initialState
 class TransactionTable extends React.Component<TransactionTableProps, TransactionTableState> {
@@ -158,6 +168,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
           })
         )
       )
+      .then(() => this.props.setTransactionsCount && this.props.setTransactionsCount(this.state.count))
       .catch(err => {
         this.handleError(err)
       })

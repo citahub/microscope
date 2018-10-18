@@ -223,7 +223,9 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
     this.setState(state => {
       // console.log(+block.header.number)
       const blocks = [...state.blocks, block].slice(-this.state.maxCount)
-      if (this.blockGraph && blocks.length > 1) {
+      // if (this.blockGraph && blocks.length > 1) {
+      // 这里先注释, 以免有预期外的 bug 出现
+      if (blocks.length > 1) {
         const source = getBlockSource({ blocks })
         const timeCostOption = {
           title: {

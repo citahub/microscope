@@ -2,6 +2,7 @@ export enum LOCAL_STORAGE {
   SERVER_LIST = 'server_list',
   PRIV_KEY_LIST = 'privkey_list',
   PANEL_CONFIGS = 'panel_configs',
+  LOCAL_DEBUG_ACCOUNTS = 'localDebugAccounts'
 }
 export interface PanelConfigs {
   logo: string

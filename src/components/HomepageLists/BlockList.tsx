@@ -39,12 +39,16 @@ export default translate('microscope')(
             }}
             primary={
               <React.Fragment>
-                <span className={texts.ellipsis}>
+                <span style={{maxWidth: '100%'}}>
                   {t('hash')}:{' '}
-                  <Link to={`/block/${block.hash}`} href={`/block/${block.hash}`}>
-                    <span className={texts.addr} title={block.hash}>
-                      {block.hash}
-                    </span>
+                  <Link
+                    className={styles.hashlink}
+                    to={`/block/${block.hash}`}
+                    href={`/block/${block.hash}`}
+                    title={block.hash}
+                  >
+                    <span className={`${texts.addr} ${texts.ellipsis}`}>{block.hash.slice(0, -4)}</span>
+                    <span className={texts.addr}>{block.hash.slice(-4)}</span>
                   </Link>
                 </span>
                 <span className={styles.time}>{`${fromNow(block.header.timestamp)} ago`}</span>

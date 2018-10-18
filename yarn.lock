@@ -70,14 +70,14 @@
   version "1.7.2"
   resolved "https://registry.npmjs.org/@most/prelude/-/prelude-1.7.2.tgz#be4ed406518d4c8c220e45c39fa7251365425b73"
 
-"@nervos/observables@^0.18.0":
-  version "0.18.0"
-  resolved "https://registry.npmjs.org/@nervos/observables/-/observables-0.18.0.tgz#ea3ff18842b7ee926868b02951cf5edcbee5e51d"
+"@nervos/observables@0.18.2":
+  version "0.18.2"
+  resolved "https://registry.yarnpkg.com/@nervos/observables/-/observables-0.18.2.tgz#bf9727a3bd986ef86dfe2a52521234df28c66391"
   dependencies:
-    "@nervos/plugin" "^0.18.1"
+    "@nervos/plugin" "0.18.3"
     "@reactivex/rxjs" "^5.5.8"
 
-"@nervos/plugin@^0.18.1":
+"@nervos/plugin@0.18.3":
   version "0.18.3"
   resolved "https://registry.npmjs.org/@nervos/plugin/-/plugin-0.18.3.tgz#ac96c456df2bb23cb62bd7f32ae2e98866b69705"
   dependencies:

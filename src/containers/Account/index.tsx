@@ -18,6 +18,7 @@ import Banner from '../../components/Banner'
 import Dialog from '../Dialog'
 import ErrorNotification from '../../components/ErrorNotification'
 import LocalAccounts from '../../components/LocalAccounts'
+import ContractInfoPanel from '../../components/ContractInfoPanel'
 
 import { AccountType } from '../../typings/account'
 import { IContainerProps } from '../../typings'
@@ -57,9 +58,10 @@ class Account extends React.Component<AccountProps, AccountState> {
     this.updateBasicInfo(account)
   }
   private onTabClick = (e, value) => {
-    this.setState({ panelOn: !!value })
+    this.setState({ panelOn: value })
   }
 
+  private setTransactionsCount = count => this.setState({ txCount: count })
   protected readonly addrGroups = [
     {
       key: 'normals',
@@ -222,6 +224,23 @@ class Account extends React.Component<AccountProps, AccountState> {
   }
   private handleError = handleError(this)
   private dismissError = dismissError(this)
+  private renderPanelByTab = () => {
+    const { abi, addr, panelOn } = this.state
+    const { account } = this.props.match.params
+    const erc = (
+      <ERCPanel
+        abi={abi.filter(abiEl => abiEl.type === 'function')}
+        handleAbiValueChange={this.handleAbiValueChange}
+        handleEthCall={this.handleEthCall}
+      />
+    )
+    const tx = <TransactionTable {...this.props} key={addr} setTransactionsCount={this.setTransactionsCount} inset />
+    const info = <ContractInfoPanel account={account} abi={abi} />
+    const table = [tx, erc, info]
+    let n = Number(panelOn)
+    n = n >= 0 && n < table.length ? n : 0
+    return table[n]
+  }
   render () {
     const {
       loading,
@@ -239,6 +258,7 @@ class Account extends React.Component<AccountProps, AccountState> {
       abi,
       error
     } = this.state
+
     return (
       <React.Fragment>
         {loading ? (
@@ -264,17 +284,10 @@ class Account extends React.Component<AccountProps, AccountState> {
               <Tabs value={+panelOn} onChange={this.onTabClick}>
                 <Tab label={`Transactions(${txCount || 0})`} />
                 {abi && abi.length ? <Tab label="Contract Panel" /> : null}
+                <Tab label="Contract Info" />
               </Tabs>
               <Divider />
-              {panelOn ? (
-                <ERCPanel
-                  abi={abi.filter(abiEl => abiEl.type === 'function')}
-                  handleAbiValueChange={this.handleAbiValueChange}
-                  handleEthCall={this.handleEthCall}
-                />
-              ) : (
-                <TransactionTable {...this.props} key={addr} inset />
-              )}
+              {this.renderPanelByTab()}
             </CardContent>
           </Card>
         </div>

@@ -43,6 +43,13 @@ export interface DetailedTransaction {
     from: string
     data: string
     value: string
+    nonce: string
+    validUntilBlock: string
+    quotaLimit: string
+    quotaPrice?: string
+    quotaUsed: string
+    createdContractAddress: string
+    errorMessage: string
   }
   blockHash: Hash
   blockNumber: string

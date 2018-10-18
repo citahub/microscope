@@ -39,7 +39,9 @@ export interface TableWithSelectorProps {
     type: SelectorType
     key: string
     text: string
-    items?: { key: string; text: string }[]
+    items?: { key: string; text: string; check?: any; errorMessage?: any }[]
+    check?: any
+    errorMessage?: any
   }[]
   selectorsValue?: any
   onSubmit?: any
@@ -53,7 +55,8 @@ export interface TableWithSelectorProps {
 class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (key: string) => string }, any> {
   state = {
     on: false,
-    selectorsValue: this.props.selectorsValue
+    selectorsValue: this.props.selectorsValue,
+    selectorsError: {} as any
   }
 
   showDialog = (on: boolean = false) => (e?: any) => {
@@ -77,11 +80,42 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
     })
   }
   handleSubmit = e => {
-    this.props.onSubmit(this.state.selectorsValue)
-    this.showDialog(false)()
+    const { selectorsError } = this.state
+    let allright = true
+    Object.keys(selectorsError).forEach(key => {
+      const error = selectorsError[key]
+      if (error === undefined || error) {
+        allright = false
+      }
+    })
+    if (allright) {
+      this.props.onSubmit(this.state.selectorsValue)
+      this.showDialog(false)()
+    }
+  }
+  handleSelectorBlur = (selector: string, check: any = () => false) => e => {
+    e.persist()
+    const {value} = e.target
+    const valueError = !check(value)
+    this.setState(state => {
+      const { selectorsValue, selectorsError } = state
+      const newSelectorsValue = {
+        ...selectorsValue,
+        [selector]: value
+      }
+      const newSelectorsError = {
+        ...selectorsError,
+        [selector]: valueError
+      }
+
+      return {
+        selectorsValue: newSelectorsValue,
+        selectorsError: newSelectorsError
+      }
+    })
   }
   render () {
-    const { on, selectorsValue } = this.state
+    const { on, selectorsValue, selectorsError } = this.state
     const { headers, items, selectors, pageSize, pageNo, count, t, inset, searchText } = this.props
     const total = Math.ceil(count / pageSize)
     // const activeParams = paramsFilter(this.props.selectorsValue)
@@ -92,7 +126,9 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
             <div className={styles.fields}>
               <div className={styles.titles}>
                 {selectors.map(selector => (
-                  <span className={styles.title}>{t(selector.text)}</span>
+                  <span className={styles.title} key={selector.key}>
+                    {t(selector.text)}
+                  </span>
                 ))}
               </div>
               <div className={styles.inputs}>
@@ -101,21 +137,33 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
                     selector.items ? (
                       <div key={selector.key} className={styles.rangeSelector}>
                         {selector.items.map(item => (
-                          <input
-                            key={item.key}
-                            value={selectorsValue[item.key]}
-                            placeholder={t(item.text)}
-                            onChange={this.handleSelectorInput(item.key)}
-                          />
+                          <div className={`${styles.inputouter} ${selectorsError[item.key] ? styles.error : ''}`}>
+                            <input
+                              key={item.key}
+                              value={selectorsValue[item.key]}
+                              placeholder={t(item.text)}
+                              onChange={this.handleSelectorInput(item.key)}
+                              onBlur={this.handleSelectorBlur(item.key, item.check)}
+                            />
+                            {selectorsError[item.key] ? (
+                              <div className={`${styles.errormessage}`}>{item.errorMessage}</div>
+                            ) : null}
+                          </div>
                         ))}
                       </div>
                     ) : (
                       <div key={selector.key} className={styles.singleSelector}>
-                        <input
-                          value={selectorsValue[selector.key]}
-                          placeholder={t(selector.text)}
-                          onChange={this.handleSelectorInput(selector.key)}
-                        />
+                        <div className={`${styles.inputouter} ${selectorsError[selector.key] ? styles.error : ''}`}>
+                          <input
+                            value={selectorsValue[selector.key]}
+                            placeholder={t(selector.text)}
+                            onChange={this.handleSelectorInput(selector.key)}
+                            onBlur={this.handleSelectorBlur(selector.key, selector.check)}
+                          />
+                          {selectorsError[selector.key] ? (
+                            <div className={`${styles.errormessage}`}>{selector.errorMessage}</div>
+                          ) : null}
+                        </div>
                       </div>
                     )
                 )}

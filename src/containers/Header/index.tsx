@@ -29,7 +29,7 @@ const initState = {
   keyword: '',
   metadata: initMetadata,
   sidebarNavs: false,
-  activePanel: window.localStorage.getItem('chainIp') ? '' : 'metadata',
+  activePanel: window.urlParamChain || window.localStorage.getItem('chainIp') ? '' : 'metadata',
   searchIp: '',
   otherMetadata: initMetadata,
   tps: 0,
@@ -40,6 +40,8 @@ const initState = {
   anchorEl: undefined,
   lngOpen: false,
   lng: window.localStorage.getItem('i18nextLng'),
+  inputChainError: false,
+  waitingMetadata: false,
   error: {
     code: '',
     message: ''
@@ -192,11 +194,23 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     window.location.reload()
   }
   private switchChain = (chain: string = '') => (e?: any) => {
-    const ip = chain || this.state.searchIp
-    this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
-    const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
-    window.localStorage.setItem('chainIp', chainIp)
-    window.location.reload()
+    window.location.search = ''
+    const { otherMetadata } = this.state
+    this.setState({ inputChainError: false })
+    this.setState({ waitingMetadata: true })
+    setTimeout(() => {
+      if (otherMetadata.chainId !== -1) {
+        const ip = chain || this.state.searchIp
+        this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
+        const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
+        window.localStorage.setItem('chainIp', chainIp)
+        window.location.reload()
+      } else {
+        this.setState({ inputChainError: true })
+        this.setState({ waitingMetadata: false })
+        console.log(otherMetadata)
+      }
+    }, 1000)
   }
 
   private handleError = handleError(this)
@@ -204,14 +218,16 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private searchSubscription: Subscription
   private translations = process.env.LNGS ? process.env.LNGS.split(',') : ['zh', 'en', 'ja-JP', 'ko', 'de', 'it', 'fr']
   render () {
-    const { anchorEl, lngOpen, error, serverList } = this.state
+    const { anchorEl, lngOpen, error, serverList, inputChainError, waitingMetadata } = this.state
     const {
       location: { pathname },
       t
     } = this.props
+    const ignoredContainer = [this.props.config.panelConfigs.debugger ? '' : 'Debugger']
+    const displayedContainers = containers.filter(container => !ignoredContainer.includes(container.name))
     return createPortal(
       <React.Fragment>
-        <AppBar position="static" elevation={0}>
+        <AppBar position="fixed" elevation={0}>
           <Toolbar
             className={layout.center}
             classes={{
@@ -225,10 +241,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             >
               <img src={`${process.env.PUBLIC}/microscopeIcons/expand.png`} alt="expand" />
             </IconButton>
-            <HeaderNavs containers={containers} pathname={pathname} logo={LOGO} />
+            <HeaderNavs containers={displayedContainers} pathname={pathname} logo={LOGO} />
             <SidebarNavs
               open={this.state.sidebarNavs}
-              containers={containers}
+              containers={displayedContainers}
               pathname={pathname}
               toggleSideNavs={this.toggleSideNavs}
               logo={LOGO}
@@ -287,6 +303,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 switchChain={this.switchChain}
                 handleKeyUp={this.handleKeyUp}
                 serverList={serverList}
+                inputChainError={inputChainError}
+                waitingMetadata={waitingMetadata}
               />
             ) : this.state.activePanel === 'statistics' ? (
               <BriefStatisticsPanel

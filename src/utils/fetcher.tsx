@@ -9,7 +9,7 @@ import axios, { AxiosResponse } from 'axios'
 import { initServerList } from '../initValues'
 import ErrorTexts from '../typings/errors'
 
-const baseURL = window.localStorage.getItem('chainIp') || initServerList[0]
+const baseURL = window.urlParamChain || window.localStorage.getItem('chainIp') || initServerList[0]
 
 const axiosIns = axios.create({
   baseURL

@@ -10,13 +10,21 @@
   a {
     word-break: break-all;
   }
+  a.hashlink {
+    word-break: keep-all;
+    white-space: nowrap;
+    display: inline-flex;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    text-transform: none;
+  }
 }
 
 .secondary {
   color: $text;
   word-break: break-all;
 
-  &>span {
+  & > span {
     display: block;
   }
 }
@@ -56,7 +64,7 @@
   background-size: cover;
   min-width: 100px;
   padding: 0 20px;
-  color: #FFF !important;
+  color: #fff !important;
   border-radius: 4px;
   box-sizing: border-box;
   line-height: 1.4;

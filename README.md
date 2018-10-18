@@ -60,6 +60,7 @@ set env variables in `./.env`
 PUBLIC=  # public content server address
 CHAIN_SERVERS= # default appchain addresses
 APP_NAME= # explorer name
+DEBUG_ACCOUNTS= # built-in debug account's private key, e.g. 0xaeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee,0xaeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeea
 ```
 
 > NOTICE: Our CDN for static assets is available at `https://cdn.cryptape.com/`, namely icons and images can be added by setting `PUBLIC=https://cdn.cryptape.com/` on `.env`.
