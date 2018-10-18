@@ -46,10 +46,10 @@ export interface DetailedTransaction {
     nonce: string
     validUntilBlock: string
     quotaLimit: string
-    quotaPrice: string
+    quotaPrice?: string
     quotaUsed: string
-    CreatedContractAddress: string
-    ErrorMessage: string
+    createdContractAddress: string
+    errorMessage: string
   }
   blockHash: Hash
   blockNumber: string

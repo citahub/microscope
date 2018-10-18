@@ -52,10 +52,10 @@ const initState: TransactionState = {
     value: '',
     data: '',
     quotaLimit: '',
-    quotaPrice: '',
+    // quotaPrice: '',
     quotaUsed: '',
-    CreatedContractAddress: '',
-    ErrorMessage: ''
+    createdContractAddress: '',
+    errorMessage: ''
   },
   error: {
     message: '',
@@ -113,9 +113,12 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   componentWillMount () {
     const { transaction } = this.props.match.params
     if (transaction) {
-      this.setState(state => ({ loading: state.loading + 1 }))
+      this.setState(state => ({ loading: state.loading + 2 }))
       this.props.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
         this.handleReturnedTx(tx)
+      }, this.handleError)
+      this.props.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: Chain.TransactionReceipt) => {
+        this.handleReturnedTxReceipt(receipt)
       }, this.handleError)
     }
   }
@@ -135,7 +138,7 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       })
     }
     const details = unsigner(tx.content)
-    const basicInfo = {} as DetailedTransaction['basicInfo']
+    const { basicInfo } = this.state
     if (basicInfo && tx.basicInfo && typeof tx.basicInfo !== 'string') {
       /* eslint-disable */
       const { data, value, nonce, quota, validUntilBlock } = details.transaction
@@ -160,6 +163,24 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       )
     )
   }
+  private handleReturnedTxReceipt = (receipt: Chain.TransactionReceipt) => {
+    if (!receipt) {
+      this.handleError({
+        error: {
+          message: 'Transaction Not Found',
+          code: '-1'
+        }
+      })
+    }
+    const { errorMessage, gasUsed, contractAddress } = receipt
+    const basicInfo = {
+      ...this.state.basicInfo,
+      errorMessage,
+      quotaUsed: gasUsed,
+      createdContractAddress: contractAddress
+    }
+    return this.setState(state => Object.assign({}, state, { basicInfo }, { loading: state.loading - 1 }))
+  }
   private infos = [
     { key: 'blockHash', label: 'Block Hash', type: 'block' },
     { key: 'blockNumber', label: 'Height', type: 'height' },
@@ -173,10 +194,10 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
     { key: 'value', label: 'Value' },
     { key: 'data', label: 'Data' },
     { key: 'quotaLimit', label: 'Quota Limit' },
-    { key: 'quotaPrice', label: 'Quota Price' },
+    // { key: 'quotaPrice', label: 'Quota Price' },
     { key: 'quotaUsed', label: 'Quota Used' },
-    { key: 'CreatedContractAddress', label: 'Created Contract Address' },
-    { key: 'Error Message', label: 'Error Message' }
+    { key: 'createdContractAddress', label: 'Created Contract Address' },
+    { key: 'errorMessage', label: 'Error Message' }
   ]
 
   private handleError = handleError(this)
