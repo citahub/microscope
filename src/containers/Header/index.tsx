@@ -227,7 +227,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     const displayedContainers = containers.filter(container => !ignoredContainer.includes(container.name))
     return createPortal(
       <React.Fragment>
-        <AppBar position="static" elevation={0}>
+        <AppBar position="fixed" elevation={0}>
           <Toolbar
             className={layout.center}
             classes={{

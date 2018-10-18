@@ -65,6 +65,9 @@ footer {
 }
 
 :global {
+  main.root {
+    margin-top: 89px;
+  }
   .active {
     background-color: $primary;
     border-color: $primary;
@@ -85,7 +88,10 @@ footer {
     background: #f15a29 !important;
     height: 3px !important;
   }
-  @media (max-width:800px) {
+  @media (max-width: 800px) {
+    main.root {
+      margin-top: 56px;
+    }
     .linearProgressRoot {
       top: 56px;
     }
