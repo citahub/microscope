@@ -204,7 +204,9 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
             )}...${param.value[0].slice(-4)} : ${param.value[1]}</span>`
             return label
           },
-          dataset: { source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1] / 1e9] : [item[0], item[1]])) }
+          dataset: {
+            source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1] / 1e9] : [item[0], item[1]]))
+          }
         }
         if (this.props.config.panelConfigs.graphGasUsedTx) {
           this.updateGraph({
@@ -221,7 +223,6 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   private handleNewBlock = block => {
     const { panelConfigs } = this.props.config
     this.setState(state => {
-      // console.log(+block.header.number)
       const blocks = [...state.blocks, block].slice(-this.state.maxCount)
       // if (this.blockGraph && blocks.length > 1) {
       // 这里先注释, 以免有预期外的 bug 出现
@@ -260,13 +261,13 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
           ...BarOption,
           dataset: { source: source.map(item => [item[0], item[3]]) }
         }
-        if (panelConfigs.graphIPB) {
+        if (this.blockGraph && panelConfigs.graphIPB) {
           this.updateGraph({ graph: this.blockGraph, option: timeCostOption })
         }
-        if (panelConfigs.graphTPB) {
+        if (this.txCountGraph && panelConfigs.graphTPB) {
           this.updateGraph({ graph: this.txCountGraph, option: txCountOption })
         }
-        if (panelConfigs.graphGasUsedBlock) {
+        if (this.gasUsedGraph && panelConfigs.graphGasUsedBlock) {
           this.updateGraph({ graph: this.gasUsedGraph, option: gasUsedOption })
         }
       }

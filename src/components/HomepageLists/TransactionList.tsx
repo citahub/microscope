@@ -28,10 +28,16 @@ export default translate('microscope')(
             classes={{ primary: styles.primary, root: styles.listItemTextRoot }}
             primary={
               <React.Fragment>
-                <span className={texts.ellipsis}>
+                <span style={{ maxWidth: '100%' }}>
                   {t('transaction')}:{' '}
-                  <Link to={`/transaction/${tx.hash}`} href={`/transaction/${tx.hash}`} className={texts.addr}>
-                    {tx.hash}
+                  <Link
+                    to={`/transaction/${tx.hash}`}
+                    href={`/transaction/${tx.hash}`}
+                    className={styles.hashlink}
+                    title={tx.hash}
+                  >
+                    <span className={`${texts.addr} ${texts.ellipsis}`}>{tx.hash.slice(0, -4)}</span>
+                    <span className={texts.addr}>{tx.hash.slice(-4)}</span>
                   </Link>
                 </span>
                 <span className={styles.time}>{`${fromNow(tx.timestamp)} ago`}</span>

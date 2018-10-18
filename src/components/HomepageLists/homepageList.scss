@@ -2,7 +2,7 @@
 
 .primary {
   color: $text;
-  display: flex !important;
+  // display: flex !important;
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
@@ -39,7 +39,7 @@
   margin-left: 33px;
   display: flex;
   align-items: stretch !important;
-  height: 115px;
+  // height: 115px;
   border-bottom: 1px solid $divider;
   text-transform: capitalize;
 

@@ -10,7 +10,6 @@ if (!Number.isInteger) {
 }
 
 const checkDigitsString = number => {
-  console.log('checkDigitsString', number)
   let n = number
   if (typeof n === 'string') {
     n = Number(n)
