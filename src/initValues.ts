@@ -126,7 +126,7 @@ export const initAccountState = {
   normals: [] as LocalAccount[],
   erc20s: [] as LocalAccount[],
   erc721s: [] as LocalAccount[],
-  panelOn: false,
+  panelOn: 'tx',
   addrsOn: false,
   normalsAdd: {
     name: '',

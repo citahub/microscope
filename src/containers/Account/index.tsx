@@ -236,10 +236,15 @@ class Account extends React.Component<AccountProps, AccountState> {
     )
     const tx = <TransactionTable {...this.props} key={addr} setTransactionsCount={this.setTransactionsCount} inset />
     const info = <ContractInfoPanel account={account} abi={abi} />
-    const table = [tx, erc, info]
-    let n = Number(panelOn)
-    n = n >= 0 && n < table.length ? n : 0
-    return table[n]
+    const table = {
+      tx,
+      abi: erc,
+      info
+    }
+    // let n = Number(panelOn)
+    // console.log(panelOn)
+    // n = n >= 0 && n < table.length ? n : 0
+    return table[panelOn]
   }
   render () {
     const {
@@ -281,10 +286,10 @@ class Account extends React.Component<AccountProps, AccountState> {
           <Card classes={{ root: layouts.cardContainer }} elevation={0}>
             <CardHeader action={<Button onClick={this.toggleAddrs(true)}>管理本地账户</Button>} />
             <CardContent>
-              <Tabs value={+panelOn} onChange={this.onTabClick}>
-                <Tab label={`Transactions(${txCount || 0})`} />
-                {abi && abi.length ? <Tab label="Contract Panel" /> : null}
-                <Tab label="Contract Info" />
+              <Tabs value={panelOn} onChange={this.onTabClick}>
+                <Tab value="tx" label={`Transactions(${txCount || 0})`} />
+                {abi && abi.length ? <Tab value="abi" label="Contract Panel" /> : null}
+                <Tab value="info" label="Contract Info" />
               </Tabs>
               <Divider />
               {this.renderPanelByTab()}
