@@ -110,7 +110,7 @@ const Info = ({ title, infos, details }) => (
 
 class Transaction extends React.Component<TransactionProps, TransactionState> {
   readonly state = initState
-  componentWillMount () {
+  public componentWillMount () {
     const { transaction } = this.props.match.params
     if (transaction) {
       this.setState(state => ({ loading: state.loading + 2 }))
@@ -122,10 +122,23 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
       }, this.handleError)
     }
   }
-  componentDidMount () {
+  public componentDidMount () {
     hideLoader()
   }
-  componentDidCatch (err) {
+  public componentWillReceiveProps (nextProps) {
+    const { transaction } = nextProps.match.params
+    console.log('will receive props', transaction)
+    if (transaction) {
+      this.setState(state => ({ loading: state.loading + 2 }))
+      nextProps.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
+        this.handleReturnedTx(tx)
+      }, this.handleError)
+      nextProps.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: Chain.TransactionReceipt) => {
+        this.handleReturnedTxReceipt(receipt)
+      }, this.handleError)
+    }
+  }
+  public componentDidCatch (err) {
     this.handleError(err)
   }
   private handleReturnedTx = (tx: Chain.Transaction) => {
