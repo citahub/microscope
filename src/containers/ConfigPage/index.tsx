@@ -356,7 +356,11 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       this.setState({ saving: false })
     } else {
       const t = setTimeout(() => {
-        v = 10
+        if (v < 10) {
+          v = 10
+        } else {
+          v = 100
+        }
         this.props.config.changePanelConfig({ ...configs, [key]: v })
         this.setState({ configs: { ...configs, [key]: v }, saving: false })
       }, 1000)
