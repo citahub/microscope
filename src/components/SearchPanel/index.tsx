@@ -23,8 +23,12 @@ enum SearchType {
 
 const searchGen = keyword => {
   let word = keyword
+  const log = console.log.bind(console)
   if (!check.digits(word) && word.slice(0, 2) !== '0x') {
     word = `0x${word}`
+  }
+  if (check.digits(word)) {
+    word = `0x${Number(word).toString(16)}`
   }
   if (check.address(word)) {
     return [
@@ -189,7 +193,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
           )
         }
         case SearchType.HEIGHT: {
-          return CITAObservables.blockByNumber(value.toString(16)).subscribe(block =>
+          return CITAObservables.blockByNumber(value).subscribe(block =>
             this.setState(state => Object.assign({}, state, { block }))
           )
         }
@@ -218,13 +222,15 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
           })
         }
         case SearchType.ERROR: {
-          console.log('error')
           this.setState({
             searchValueError: true
           })
           return false
         }
         default: {
+          this.setState({
+            searchValueError: true
+          })
           return false
         }
       }
