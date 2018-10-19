@@ -56,7 +56,7 @@ interface MetadataPanelProps {
   waitingMetadata: boolean
   inputChainError: boolean
   handleInput: (key: string) => (e: any) => void
-  switchChain: (ip?: string) => (e) => void
+  switchChain: (ip?: string, immediate?: boolean) => (e) => void
   handleKeyUp: (e: React.KeyboardEvent<HTMLInputElement>) => void
   t: (key: string) => string
   serverList: ServerList
@@ -116,7 +116,7 @@ const MetadataPanel: React.SFC<MetadataPanelProps> = ({
         {serverList.map(({ serverName, serverIp }) => (
           <ListItem
             key={serverName}
-            onClick={switchChain(serverIp)}
+            onClick={switchChain(serverIp, true)}
             classes={{
               root: styles.listItem,
               gutters: styles.serverGutters

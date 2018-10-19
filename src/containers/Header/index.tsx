@@ -193,22 +193,27 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     window.localStorage.setItem('i18nextLng', lng)
     window.location.reload()
   }
-  private switchChain = (chain: string = '') => (e?: any) => {
+  private switchChainImmediate = chain => {
+    const ip = chain || this.state.searchIp
+    this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
+    const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
+    window.localStorage.setItem('chainIp', chainIp)
+    window.location.reload()
+  }
+  private switchChain = (chain: string = '', immediate = false) => (e?: any) => {
     window.location.search = ''
+    if (immediate) {
+      this.switchChainImmediate(chain)
+    }
     const { otherMetadata } = this.state
     this.setState({ inputChainError: false })
     this.setState({ waitingMetadata: true })
     setTimeout(() => {
       if (otherMetadata.chainId !== -1) {
-        const ip = chain || this.state.searchIp
-        this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
-        const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
-        window.localStorage.setItem('chainIp', chainIp)
-        window.location.reload()
+        this.switchChainImmediate(chain)
       } else {
         this.setState({ inputChainError: true })
         this.setState({ waitingMetadata: false })
-        console.log(otherMetadata)
       }
     }, 1000)
   }
