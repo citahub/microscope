@@ -56,12 +56,18 @@ class Account extends React.Component<AccountProps, AccountState> {
   private onMount = account => {
     this.setState(initAccountState)
     this.updateBasicInfo(account)
+    this.fetchContractCode(account)
   }
   private onTabClick = (e, value) => {
     this.setState({ panelOn: value })
   }
 
   private setTransactionsCount = count => this.setState({ txCount: count })
+  private fetchContractCode = account =>
+    this.props.CITAObservables.getCode({
+      contractAddr: account,
+      blockNumber: 'latest'
+    }).subscribe(code => this.setState({ code }))
   protected readonly addrGroups = [
     {
       key: 'normals',
@@ -225,8 +231,8 @@ class Account extends React.Component<AccountProps, AccountState> {
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private renderPanelByTab = () => {
-    const { abi, addr, panelOn } = this.state
-    const { account } = this.props.match.params
+    const { abi, addr, panelOn, code } = this.state
+    // const { account } = this.props.match.params
     const erc = (
       <ERCPanel
         abi={abi.filter(abiEl => abiEl.type === 'function')}
@@ -235,7 +241,7 @@ class Account extends React.Component<AccountProps, AccountState> {
       />
     )
     const tx = <TransactionTable {...this.props} key={addr} setTransactionsCount={this.setTransactionsCount} inset />
-    const info = <ContractInfoPanel account={account} abi={abi} />
+    const info = <ContractInfoPanel code={code} abi={abi} />
     const table = {
       tx,
       abi: erc,
@@ -261,6 +267,7 @@ class Account extends React.Component<AccountProps, AccountState> {
       erc20sAdd,
       erc721sAdd,
       abi,
+      code,
       error
     } = this.state
 
@@ -289,7 +296,7 @@ class Account extends React.Component<AccountProps, AccountState> {
               <Tabs value={panelOn} onChange={this.onTabClick}>
                 <Tab value="tx" label={`Transactions(${txCount || 0})`} />
                 {abi && abi.length ? <Tab value="abi" label="Contract Panel" /> : null}
-                <Tab value="info" label="Contract Info" />
+                {code === '0x' ? null : <Tab value="info" label="Contract Info" />}
               </Tabs>
               <Divider />
               {this.renderPanelByTab()}

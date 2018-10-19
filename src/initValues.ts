@@ -114,6 +114,7 @@ export const initAccountState = {
   type: AccountType.NORMAL,
   addr: '',
   abi: [] as ABI,
+  code: '0x',
   contract: { _jsonInterface: [], methods: [] } as Contract,
   balance: '',
   txCount: 0,
