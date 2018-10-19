@@ -62,6 +62,11 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
           icon: 'wechat',
           title: '微信公众号',
           url: 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNzg4NTAzOA==&scene=124&#wechat_redirect'
+        },
+        {
+          icon: 'forum',
+          title: 'Nervos Forums',
+          url: 'https://forums.nervos.org'
         }
       ] as Contact[]
     }
