@@ -332,9 +332,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
     })
   }
   private handleInput = key => (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('handle input', e.currentTarget)
     const { value } = e.currentTarget
-    console.log('state', this.state.configs)
     this.setState(state => {
       const { configs } = state
       const newConfig = { ...configs, [key]: value }

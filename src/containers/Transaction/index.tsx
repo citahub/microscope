@@ -127,7 +127,6 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
   }
   public componentWillReceiveProps (nextProps) {
     const { transaction } = nextProps.match.params
-    console.log('will receive props', transaction)
     if (transaction) {
       this.setState(state => ({ loading: state.loading + 2 }))
       nextProps.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
