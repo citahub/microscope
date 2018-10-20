@@ -96,7 +96,7 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
   handleSelectorBlur = (selector: string, check: any = () => false) => e => {
     e.persist()
     const {value} = e.target
-    const valueError = !check(value)
+    const valueError = !(check(value) || value === '')
     this.setState(state => {
       const { selectorsValue, selectorsError } = state
       const newSelectorsValue = {
