@@ -6,6 +6,7 @@ import { unsigner } from '@nervos/signer'
 import { withObservables } from '../../contexts/observables'
 import { IContainerProps, IBlock, UnsignedTransaction } from '../../typings'
 import { initBlock, initUnsignedTransaction } from '../../initValues'
+import { fetchTransactions } from '../../utils/fetcher'
 import toText from '../../utils/toText'
 import bytesToHex from '../../utils/bytesToHex'
 import valueFormatter from '../../utils/valueFormatter'
@@ -21,7 +22,7 @@ enum SearchType {
   ERROR
 }
 
-const searchGen = (keyword) => {
+const searchGen = keyword => {
   let word = keyword
   if (!word.startsWith('0x')) {
     if (check.digits(word)) {
@@ -30,6 +31,7 @@ const searchGen = (keyword) => {
       word = `0x${word}`
     }
   }
+  word = word.toLocaleLowerCase()
   if (check.address(word)) {
     return { type: SearchType.ACCOUNT, value: word }
   } else if (check.transaction(word)) {
@@ -152,32 +154,36 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
       this.handleSearch()
     }
   }
-  private fetchHeight = (value) =>
-    this.props.CITAObservables.blockByNumber(value).subscribe((block) =>
-      this.setState((state) => Object.assign({}, state, { block }))
+  private fetchHeight = value =>
+    this.props.CITAObservables.blockByNumber(value).subscribe(block =>
+      this.setState(state => Object.assign({}, state, { block }))
     )
-  private fetchTxOrBlock = (value) => {
-    this.props.CITAObservables.blockByHash(value).subscribe((block) =>
-      this.setState((state) => Object.assign({}, state, { block }))
+  private fetchTxOrBlock = value => {
+    this.props.CITAObservables.blockByHash(value).subscribe(block =>
+      this.setState(state => Object.assign({}, state, { block }))
     )
-    this.props.CITAObservables.getTransaction(value).subscribe((transaction) => {
+    this.props.CITAObservables.getTransaction(value).subscribe(transaction => {
       const unsignedTransaction = unsigner(transaction.content)
       unsignedTransaction.hash = transaction.hash
-      this.setState((state) => Object.assign({}, state, { transaction: unsignedTransaction }))
+      this.setState(state => Object.assign({}, state, { transaction: unsignedTransaction }))
     })
   }
-  private fetchBlock = (value) => {
-    this.props.CITAObservables.getTransactionCount({
-      addr: value,
-      blockNumber: 'latest'
-    }).subscribe((txCount) => {
-      this.setState((state) => Object.assign({}, state, { txCount }))
-    })
+  private fetchAccount = value => {
+    fetchTransactions({ account: value })
+      .then(({ result }) => this.setState(state => Object.assign({}, state, { txCount: result.count })))
+      .catch(() => {
+        this.props.CITAObservables.getTransactionCount({
+          addr: value,
+          blockNumber: 'latest'
+        }).subscribe(txCount => {
+          this.setState(state => Object.assign({}, state, { txCount }))
+        })
+      })
     return this.props.CITAObservables.getBalance({
       addr: value,
       blockNumber: 'latest'
-    }).subscribe((balance) => {
-      this.setState((state) => Object.assign({}, state, { balance }))
+    }).subscribe(balance => {
+      this.setState(state => Object.assign({}, state, { balance }))
     })
   }
   private inputSearchError = () =>
@@ -186,14 +192,14 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
     })
   private handleSearch = () => {
     const { keyword } = this.state
-    const { fetchHeight, fetchTxOrBlock, fetchBlock, inputSearchError } = this
+    const { fetchHeight, fetchTxOrBlock, fetchAccount, inputSearchError } = this
     if (keyword === '') return
     // clear history
     this.setState({ ...initState, keyword })
     const typeTable = {
       [SearchType.HEIGHT]: fetchHeight,
       [SearchType.TRANSACTION]: fetchTxOrBlock,
-      [SearchType.ACCOUNT]: fetchBlock,
+      [SearchType.ACCOUNT]: fetchAccount,
       [SearchType.ERROR]: inputSearchError
     }
     const search = searchGen(keyword)
