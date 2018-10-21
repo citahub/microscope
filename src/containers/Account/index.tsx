@@ -247,9 +247,6 @@ class Account extends React.Component<AccountProps, AccountState> {
       abi: erc,
       info
     }
-    // let n = Number(panelOn)
-    // console.log(panelOn)
-    // n = n >= 0 && n < table.length ? n : 0
     return table[panelOn]
   }
   render () {
