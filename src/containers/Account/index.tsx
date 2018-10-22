@@ -32,7 +32,7 @@ import valueFormatter from '../../utils/valueFormatter'
 const layouts = require('../../styles/layout.scss')
 const text = require('../../styles/text.scss')
 
-const accountFormatter = (addr: string) => (addr.startsWith('0x') ? addr : `0x${addr}`)
+const accountFormatter = (addr: string) => (/^0x/i.test(addr) ? addr : `0x${addr}`)
 interface AccountProps extends IContainerProps {}
 type AccountState = typeof initAccountState
 class Account extends React.Component<AccountProps, AccountState> {

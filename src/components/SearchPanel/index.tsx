@@ -22,9 +22,9 @@ enum SearchType {
   ERROR
 }
 
-const searchGen = (keyword) => {
+const searchGen = keyword => {
   let word = keyword
-  if (!word.startsWith('0x')) {
+  if (!/^0x/i.test(word)) {
     if (check.digits(word)) {
       word = `0x${Number(word).toString(16)}`
     } else {
