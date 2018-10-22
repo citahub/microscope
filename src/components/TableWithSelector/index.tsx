@@ -39,8 +39,9 @@ export interface TableWithSelectorProps {
     type: SelectorType
     key: string
     text: string
-    items?: { key: string; text: string; check?: any; errorMessage?: any }[]
+    items?: { key: string; text: string; check?: any; format?: any; errorMessage?: any }[]
     check?: any
+    format?: any
     errorMessage?: any
   }[]
   selectorsValue?: any
@@ -67,10 +68,11 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
 
   handleSelectorInput = (selector: string) => e => {
     e.persist()
+    const { value } = e.target
     this.setState(state => ({
       selectorsValue: {
         ...state.selectorsValue,
-        [selector]: e.target.value
+        [selector]: value
       },
       selectorsError: {
         ...state.selectorsError,
@@ -92,24 +94,21 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
       this.showDialog(false)()
     }
   }
-  handleSelectorBlur = (selector: string, check: any = () => false) => e => {
+  handleSelectorBlur = (selector: string, check: any = () => false, format: any = v => v) => e => {
     e.persist()
     const { value } = e.target
     const valueError = value ? !check(value) : false
     this.setState(state => {
       const { selectorsValue, selectorsError } = state
-      const newSelectorsValue = {
-        ...selectorsValue,
-        [selector]: value
-      }
-      const newSelectorsError = {
-        ...selectorsError,
-        [selector]: valueError
-      }
-
       return {
-        selectorsValue: newSelectorsValue,
-        selectorsError: newSelectorsError
+        selectorsValue: {
+          ...selectorsValue,
+          [selector]: value
+        },
+        selectorsError: {
+          ...selectorsError,
+          [selector]: valueError
+        }
       }
     })
   }
@@ -142,10 +141,10 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
                               value={selectorsValue[item.key]}
                               placeholder={t(item.text)}
                               onChange={this.handleSelectorInput(item.key)}
-                              onBlur={this.handleSelectorBlur(item.key, item.check)}
+                              onBlur={this.handleSelectorBlur(item.key, item.check || selector.check, item.format || selector.format)}
                             />
                             {selectorsError[item.key] ? (
-                              <div className={`${styles.errormessage}`}>{item.errorMessage}</div>
+                              <div className={`${styles.errormessage}`}>{item.errorMessage || selector.errorMessage}</div>
                             ) : null}
                           </div>
                         ))}
@@ -157,7 +156,7 @@ class TableWithSelector extends React.Component<TableWithSelectorProps & { t: (k
                             value={selectorsValue[selector.key]}
                             placeholder={t(selector.text)}
                             onChange={this.handleSelectorInput(selector.key)}
-                            onBlur={this.handleSelectorBlur(selector.key, selector.check)}
+                            onBlur={this.handleSelectorBlur(selector.key, selector.check, selector.format)}
                           />
                           {selectorsError[selector.key] ? (
                             <div className={`${styles.errormessage}`}>{selector.errorMessage}</div>

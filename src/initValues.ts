@@ -193,17 +193,15 @@ export const initBlockTableState = {
       items: [
         {
           key: 'numberFrom',
-          text: 'Height From',
-          check: check.digits,
-          errorMessage: errorMessages.digits
+          text: 'Height From'
         },
         {
           key: 'numberTo',
-          text: 'Height To',
-          check: check.digits,
-          errorMessage: errorMessages.digits
+          text: 'Height To'
         }
-      ]
+      ],
+      check: check.digitsDec,
+      errorMessage: errorMessages.digits
     },
     {
       type: SelectorType.RANGE,
@@ -212,17 +210,15 @@ export const initBlockTableState = {
       items: [
         {
           key: 'transactionFrom',
-          text: 'From',
-          check: check.digits,
-          errorMessage: errorMessages.digits
+          text: 'From'
         },
         {
           key: 'transactionTo',
           text: 'To',
-          check: check.digits,
-          errorMessage: errorMessages.digits
         }
-      ]
+      ],
+      check: check.digitsDec,
+      errorMessage: errorMessages.digits
     }
   ],
   selectorsValue: {

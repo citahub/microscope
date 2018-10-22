@@ -23,14 +23,7 @@ enum SearchType {
 }
 
 const searchGen = keyword => {
-  let word = keyword
-  if (!/^0x/i.test(word)) {
-    if (check.digits(word)) {
-      word = `0x${Number(word).toString(16)}`
-    } else {
-      word = `0x${word}`
-    }
-  }
+  let word = check.format0x(keyword)
   word = word.toLocaleLowerCase()
   if (check.address(word)) {
     return { type: SearchType.ACCOUNT, value: word }

@@ -48,6 +48,7 @@ message: string
       key: 'from',
       text: 'Address From',
       check: check.address,
+      format: check.format0x,
       errorMessage: errorMessages.address
     },
     {
@@ -55,6 +56,7 @@ message: string
       key: 'to',
       text: 'Address To',
       check: check.address,
+      format: check.format0x,
       errorMessage: errorMessages.address
     }
   ],

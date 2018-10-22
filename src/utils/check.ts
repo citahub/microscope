@@ -1,46 +1,56 @@
 import * as web3utils from 'web3-utils'
 import transitions from '@material-ui/core/styles/transitions'
 
-if (!Number.isInteger) {
-  Number.isInteger = function (value) {
-    /* eslint-disable */
-    return typeof value === 'number' && isFinite(value) && Math.floor(value) === value
-    /* eslint-enable */
-  }
-}
+const startsWith0x = string => /^0x/i.test(string)
+
+/* eslint-disable */
+const checkDigits = number => typeof number === 'number' && isFinite(number) && Math.floor(number) === number
+/* eslint-enable */
 
 const checkDigitsString = number => {
-  let n = number
-  if (typeof n === 'string') {
-    n = Number(n)
+  let value = number
+  if (typeof value === 'string') {
+    value = Number(value)
   }
-  return Number.isInteger(n)
+  return checkDigits(value)
 }
 
-const checkAddress = address => web3utils.isAddress(address)
-
-const checkHeight = height => {
-  let h = height
-  if (checkDigitsString(h)) {
-    return true
+const format0x = string => {
+  let value = string
+  if (!startsWith0x(value)) {
+    if (checkDigitsString(value)) {
+      value = `0x${Number(value).toString(16)}`
+    } else {
+      value = `0x${value}`
+    }
   }
-  h = `0x${height}`
-  return checkDigitsString(h)
+  return value
 }
+
+const checkDigitsStringDec = number => {
+  const value = number
+  if (startsWith0x(value)) {
+    return false
+  }
+  return checkDigitsString(value)
+}
+
+const checkAddress = address => web3utils.isAddress(format0x(address))
+
+const checkHeight = height => checkDigitsString(format0x(height))
 
 const checkTransaction = transitionHash => {
-  let hx = transitionHash.toString()
-  if (hx.slice(0, 2) !== '0x') {
-    hx = `0x${hx}`
-  }
-  return hx.length === 66 && checkDigitsString(hx)
+  const value = format0x(transitionHash).toString()
+  return value.length === 66 && checkDigitsString(value)
 }
 
 const check = {
   address: checkAddress,
   height: checkHeight,
   digits: checkDigitsString,
-  transaction: checkTransaction
+  digitsDec: checkDigitsStringDec,
+  transaction: checkTransaction,
+  format0x
 }
 
 const errorMessages = {
