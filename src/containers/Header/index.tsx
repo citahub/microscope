@@ -74,7 +74,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.fetchStatisticsPanel()
     // fetch data of metadata panel
     this.fetchMetaDataPanel()
-    this.checkFetchBlockOvertimeInterval()
+    clearInterval(this.checkOvertimeNumber)
+    this.checkOvertimeNumber = setInterval(this.checkFetchBlockOvertime, 100)
   }
   componentWillReceiveProps (nextProps: HeaderProps) {
     if (this.props.location.pathname !== nextProps.location.pathname) {
@@ -83,6 +84,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
   componentDidCatch (err) {
     this.handleError(err)
+  }
+  componentWillUnmount () {
+    clearInterval(this.checkOvertimeNumber)
   }
   private onSearch$: Subject<any>
   private getChainMetadata = ip => {
@@ -101,18 +105,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
     this.setState({ sidebarNavs: open })
   }
-  checkOvertimeNumber = [] as any
-  private checkFetchBlockOvertimeInterval = () => {
-    const { checkOvertimeNumber } = this
-    for (let i = 0; i < checkOvertimeNumber.length; i++) {
-      clearTimeout(checkOvertimeNumber.pop())
-    }
-    this.checkFetchBlockOvertime()
-    const tag = setTimeout(() => {
-      this.checkFetchBlockOvertimeInterval()
-    }, 100)
-    checkOvertimeNumber.push(tag)
-  }
+  checkOvertimeNumber = -1 as any
   private checkFetchBlockOvertime = () => {
     const { prevBlockNumber: prev, prevDate, metadata, block } = this.state
     const { number: current } = block.header
@@ -318,7 +311,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
               transition: 'height 0.5s ease 0s, padding 0.5s ease 0s'
             }}
           >
-            警告：距离收到上个块的时间已经超过
+            Notice：No blocks loaded in
             {globalHeaderHardAlertOpen
               ? Math.floor(this.state.overtime / 1000)
               : Math.floor(this.state.overtime / 100) / 10}
