@@ -48,8 +48,6 @@ const initState = {
   },
   globalHeaderAlertOpen: false,
   globalHeaderHardAlertOpen: false,
-  prevBlockNumber: '-1',
-  prevDate: 0,
   overtime: 0,
   serverList: [] as ServerList
 }
@@ -107,48 +105,44 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
   checkOvertimeNumber = -1 as any
   private checkFetchBlockOvertime = () => {
-    const { prevBlockNumber: prev, prevDate, metadata, block } = this.state
-    const { number: current } = block.header
+    const { metadata, block } = this.state
+    const { timestamp } = block.header
     const now = Date.now()
-    if (prev !== current) {
+    const space = now - Number(timestamp)
+    const { blockInterval: interval } = metadata
+    if (space > 3 * interval) {
+      if (!this.state.globalHeaderHardAlertOpen) {
+        this.setState(state => ({
+          ...state,
+          globalHeaderHardAlertOpen: true,
+          overtime: space
+        }))
+      } else if (space - this.state.overtime > 1000) {
+        this.setState(state => ({
+          ...state,
+          overtime: space
+        }))
+      }
+    } else if (space > 2 * interval) {
+      if (!this.state.globalHeaderAlertOpen) {
+        this.setState(state => ({
+          ...state,
+          globalHeaderAlertOpen: true,
+          overtime: space
+        }))
+      } else {
+        this.setState(state => ({
+          ...state,
+          overtime: space
+        }))
+      }
+    } else {
       this.setState(state => ({
         ...state,
         globalHeaderAlertOpen: false,
         globalHeaderHardAlertOpen: false,
         overtime: 0,
-        prevBlockNumber: current,
-        prevDate: now
       }))
-    } else {
-      const { blockInterval: interval } = metadata
-      const space = now - prevDate
-      if (space > 3 * interval) {
-        if (!this.state.globalHeaderHardAlertOpen) {
-          this.setState(state => ({
-            ...state,
-            globalHeaderHardAlertOpen: true,
-            overtime: space
-          }))
-        } else if (space - this.state.overtime > 1000) {
-          this.setState(state => ({
-            ...state,
-            overtime: space
-          }))
-        }
-      } else if (space > 2 * interval) {
-        if (!this.state.globalHeaderAlertOpen) {
-          this.setState(state => ({
-            ...state,
-            globalHeaderAlertOpen: true,
-            overtime: space
-          }))
-        } else {
-          this.setState(state => ({
-            ...state,
-            overtime: space
-          }))
-        }
-      }
     }
   }
   /**
