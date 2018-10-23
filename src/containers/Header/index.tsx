@@ -46,6 +46,11 @@ const initState = {
     code: '',
     message: ''
   },
+  globalHeaderAlertOpen: false,
+  globalHeaderHardAlertOpen: false,
+  prevBlockNumber: '-1',
+  prevDate: 0,
+  overtime: 0,
   serverList: [] as ServerList
 }
 type HeaderState = typeof initState
@@ -69,6 +74,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.fetchStatisticsPanel()
     // fetch data of metadata panel
     this.fetchMetaDataPanel()
+    this.checkFetchBlockOvertimeInterval()
   }
   componentWillReceiveProps (nextProps: HeaderProps) {
     if (this.props.location.pathname !== nextProps.location.pathname) {
@@ -91,8 +97,66 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       })
       .catch(this.handleError)
   }
+
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
     this.setState({ sidebarNavs: open })
+  }
+  checkOvertimeNumber = [] as any
+  private checkFetchBlockOvertimeInterval = () => {
+    const { checkOvertimeNumber } = this
+    for (let i = 0; i < checkOvertimeNumber.length; i++) {
+      clearTimeout(checkOvertimeNumber.pop())
+    }
+    this.checkFetchBlockOvertime()
+    const tag = setTimeout(() => {
+      this.checkFetchBlockOvertimeInterval()
+    }, 100)
+    checkOvertimeNumber.push(tag)
+  }
+  private checkFetchBlockOvertime = () => {
+    const { prevBlockNumber: prev, prevDate, metadata, block } = this.state
+    const { number: current } = block.header
+    const now = Date.now()
+    if (prev !== current) {
+      this.setState(state => ({
+        ...state,
+        globalHeaderAlertOpen: false,
+        globalHeaderHardAlertOpen: false,
+        overtime: 0,
+        prevBlockNumber: current,
+        prevDate: now
+      }))
+    } else {
+      const { blockInterval: interval } = metadata
+      const space = now - prevDate
+      if (space > 3 * interval) {
+        if (!this.state.globalHeaderHardAlertOpen) {
+          this.setState(state => ({
+            ...state,
+            globalHeaderHardAlertOpen: true,
+            overtime: space
+          }))
+        } else if (space - this.state.overtime > 1000) {
+          this.setState(state => ({
+            ...state,
+            overtime: space
+          }))
+        }
+      } else if (space > 2 * interval) {
+        if (!this.state.globalHeaderAlertOpen) {
+          this.setState(state => ({
+            ...state,
+            globalHeaderAlertOpen: true,
+            overtime: space
+          }))
+        } else {
+          this.setState(state => ({
+            ...state,
+            overtime: space
+          }))
+        }
+      }
+    }
   }
   /**
    * @method fetchStatisticsPanel
@@ -112,6 +176,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     )
     // fetch Block Number and Block
     newBlockByNumberSubject.subscribe(block => {
+      console.log('new block', block)
       this.setState({
         block
       })
@@ -221,9 +286,18 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private searchSubscription: Subscription
-  private translations = process.env.LNGS ? process.env.LNGS.split(',') : ['zh', 'en', 'ja-JP', 'ko', 'de', 'it', 'fr']
+  private translations = process.env.LNGS ? process.env.LNGS.split(',') : ['zh', 'en']
   render () {
-    const { anchorEl, lngOpen, error, serverList, inputChainError, waitingMetadata } = this.state
+    const {
+      anchorEl,
+      lngOpen,
+      error,
+      serverList,
+      inputChainError,
+      waitingMetadata,
+      globalHeaderAlertOpen,
+      globalHeaderHardAlertOpen
+    } = this.state
     const {
       location: { pathname },
       t
@@ -233,6 +307,25 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     return createPortal(
       <React.Fragment>
         <AppBar position="fixed" elevation={0}>
+          <div
+            style={{
+              maxHeight: globalHeaderAlertOpen ? '100vh' : '0',
+              lineHeight: '1rem',
+              padding: globalHeaderAlertOpen ? '1rem 0' : '0',
+              fontSize: '1rem',
+              overflow: 'hidden',
+              background: globalHeaderHardAlertOpen ? '#fc4141' : '#f5a623',
+              textAlign: 'center',
+              transition: 'height 0.5s ease 0s, padding 0.5s ease 0s'
+            }}
+          >
+            警告：距离收到上个块的时间已经超过
+            {globalHeaderHardAlertOpen
+              ? Math.floor(this.state.overtime / 1000)
+              : Math.floor(this.state.overtime / 100) / 10}
+            s
+          </div>
+
           <Toolbar
             className={layout.center}
             classes={{
