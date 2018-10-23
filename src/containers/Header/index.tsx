@@ -176,7 +176,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     )
     // fetch Block Number and Block
     newBlockByNumberSubject.subscribe(block => {
-      console.log('new block', block)
       this.setState({
         block
       })
