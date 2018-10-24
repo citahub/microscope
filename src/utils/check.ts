@@ -17,6 +17,9 @@ const checkDigitsString = number => {
 
 const format0x = string => {
   let value = string
+  if (!value) {
+    return value
+  }
   if (!startsWith0x(value)) {
     if (checkDigitsString(value)) {
       value = `0x${Number(value).toString(16)}`

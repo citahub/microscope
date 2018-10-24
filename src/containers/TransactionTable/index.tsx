@@ -13,7 +13,7 @@ import { rangeSelectorText } from '../../utils/searchTextGen'
 import toText from '../../utils/toText'
 import { fromNow } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
-import check, {errorMessages} from '../../utils/check'
+import check, { errorMessages } from '../../utils/check'
 
 interface AdvancedSelectors {
   selectorsValue: {
@@ -132,7 +132,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
       params[key] = value
     })
     if (this.props.match.params.account) {
-      params.account = this.props.match.params.account
+      params.account = check.format0x(this.props.match.params.account)
     }
 
     const selectorsValue = {}
@@ -152,25 +152,24 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     // NOTICE: async
     this.setState(state => ({ loading: state.loading + 1 })) // for get transactions
     return fetchTransactions(paramsFilter(params))
-      .then(({ result }: { result: { transactions: TransactionFromServer[]; count: number } }) =>
-        this.setState(state =>
-          Object.assign({}, state, {
-            loading: state.loading - 1,
-            count: result.count,
-            items: result.transactions.map(tx => ({
-              key: tx.hash,
-              blockNumber: `${+tx.blockNumber}`,
-              hash: tx.hash,
-              from: tx.from,
-              to: toText(tx.to),
-              age: `${fromNow(tx.timestamp)} ago`,
-              value: valueFormatter(+tx.value),
-              gasUsed: `${+tx.gasUsed}`
-            }))
-          })
-        )
-      )
-      .then(() => this.props.setTransactionsCount && this.props.setTransactionsCount(this.state.count))
+      .then(({ result }: { result: { transactions: TransactionFromServer[]; count: number } }) => {
+        if (this.props.setTransactionsCount) this.props.setTransactionsCount(result.count)
+        this.setState(state => ({
+          ...state,
+          loading: state.loading - 1,
+          count: result.count,
+          items: result.transactions.map(tx => ({
+            key: tx.hash,
+            blockNumber: `${+tx.blockNumber}`,
+            hash: tx.hash,
+            from: tx.from,
+            to: toText(tx.to),
+            age: `${fromNow(tx.timestamp)} ago`,
+            value: valueFormatter(+tx.value),
+            gasUsed: `${+tx.gasUsed}`
+          }))
+        }))
+      })
       .catch(err => {
         this.handleError(err)
       })

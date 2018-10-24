@@ -53,7 +53,8 @@ class Account extends React.Component<AccountProps, AccountState> {
   public componentDidCatch (err) {
     this.handleError(err)
   }
-  private onMount = account => {
+  private onMount = accountInput => {
+    const account = accountFormatter(accountInput)
     this.setState(initAccountState)
     this.updateBasicInfo(account)
     this.fetchContractCode(account)
@@ -84,20 +85,20 @@ class Account extends React.Component<AccountProps, AccountState> {
   ]
   private fetchInfo = addr => {
     // NOTE: async
-    this.setState(state => ({ loading: state.loading + 3 })) // for get balance, get transaction count, and get abi
+    this.setState(state => ({ loading: state.loading + 2 })) // for get balance, get transaction count, and get abi
     this.props.CITAObservables.getBalance({ addr, blockNumber: 'latest' })
       // .finally(() => this.setState(state => ({ loading: state.loading - 1 })))
       .subscribe(
         (balance: string) => this.setState(state => ({ loading: state.loading - 1, balance: `${+balance}` })),
         this.handleError
       )
-    this.props.CITAObservables.getTransactionCount({
-      addr,
-      blockNumber: 'latest'
-    }).subscribe(
-      (count: string) => this.setState(state => ({ txCount: +count, loading: state.loading - 1 })),
-      this.handleError
-    )
+    // this.props.CITAObservables.getTransactionCount({
+    //   addr,
+    //   blockNumber: 'latest'
+    // }).subscribe(
+    //   (count: string) => this.setState(state => ({ txCount: +count, loading: state.loading - 1 })),
+    //   this.handleError
+    // )
 
     this.props.CITAObservables.getAbi({
       contractAddr: addr,
