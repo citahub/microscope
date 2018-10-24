@@ -148,9 +148,11 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
     })
   }
 
-  private fetchTransactions = (params: { [index: string]: string | number } = {}) => {
+  private fetchTransactions = (paramsInput: { [index: string]: string | number } = {}) => {
     // NOTICE: async
+    const params = {}
     this.setState(state => ({ loading: state.loading + 1 })) // for get transactions
+    Object.keys(paramsInput).forEach(key => (params[key] = check.format0x(paramsInput[key])))
     return fetchTransactions(paramsFilter(params))
       .then(({ result }: { result: { transactions: TransactionFromServer[]; count: number } }) => {
         if (this.props.setTransactionsCount) this.props.setTransactionsCount(result.count)
