@@ -175,7 +175,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
                   style={transactions.length ? { cursor: 'pointer' } : undefined}
                 >
                   <span className={styles.itemTitle}>Transactions</span>
-                  <span>{transactions.length}</span>
+                  <span style={transactions.length ? { color: '#2647fdcc' } : undefined}>{transactions.length}</span>
                 </ListItem>
                 <ListItem>
                   <span className={styles.itemTitle}>Proposer</span>
