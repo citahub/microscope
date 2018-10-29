@@ -24,12 +24,14 @@ import Image from '../../images'
 const styles = require('./header.scss')
 const layout = require('../../styles/layout')
 
-const BlockOvertimeAlert = ({ metadata, overtime}) => {
+const BlockOvertimeAlert = ({ metadata, overtime }) => {
   // const { timestamp } = block.header
   // const now = Date.now()
   // const space = now - Number(timestamp)
-  const { blockInterval: interval } = metadata
-
+  let { blockInterval: interval } = metadata
+  if (interval === 0) {
+    interval = 3000
+  }
   let openAlert = false
   let openHardAlert = false
   if (overtime > 3 * interval) {
@@ -93,6 +95,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   public componentWillMount () {
     this.onSearch$ = new Subject()
+    this.initBlockTimestamp()
     // hide TPS in header
   }
 
@@ -144,14 +147,30 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private checkOvertimeNumber = -1 as any
 
+  private initBlockTimestamp = () => {
+    const { timestamp } = this.state.block.header
+    if (timestamp === '') {
+      this.setState(state =>
+        Object.assign({}, state, {
+          block: {
+            ...state.block,
+            header: {
+              ...state.block.header,
+              timestamp: Date.now()
+            }
+          }
+        })
+      )
+    }
+  }
+
   private checkFetchBlockOvertime = () => {
     clearInterval(this.checkOvertimeNumber)
     this.checkOvertimeNumber = setInterval(() => {
-      const {block} = this.state
-      const { timestamp } = block.header
+      const { timestamp } = this.state.block.header
       const now = Date.now()
       const overtime = now - Number(timestamp)
-      this.setState({overtime})
+      this.setState({ overtime })
     }, 100)
   }
 
