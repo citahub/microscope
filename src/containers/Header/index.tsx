@@ -178,20 +178,14 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     this.setState({ sidebarNavs: open })
   }
 
-  private intervalNewBlockByNumber = -1 as any
-
   private fetchNewBlockLoop = () => {
-    const { newBlockByNumber } = this.props.CITAObservables
-
-    // fetch Block Number and Block
-    clearInterval(this.intervalNewBlockByNumber)
-    this.intervalNewBlockByNumber = setInterval(() => {
-      newBlockByNumber(0, false).subscribe(block => {
-        this.setState({
-          block
-        })
-      }, this.handleError)
-    }, 1000)
+    const { newBlockSubjectAdd, newBlockSubjectStart } = this.props.CITAObservables as any
+    newBlockSubjectAdd('header', block => {
+      this.setState({
+        block
+      })
+    }, this.handleError)
+    newBlockSubjectStart()
   }
 
   /**

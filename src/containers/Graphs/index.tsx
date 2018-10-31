@@ -4,50 +4,23 @@ import { Observable } from '@reactivex/rxjs'
 import { Card, CardContent } from '@material-ui/core'
 import { withObservables } from '../../contexts/observables'
 import { withConfig } from '../../contexts/config'
-import {
-  IContainerProps,
-  IBlock,
-  BlockNumber,
-  Timestamp,
-  TransactionFromServer,
-  ProposalFromServer,
-  Hash
-} from '../../typings/'
 import Banner from '../../components/Banner'
 import ErrorNotification from '../../components/ErrorNotification'
 import { BarOption, PieOption } from '../../config/graph'
 import { fetchTransactions, fetchStatistics } from '../../utils/fetcher'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
+import { PRICE, initState, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData } from './init'
+import Image from '../../images'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./graph.scss')
 
-const PRICE = 1
-
-const initState = {
-  blocks: [] as IBlock[],
-  transactions: [] as TransactionFromServer[],
-  proposals: [] as ProposalFromServer[],
-  loadBlockHistory: false,
-  maxCount: 10,
-  error: {
-    code: '',
-    message: ''
-  }
-}
-
-interface GraphsProps extends IContainerProps {}
-type GraphState = typeof initState
-type BlockGraphData = [BlockNumber, Timestamp, number, string]
-type TxGraphData = [Hash, number]
-type ProposalData = [string, number]
-
-const getBlockSource = ({ blocks = this.state.blocks }) => {
+const getBlockSource = ({ blocks }) => {
   if (blocks.length <= 1) return []
   const source: BlockGraphData[] = []
   // form the source , x = height, y = interval, tx count, gas used
-  blocks.reduce((prev, curr) => {
+  blocks.sort((b1, b2) => b1.header.number - b2.header.number).reduce((prev, curr) => {
     source.push([
       `${+(curr as IBlock).header.number}`, // height
       +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
@@ -59,6 +32,7 @@ const getBlockSource = ({ blocks = this.state.blocks }) => {
   const graphSource = [['Blocks', 'Block Interval', 'Transactions', 'Quota Used'], ...source]
   return graphSource
 }
+
 const getTxSource = ({ txs = this.state.transactions }) => {
   const source: TxGraphData[] = txs.length ? txs.map(tx => [tx.hash, tx.gasUsed]) : []
   const graphSource = [['Transactions', 'Quota Used'], ...source]
@@ -73,34 +47,26 @@ const getProposalSource = ({ proposals = this.state.proposals }) => {
 
 class Graphs extends React.Component<GraphsProps, GraphState> {
   readonly state = initState
-  componentWillMount () {
+
+  public componentWillMount () {
     this.setMaxCount()
     this.startListening()
     const source = Observable.fromEvent(window, 'resize')
     source.debounceTime(500).subscribe(() => {
-      if (this.blockGraph) {
-        this.blockGraph.resize()
-      }
-      if (this.txCountGraph) {
-        this.txCountGraph.resize()
-      }
-      if (this.gasUsedGraph) {
-        this.gasUsedGraph.resize()
-      }
-      if (this.txGasUsedGraph) {
-        this.txGasUsedGraph.resize()
-      }
-      if (this.proposalsGraph) {
-        this.proposalsGraph.resize()
-      }
+      this.graphList.forEach(graphName => {
+        if (this[graphName]) {
+          this[graphName].resize()
+        }
+      })
     })
   }
 
-  componentDidMount () {
+  public componentDidMount () {
     hideLoader()
     this.initGraphs()
   }
-  componentDidCatch (err) {
+
+  public componentDidCatch (err) {
     this.handleError(err)
   }
 
@@ -108,6 +74,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
     const { graphMaxCount: maxCount } = this.props.config.panelConfigs
     this.setState({ maxCount })
   }
+
   // declare chart variables
   private blockGraph: any
   private txCountGraph: any
@@ -119,6 +86,8 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   private gasUsedGraphDOM: HTMLDivElement | null
   private txGasUsedGraphDOM: HTMLDivElement | null
   private proposalsGraphDOM: HTMLDivElement | null
+  private graphList = ['blockGraph', 'txCountGraph', 'gasUsedGraph', 'txGasUsedGraph', 'proposalsGraph']
+
   private initGraphs = () => {
     // init chart dom
     const { panelConfigs } = this.props.config
@@ -138,22 +107,32 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
       this.proposalsGraph = this.initGraph(this.proposalsGraphDOM as HTMLDivElement)
     }
   }
+
   private initGraph = (dom: HTMLDivElement) => {
     const graph = echarts.init(dom)
     graph.showLoading()
     return graph
   }
+
   private startListening = () => {
-    this.props.CITAObservables.newBlockByNumberSubject.subscribe(block => {
-      if (block.hash) {
-        this.handleNewBlock(block)
-        this.updateTransactions()
-        this.updateProposals()
-      } else {
-        throw new Error(block)
-      }
-    }, this.handleError)
+    const { newBlockSubjectAdd } = this.props.CITAObservables
+    // this.props.CITAObservables.newBlockByNumberSubject.subscribe(block => {
+    newBlockSubjectAdd(
+      'graphs',
+      block => {
+        if (block.hash) {
+          this.handleNewBlock(block)
+          this.updateTransactions()
+          this.updateProposals()
+        } else {
+          throw new Error(block)
+        }
+      },
+      this.handleError
+    )
+    this.props.CITAObservables.newBlockByNumberSubject.connect()
   }
+
   private updateProposals = () => {
     fetchStatistics({ type: 'proposals' })
       .then(({ result = [] }) => {
@@ -178,6 +157,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
       })
       .catch(this.handleError)
   }
+
   private updateTransactions = () => {
     fetchTransactions({ limit: this.state.maxCount })
       .then(({ result: { transactions: txs } }) => {
@@ -222,12 +202,11 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
       })
       .catch(this.handleError)
   }
+
   private handleNewBlock = block => {
     const { panelConfigs } = this.props.config
     this.setState(state => {
-      const blocks = [...state.blocks, block].slice(-this.state.maxCount)
-      // if (this.blockGraph && blocks.length > 1) {
-      // 这里先注释, 以免有预期外的 bug 出现
+      const blocks = [...state.blocks, block].slice(-(this.state.maxCount + 1))
       if (blocks.length > 1) {
         const source = getBlockSource({ blocks })
         const timeCostOption = {
@@ -276,44 +255,31 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
       return { blocks }
     })
   }
+
   private updateGraph = ({ graph, option }) => {
     graph.setOption(option)
     graph.hideLoading()
   }
+
   private handleError = handleError(this)
   private dismissError = dismissError(this)
-  render () {
+
+  private renderGraphCell = graphName => (
+    <Card>
+      <CardContent>
+        <div ref={el => (this[`${graphName}DOM`] = el)} className={styles.graphContainer} />
+      </CardContent>
+    </Card>
+  )
+
+  private renderGraphList = () => this.graphList.map(graphName => this.renderGraphCell(graphName))
+
+  public render () {
     return (
       <React.Fragment>
-        <Banner bg={`${process.env.PUBLIC}/banner/banner-Statistics.png`}>Statistics</Banner>
+        <Banner bg={Image.banner.statistics}>Statistics</Banner>
         <div className={layout.center}>
-          <div className={styles.graphs}>
-            <Card>
-              <CardContent>
-                <div ref={el => (this.blockGraphDOM = el)} className={styles.graphContainer} />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent>
-                <div ref={el => (this.txCountGraphDOM = el)} className={styles.graphContainer} />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent>
-                <div ref={el => (this.gasUsedGraphDOM = el)} className={styles.graphContainer} />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent>
-                <div ref={el => (this.txGasUsedGraphDOM = el)} className={styles.graphContainer} />
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent>
-                <div ref={el => (this.proposalsGraphDOM = el)} className={styles.graphContainer} />
-              </CardContent>
-            </Card>
-          </div>
+          <div className={styles.graphs}>{this.renderGraphList()}</div>
         </div>
         <ErrorNotification error={this.state.error} dismissError={this.dismissError} />
       </React.Fragment>
