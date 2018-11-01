@@ -58,7 +58,7 @@ const BlockOvertimeAlert = ({ metadata, overtime }) => {
       }}
     >
       Notice：No blocks loaded in
-      {openHardAlert ? Math.floor(overtime / 1000) : Math.floor(overtime / 100) / 10}s
+      {' '}{openHardAlert ? Math.floor(overtime / 1000) : Math.floor(overtime / 100) / 10}s
     </div>
   )
 }
