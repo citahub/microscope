@@ -19,11 +19,48 @@ import { withObservables } from '../../contexts/observables'
 import { fetchStatistics, fetchServerList, fetchMetadata } from '../../utils/fetcher'
 import { initBlock, initMetadata } from '../../initValues'
 import { handleError, dismissError } from '../../utils/handleError'
+import Image from '../../images'
 
 const styles = require('./header.scss')
-
-const LOGO = `${process.env.PUBLIC}/images/microscopeLogo.svg`
 const layout = require('../../styles/layout')
+
+const BlockOvertimeAlert = ({ metadata, overtime }) => {
+  // const { timestamp } = block.header
+  // const now = Date.now()
+  // const space = now - Number(timestamp)
+  let { blockInterval: interval } = metadata
+  if (interval === 0) {
+    interval = 3000
+  }
+  let openAlert = false
+  let openHardAlert = false
+  if (overtime > 3 * interval) {
+    openAlert = true
+    openHardAlert = true
+  } else if (overtime > 2 * interval) {
+    openAlert = true
+  }
+
+  if (!openAlert) {
+    return null
+  }
+  return (
+    <div
+      style={{
+        maxHeight: openAlert ? '100vh' : '0',
+        lineHeight: '1rem',
+        padding: openAlert ? '1rem 0' : '0',
+        fontSize: '1rem',
+        overflow: 'hidden',
+        background: openHardAlert ? '#fc4141' : '#f5a623',
+        textAlign: 'center',
+        transition: 'height 0.5s ease 0s, padding 0.5s ease 0s'
+      }}
+    >
+      {`Notice：No blocks loaded in ${openHardAlert ? Math.floor(overtime / 1000) : Math.floor(overtime / 100) / 10}s`}
+    </div>
+  )
+}
 
 const initState = {
   keyword: '',
@@ -46,8 +83,6 @@ const initState = {
     code: '',
     message: ''
   },
-  globalHeaderAlertOpen: false,
-  globalHeaderHardAlertOpen: false,
   overtime: 0,
   serverList: [] as ServerList
 }
@@ -56,11 +91,14 @@ interface HeaderProps extends IContainerProps {}
 
 class Header extends React.Component<HeaderProps, HeaderState> {
   state = initState
-  componentWillMount () {
+
+  public componentWillMount () {
     this.onSearch$ = new Subject()
+    this.initBlockTimestamp()
     // hide TPS in header
   }
-  componentDidMount () {
+
+  public componentDidMount () {
     // start search subscription
     this.searchSubscription = this.onSearch$.debounceTime(1000).subscribe(({ key, value }) => {
       if (key === 'searchIp') {
@@ -70,23 +108,29 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
     // fetch status of brief-statistics panel
     this.fetchStatisticsPanel()
+
     // fetch data of metadata panel
     this.fetchMetaDataPanel()
-    clearInterval(this.checkOvertimeNumber)
-    this.checkOvertimeNumber = setInterval(this.checkFetchBlockOvertime, 100)
+
+    this.checkFetchBlockOvertime()
   }
-  componentWillReceiveProps (nextProps: HeaderProps) {
+
+  public componentWillReceiveProps (nextProps: HeaderProps) {
     if (this.props.location.pathname !== nextProps.location.pathname) {
       this.togglePanel('')()
     }
   }
-  componentDidCatch (err) {
+
+  public componentDidCatch (err) {
     this.handleError(err)
   }
-  componentWillUnmount () {
-    clearInterval(this.checkOvertimeNumber)
+
+  public componentWillUnmount () {
+    clearInterval(this.intervalCheckOvertime)
   }
+
   private onSearch$: Subject<any>
+
   private getChainMetadata = ip => {
     fetchMetadata(ip)
       .then(({ result }) => {
@@ -100,51 +144,66 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       .catch(this.handleError)
   }
 
+  private intervalCheckOvertime = -1 as any
+
+  private initBlockTimestamp = () => {
+    const { timestamp } = this.state.block.header
+    if (timestamp === '') {
+      this.setState(state =>
+        Object.assign({}, state, {
+          block: {
+            ...state.block,
+            header: {
+              ...state.block.header,
+              timestamp: Date.now()
+            }
+          }
+        })
+      )
+    }
+  }
+
+  private checkFetchBlockOvertime = () => {
+    clearInterval(this.intervalCheckOvertime)
+    let prevBlockTime = 0
+    let prevFetchTime = 0
+    const ms = 100
+    this.intervalCheckOvertime = setInterval(() => {
+      const { timestamp } = this.state.block.header
+      if (prevBlockTime === +timestamp) {
+        this.setState(state => ({
+          ...state,
+          overtime: Date.now() - prevFetchTime
+        }))
+      } else {
+        prevBlockTime = +timestamp
+        prevFetchTime = Date.now()
+        this.setState(state => ({
+          ...state,
+          overtime: 0
+        }))
+      }
+    }, ms)
+  }
+
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
     this.setState({ sidebarNavs: open })
   }
-  checkOvertimeNumber = -1 as any
-  private checkFetchBlockOvertime = () => {
-    const { metadata, block } = this.state
-    const { timestamp } = block.header
-    const now = Date.now()
-    const space = now - Number(timestamp)
-    const { blockInterval: interval } = metadata
-    if (space > 3 * interval) {
-      if (!this.state.globalHeaderHardAlertOpen) {
-        this.setState(state => ({
-          ...state,
-          globalHeaderHardAlertOpen: true,
-          overtime: space
-        }))
-      } else if (space - this.state.overtime > 1000) {
-        this.setState(state => ({
-          ...state,
-          overtime: space
-        }))
-      }
-    } else if (space > 2 * interval) {
-      if (!this.state.globalHeaderAlertOpen) {
-        this.setState(state => ({
-          ...state,
-          globalHeaderAlertOpen: true,
-          overtime: space
-        }))
-      } else {
-        this.setState(state => ({
-          ...state,
-          overtime: space
-        }))
-      }
-    } else {
-      this.setState(state => ({
-        ...state,
-        globalHeaderAlertOpen: false,
-        globalHeaderHardAlertOpen: false,
-        overtime: 0,
-      }))
-    }
+
+  private fetchNewBlockLoop = () => {
+    const { newBlockSubjectAdd, newBlockSubjectStart } = this.props.CITAObservables as any
+    newBlockSubjectAdd(
+      'header',
+      block => {
+        this.setState({
+          block
+        })
+      },
+      this.handleError
+    )
+    newBlockSubjectStart()
   }
+
   /**
    * @method fetchStatisticsPanel
    */
@@ -156,18 +215,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       })
       .catch(this.handleError)
     // fetch peer Count
-    const { peerCount, newBlockByNumberSubject } = this.props.CITAObservables
+    const { peerCount } = this.props.CITAObservables
     peerCount(60000).subscribe(
       (count: string) => this.setState((state: any) => ({ ...state, peerCount: +count })),
       this.handleError
     )
-    // fetch Block Number and Block
-    newBlockByNumberSubject.subscribe(block => {
-      this.setState({
-        block
-      })
-    }, this.handleError)
-    newBlockByNumberSubject.connect()
+    this.fetchNewBlockLoop()
     // fetch server list
     fetchServerList()
       .then(servers => {
@@ -212,13 +265,14 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       })
       .catch(this.handleError)
   }
+
   private togglePanel = (panel: string) => (e?: any) => {
     this.setState({
       activePanel: panel
     })
   }
 
-  private handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  public handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.keyCode === 13) {
       this.switchChain('')()
     }
@@ -235,6 +289,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
       otherMetadata: initMetadata
     }))
   }
+
   private toggleLngMenu = (lngOpen = false) => e => {
     this.setState({ lngOpen, anchorEl: e.currentTarget })
   }
@@ -244,6 +299,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     window.localStorage.setItem('i18nextLng', lng)
     window.location.reload()
   }
+
   private switchChainImmediate = chain => {
     const ip = chain || this.state.searchIp
     this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
@@ -251,6 +307,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     window.localStorage.setItem('chainIp', chainIp)
     window.location.reload()
   }
+
   private switchChain = (chain: string = '', immediate = false) => (e?: any) => {
     window.location.search = ''
     if (immediate) {
@@ -273,45 +330,52 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private dismissError = dismissError(this)
   private searchSubscription: Subscription
   private translations = process.env.LNGS ? process.env.LNGS.split(',') : ['zh', 'en']
-  render () {
-    const {
-      anchorEl,
-      lngOpen,
-      error,
-      serverList,
-      inputChainError,
-      waitingMetadata,
-      globalHeaderAlertOpen,
-      globalHeaderHardAlertOpen
-    } = this.state
+
+  private ActivePanel = () => {
+    const { serverList, inputChainError, waitingMetadata, activePanel } = this.state
+    if (activePanel === 'metadata') {
+      return (
+        <MetadataPanel
+          metadata={this.state.metadata}
+          handleInput={this.handleInput}
+          searchIp={this.state.searchIp}
+          searchResult={this.state.otherMetadata}
+          switchChain={this.switchChain}
+          handleKeyUp={this.handleKeyUp}
+          serverList={serverList}
+          inputChainError={inputChainError}
+          waitingMetadata={waitingMetadata}
+        />
+      )
+    } else if (activePanel === 'statistics') {
+      return (
+        <BriefStatisticsPanel
+          peerCount={this.state.peerCount}
+          number={this.state.block.header.number}
+          timestamp={this.state.block.header.timestamp}
+          proposal={this.state.block.header.proof.Bft.proposal}
+          tps={this.state.tps}
+          tpb={this.state.tpb}
+          ipb={this.state.ipb}
+        />
+      )
+    }
+    return <SearchPanel />
+  }
+
+  public render () {
+    const { anchorEl, lngOpen, error, metadata, overtime } = this.state
     const {
       location: { pathname },
       t
     } = this.props
     const ignoredContainer = [this.props.config.panelConfigs.debugger ? '' : 'Debugger']
     const displayedContainers = containers.filter(container => !ignoredContainer.includes(container.name))
+
     return createPortal(
       <React.Fragment>
         <AppBar position="fixed" elevation={0}>
-          <div
-            style={{
-              maxHeight: globalHeaderAlertOpen ? '100vh' : '0',
-              lineHeight: '1rem',
-              padding: globalHeaderAlertOpen ? '1rem 0' : '0',
-              fontSize: '1rem',
-              overflow: 'hidden',
-              background: globalHeaderHardAlertOpen ? '#fc4141' : '#f5a623',
-              textAlign: 'center',
-              transition: 'height 0.5s ease 0s, padding 0.5s ease 0s'
-            }}
-          >
-            Notice：No blocks loaded in
-            {globalHeaderHardAlertOpen
-              ? Math.floor(this.state.overtime / 1000)
-              : Math.floor(this.state.overtime / 100) / 10}
-            s
-          </div>
-
+          <BlockOvertimeAlert metadata={metadata} overtime={overtime} />
           <Toolbar
             className={layout.center}
             classes={{
@@ -323,15 +387,15 @@ class Header extends React.Component<HeaderProps, HeaderState> {
               onClick={this.toggleSideNavs(true)}
               classes={{ root: styles.toggleIcon }}
             >
-              <img src={`${process.env.PUBLIC}/microscopeIcons/expand.png`} alt="expand" />
+              <img src={Image.extend} alt="expand" />
             </IconButton>
-            <HeaderNavs containers={displayedContainers} pathname={pathname} logo={LOGO} />
+            <HeaderNavs containers={displayedContainers} pathname={pathname} logo={Image.logo} />
             <SidebarNavs
               open={this.state.sidebarNavs}
               containers={displayedContainers}
               pathname={pathname}
               toggleSideNavs={this.toggleSideNavs}
-              logo={LOGO}
+              logo={Image.logo}
             />
             <div className={styles.rightNavs}>
               <Button className={styles.navItem} onClick={this.togglePanel('metadata')}>
@@ -378,31 +442,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                 </IconButton>
               </Toolbar>
             </AppBar>
-            {this.state.activePanel === 'metadata' ? (
-              <MetadataPanel
-                metadata={this.state.metadata}
-                handleInput={this.handleInput}
-                searchIp={this.state.searchIp}
-                searchResult={this.state.otherMetadata}
-                switchChain={this.switchChain}
-                handleKeyUp={this.handleKeyUp}
-                serverList={serverList}
-                inputChainError={inputChainError}
-                waitingMetadata={waitingMetadata}
-              />
-            ) : this.state.activePanel === 'statistics' ? (
-              <BriefStatisticsPanel
-                peerCount={this.state.peerCount}
-                number={this.state.block.header.number}
-                timestamp={this.state.block.header.timestamp}
-                proposal={this.state.block.header.proof.Bft.proposal}
-                tps={this.state.tps}
-                tpb={this.state.tpb}
-                ipb={this.state.ipb}
-              />
-            ) : (
-              <SearchPanel />
-            )}
+            {this.ActivePanel()}
           </div>
         </RightSidebar>
         <ErrorNotification error={error} dismissError={this.dismissError} />

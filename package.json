@@ -16,7 +16,9 @@
     "dll": "rimraf lib && webpack --config ./config/webpack.config.dll.js",
     "precommit": "lint-staged",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist",
+    "docker:init": "docker-compose up",
+    "docker:start": "docker-compose down && docker-compose up -d"
   },
   "lint-staged": {
     "src/**/*.{tsx,ts}": [

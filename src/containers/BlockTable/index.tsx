@@ -56,6 +56,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
       limit: this.state.pageSize
     })
   }
+
   public componentDidCatch (err) {
     this.handleError(err)
   }
@@ -64,10 +65,12 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
     this.setState(state => Object.assign({}, state, { selectorsValue: params, pageNo: 0 }))
     this.fetchBlock(params)
   }
+
   private setPageSize = () => {
     const { blockPageSize: pageSize } = this.props.config.panelConfigs
     this.setState({ pageSize })
   }
+
   private setVisibleHeaders = () => {
     // hide invisible header
     this.setState(state => {
@@ -105,6 +108,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
       pageNo
     })
   }
+
   private handlePageChanged = newPage => {
     const offset = newPage * this.state.pageSize
     const limit = this.state.pageSize
@@ -118,6 +122,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
       })
       .catch(this.handleError)
   }
+
   private fetchBlock = (params: { [index: string]: string | number } = {}) => {
     this.setState(state => ({ loading: state.loading + 1 }))
     return fetchBlocks(paramsFilter(params))

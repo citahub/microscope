@@ -2,8 +2,8 @@ import * as React from 'react'
 
 const styles = require('./icons.scss')
 
-const IconBase = ({ name, className = '' }) => (
-  <svg className={`icon ${className}`} aria-hidden="true">
+const IconBase = ({ name, className = '', style = {} }) => (
+  <svg className={`icon ${className}`} aria-hidden="true" style={style}>
     <use xlinkHref={`#icon-${name}`} />
   </svg>
 )

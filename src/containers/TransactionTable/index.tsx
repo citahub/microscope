@@ -150,10 +150,15 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
 
   private fetchTransactions = (paramsInput: { [index: string]: string | number } = {}) => {
     // NOTICE: async
-    const params = {}
+    // const params = {}
+    const params = paramsFilter(paramsInput)
     this.setState(state => ({ loading: state.loading + 1 })) // for get transactions
-    Object.keys(paramsInput).forEach(key => (params[key] = check.format0x(paramsInput[key])))
-    return fetchTransactions(paramsFilter(params))
+    Object.keys(paramsInput).forEach(key => {
+      if (key === 'from' || key === 'to') {
+        params[key] = check.format0x(paramsInput[key])
+      }
+    })
+    return fetchTransactions(params)
       .then(({ result }: { result: { transactions: TransactionFromServer[]; count: number } }) => {
         if (this.props.setTransactionsCount) this.props.setTransactionsCount(result.count)
         this.setState(state => ({
@@ -182,6 +187,8 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
   private handlePageChanged = newPage => {
     const offset = newPage * this.state.pageSize
     const limit = this.state.pageSize
+    console.log('offset, limit', offset, limit)
+    console.log('this.state.selectorsValue', this.state.selectorsValue)
     this.fetchTransactions({
       offset,
       limit,
@@ -193,7 +200,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
       .catch(this.handleError)
   }
 
-  render () {
+  public render () {
     const { headers, items, selectors, selectorsValue, count, pageSize, pageNo, loading, error } = this.state
     const { inset = false, showInOut = false } = this.props
     const activeParams = paramsFilter(selectorsValue) as any

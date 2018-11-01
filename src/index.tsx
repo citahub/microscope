@@ -8,13 +8,12 @@
 import * as React from 'react'
 import { render } from 'react-dom'
 import { I18nextProvider } from 'react-i18next'
-
 import 'normalize.css'
 
 import i18n from './config/i18n'
+import App from './App'
 
 import './styles/common'
-import App from './App'
 
 const mount = (Comp: any) =>
   render(
