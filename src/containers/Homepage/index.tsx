@@ -1,8 +1,9 @@
 import * as React from 'react'
-import { LinearProgress, Grid } from '@material-ui/core'
+import { Grid } from '@material-ui/core'
 import { translate } from 'react-i18next'
-
 import { Chain } from '@nervos/plugin'
+
+import { LinearProgress } from '../../components'
 import { IContainerProps, TransactionFromServer } from '../../typings'
 import { withObservables } from '../../contexts/observables'
 import { fetch10Transactions } from '../../utils/fetcher'
@@ -16,7 +17,31 @@ import { handleError, dismissError } from '../../utils/handleError'
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
 
-interface HomepageProps extends IContainerProps {}
+const HomePageList = ({ icon, title, list: List, page }) => (
+  <Grid item md={6} sm={12} xs={12}>
+    <StaticCard icon={icon} title={title} className={styles.card} page={page}>
+      <List />
+    </StaticCard>
+  </Grid>
+)
+
+const HomeBlockList = ({ blocks }) => (
+  <HomePageList
+    icon="/microscopeIcons/blocks.png"
+    title="Latest 10 Blocks"
+    page="blocks"
+    list={() => <BlockList blocks={blocks} />}
+  />
+)
+
+const HomeTransactionList = ({ transactions }) => (
+  <HomePageList
+    icon="/microscopeIcons/transactions.png"
+    title="Latest 10 Transactions"
+    page="transactions"
+    list={() => <TransactionList transactions={transactions} />}
+  />
+)
 
 const initState = {
   loading: 0,
@@ -30,10 +55,27 @@ const initState = {
     message: ''
   }
 }
+
+interface HomepageProps extends IContainerProps {}
 type HomepageState = typeof initState
+
 class Homepage extends React.Component<HomepageProps, HomepageState> {
   state = initState
-  componentWillMount () {
+
+  public componentWillMount () {
+    this.fetchBlockNumber()
+    this.transactionHistory()
+  }
+
+  public componentDidMount () {
+    hideLoader()
+  }
+
+  public componentDidCatch (err) {
+    this.handleError(err)
+  }
+
+  private fetchBlockNumber = () => {
     // NOTICE: async
     this.setState(state => ({ loading: state.loading + 1 })) // for get block number
     this.props.CITAObservables.newBlockNumber(0, false).subscribe(
@@ -43,13 +85,6 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
       },
       this.handleError // for get block number
     )
-    this.transactionHistory()
-  }
-  componentDidMount () {
-    hideLoader()
-  }
-  componentDidCatch (err) {
-    this.handleError(err)
   }
 
   private blockHistory = ({ height, count }) => {
@@ -65,6 +100,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
       }))
     }, this.handleError) // for block history
   }
+
   private transactionHistory = () => {
     // NOTICE: async
     this.setState(state => ({ loading: state.loading + 1 })) // for transaction history
@@ -77,36 +113,20 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
       })
       .catch(this.handleError)
   }
+
   private handleError = handleError(this)
+
   private dismissError = dismissError(this)
 
-  render () {
-    const { t } = this.props
+  public render () {
+    const { blocks, transactions, loading } = this.state
     return (
       <React.Fragment>
-        {this.state.loading ? <LinearProgress classes={{ root: 'linearProgressRoot' }} /> : null}
+        <LinearProgress loading={loading} />
         <div className={layout.main}>
           <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
-            <Grid item md={6} sm={12} xs={12}>
-              <StaticCard
-                icon="/microscopeIcons/blocks.png"
-                title={t('Latest 10 Blocks')}
-                page="blocks"
-                className={styles.card}
-              >
-                <BlockList blocks={this.state.blocks} />
-              </StaticCard>
-            </Grid>
-            <Grid item md={6} sm={12} xs={12}>
-              <StaticCard
-                icon="/microscopeIcons/transactions.png"
-                title={t('Latest 10 Transactions')}
-                page="transactions"
-                className={styles.card}
-              >
-                <TransactionList transactions={this.state.transactions} />
-              </StaticCard>
-            </Grid>
+            <HomeBlockList blocks={blocks} />
+            <HomeTransactionList transactions={transactions} />
           </Grid>
         </div>
         <ErrorNotification error={this.state.error} dismissError={this.dismissError} />

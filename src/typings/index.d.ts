@@ -4,10 +4,15 @@ import i18n from '../config/i18n'
 import './block'
 
 export * from './block'
+
+export interface NewCITAObservables extends CITAObservables {
+  newBlockSubjectStart?: any
+  newBlockSubjectAdd?: any
+}
 /* eslint-disable no-restricted-globals */
 export interface IContainerProps {
   config: Config
-  CITAObservables: CITAObservables
+  CITAObservables: NewCITAObservables
   history: any
   match: {
     path: string

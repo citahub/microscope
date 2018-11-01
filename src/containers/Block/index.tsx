@@ -7,7 +7,7 @@
 
 import * as React from 'react'
 import { Link } from 'react-router-dom'
-import { LinearProgress, Card, CardContent, List, ListItem } from '@material-ui/core'
+import { Card, CardContent, List, ListItem } from '@material-ui/core'
 
 import { unsigner } from '@nervos/signer'
 import { RpcResult, Chain } from '@nervos/plugin/lib/typings/index.d'
@@ -16,9 +16,11 @@ import { IContainerProps, IBlock } from '../../typings'
 import { initBlockState } from '../../initValues'
 
 import Dialog from '../Dialog/'
+import { LinearProgress } from '../../components'
 import Banner from '../../components/Banner'
 import TransactionList from '../../components/TransactionList/'
 import ErrorNotification from '../../components/ErrorNotification'
+import Icon from '../../components/Icons'
 
 import { withConfig } from '../../contexts/config'
 import { withObservables } from '../../contexts/observables'
@@ -26,22 +28,124 @@ import { withObservables } from '../../contexts/observables'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import bytesToHex from '../../utils/bytesToHex'
+import Image from '../../images'
 
 const layouts = require('../../styles/layout')
 const texts = require('../../styles/text.scss')
 const styles = require('./block.scss')
 
+const BlockBanner = ({ header }) => (
+  <Banner bg={Image.banner.block}>
+    <div>Block</div>
+    <div className={styles.height}>
+      <Link
+        to={`/height/0x${(+header.number - 1).toString(16)}`}
+        href={`/height/0x${(+header.number - 1).toString(16)}`}
+      >
+        <Icon name="left" />
+      </Link>
+      Height: {+header.number}
+      <Link
+        to={`/height/0x${(+header.number + 1).toString(16)}`}
+        href={`/height/0x${(+header.number + 1).toString(16)}`}
+      >
+        <Icon name="left" style={{ transform: 'rotate(180deg)' }} />
+      </Link>
+    </div>
+  </Banner>
+)
+
+const InfoHead = ({ hash }) => (
+  <Card
+    classes={{
+      root: styles.hashCardRoot
+    }}
+  >
+    <CardContent>
+      <div className={styles.hashTitle}>Block Hash</div>
+      <div className={styles.hashText}>{hash}</div>
+    </CardContent>
+  </Card>
+)
+
+const InfoCell = ({ name, children, ...props }) => (
+  <ListItem {...props}>
+    <span className={styles.itemTitle}>{name}</span>
+    {children}
+  </ListItem>
+)
+
+const InfoList = ({ headerInfo, header }) =>
+  headerInfo.map(item => (
+    <InfoCell key={item.key} name={item.label}>
+      <span>{header[item.key]}</span>
+    </InfoCell>
+  ))
+
+const InfoContent = ({ header, transactions, toggleTransaction }) => {
+  const headerInfo = [
+    { key: 'gasUsed', label: 'Quota Used' },
+    { key: 'receiptsRoot', label: 'Receipts Root' },
+    { key: 'stateRoot', label: 'State Root' },
+    { key: 'transactionsRoot', label: 'Transactions Root' }
+  ]
+  return (
+    <Card classes={{ root: layouts.cardContainer }}>
+      <CardContent>
+        <List className={styles.items}>
+          <InfoCell name="TimeStamp">
+            <span>{new Date(header.timestamp).toLocaleString()}</span>
+          </InfoCell>
+
+          <InfoCell
+            name="TimeStamp"
+            onClick={transactions.length ? toggleTransaction(true) : undefined}
+            style={transactions.length ? { cursor: 'pointer' } : undefined}
+          >
+            <span style={transactions.length ? { color: '#2647fdcc' } : undefined}>{transactions.length}</span>
+          </InfoCell>
+
+          <InfoCell name="Proposer">
+            <span className={texts.hash}>{header.proposer}</span>{' '}
+          </InfoCell>
+
+          <InfoCell name="Parent Hash">
+            <span>
+              <Link to={`/block/${header.prevHash}`} href={`/block/${header.prevHash}`} className={texts.addr}>
+                {header.prevHash}
+              </Link>
+            </span>
+          </InfoCell>
+
+          <InfoList headerInfo={headerInfo} header={header} />
+        </List>
+      </CardContent>
+    </Card>
+  )
+}
+
+const BlockInfo = ({ hash, header, transactions, toggleTransaction }) => (
+  <div className={layouts.main}>
+    <InfoHead hash={hash} />
+    <InfoContent header={header} transactions={transactions} toggleTransaction={toggleTransaction} />
+  </div>
+)
+
 const initState = initBlockState
 type IBlockState = typeof initState
 interface IBlockProps extends IContainerProps {}
+
 class Block extends React.Component<IBlockProps, IBlockState> {
   readonly state = initState
+
   public componentWillMount () {
     this.onMount(this.props.match.params)
   }
+
   public componentDidMount () {
     hideLoader()
   }
+
   public componentWillReceiveProps (nextProps: IBlockProps) {
     const { blockHash, height } = nextProps.match.params
     const { blockHash: oldBlockHash, height: oldHeight } = this.props.match.params
@@ -53,6 +157,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
   public componentDidCatch (err) {
     this.handleError(err)
   }
+
   private onMount = params => {
     const { blockHash, height } = params
     if (blockHash) {
@@ -71,6 +176,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
       }, this.handleError)
     }
   }
+
   private handleReturnedBlock = (block: Chain.Block<Chain.TransactionInBlock>) => {
     if (!block) {
       return this.handleError({
@@ -96,6 +202,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     /* eslint-enable */
     return this.setState(state => Object.assign({}, state, { ...block, loading: state.loading - 1 }))
   }
+
   private toggleTransaction = (on: boolean = false) => e => {
     this.setState(state => ({
       ...state,
@@ -105,14 +212,8 @@ class Block extends React.Component<IBlockProps, IBlockState> {
 
   private handleError = handleError(this)
   private dismissError = dismissError(this)
-  private headerInfo = [
-    { key: 'gasUsed', label: 'Quota Used' },
-    { key: 'receiptsRoot', label: 'Receipts Root' },
-    { key: 'stateRoot', label: 'State Root' },
-    { key: 'transactionsRoot', label: 'Transactions Root' }
-  ]
 
-  render () {
+  public render () {
     const {
       loading,
       body: { transactions },
@@ -123,82 +224,9 @@ class Block extends React.Component<IBlockProps, IBlockState> {
     } = this.state
     return (
       <React.Fragment>
-        {loading ? (
-          <LinearProgress
-            classes={{
-              root: 'linearProgressRoot'
-            }}
-          />
-        ) : null}
-        <Banner bg={`${process.env.PUBLIC}/banner/banner-Block.png`}>
-          <div>Block</div>
-          <div className={styles.height}>
-            <Link
-              to={`/height/0x${(+header.number - 1).toString(16)}`}
-              href={`/height/0x${(+header.number - 1).toString(16)}`}
-            >
-              <svg className="icon" aria-hidden="true">
-                <use xlinkHref="#icon-left" />
-              </svg>
-            </Link>
-            Height: {+header.number}
-            <Link
-              to={`/height/0x${(+header.number + 1).toString(16)}`}
-              href={`/height/0x${(+header.number + 1).toString(16)}`}
-            >
-              <svg className="icon" aria-hidden="true" style={{ transform: 'rotate(180deg)' }}>
-                <use xlinkHref="#icon-left" />
-              </svg>
-            </Link>
-          </div>
-        </Banner>
-        <div className={layouts.main}>
-          <Card
-            classes={{
-              root: styles.hashCardRoot
-            }}
-          >
-            <CardContent>
-              <div className={styles.hashTitle}>Block Hash</div>
-              <div className={styles.hashText}>{hash}</div>
-            </CardContent>
-          </Card>
-          <Card classes={{ root: layouts.cardContainer }}>
-            <CardContent>
-              <List className={styles.items}>
-                <ListItem>
-                  <span className={styles.itemTitle}>TimeStamp</span>
-                  <span>{new Date(header.timestamp).toLocaleString()}</span>
-                </ListItem>
-                <ListItem
-                  onClick={transactions.length ? this.toggleTransaction(true) : undefined}
-                  style={transactions.length ? { cursor: 'pointer' } : undefined}
-                >
-                  <span className={styles.itemTitle}>Transactions</span>
-                  <span style={transactions.length ? { color: '#2647fdcc' } : undefined}>{transactions.length}</span>
-                </ListItem>
-                <ListItem>
-                  <span className={styles.itemTitle}>Proposer</span>
-                  <span className={texts.hash}>{header.proposer}</span>
-                </ListItem>
-                <ListItem>
-                  <span className={styles.itemTitle}>Parent Hash</span>
-                  <span>
-                    <Link to={`/block/${header.prevHash}`} href={`/block/${header.prevHash}`} className={texts.addr}>
-                      {header.prevHash}
-                    </Link>
-                  </span>
-                </ListItem>
-                {this.headerInfo.map(item => (
-                  <ListItem key={item.key}>
-                    <span className={styles.itemTitle}>{item.label}</span>
-                    <span>{header[item.key]}</span>
-                  </ListItem>
-                ))}
-              </List>
-            </CardContent>
-          </Card>
-        </div>
+        <LinearProgress loading={loading} />
+        <BlockBanner header={header} />
+        <BlockInfo hash={hash} header={header} transactions={transactions} toggleTransaction={this.toggleTransaction} />
         <Dialog on={transactionsOn} onClose={this.toggleTransaction()} dialogTitle="Transactions List">
           <TransactionList transactions={transactions} />
         </Dialog>

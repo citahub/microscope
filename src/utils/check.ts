@@ -63,5 +63,5 @@ const errorMessages = {
   // transaction: 'Please enter only transaction'
 }
 
-export { errorMessages }
+export { errorMessages, format0x }
 export default check

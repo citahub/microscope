@@ -36,3 +36,5 @@ defaultServerList.json
 
 # vscode setting
 .vscode
+
+package-lock.json
