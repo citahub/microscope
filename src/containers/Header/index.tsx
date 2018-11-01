@@ -57,8 +57,7 @@ const BlockOvertimeAlert = ({ metadata, overtime }) => {
         transition: 'height 0.5s ease 0s, padding 0.5s ease 0s'
       }}
     >
-      Notice：No blocks loaded in
-      {' '}{openHardAlert ? Math.floor(overtime / 1000) : Math.floor(overtime / 100) / 10}s
+      {`Notice：No blocks loaded in ${openHardAlert ? Math.floor(overtime / 1000) : Math.floor(overtime / 100) / 10}s`}
     </div>
   )
 }
@@ -166,12 +165,25 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private checkFetchBlockOvertime = () => {
     clearInterval(this.intervalCheckOvertime)
+    let prevBlockTime = 0
+    let prevFetchTime = 0
+    const ms = 100
     this.intervalCheckOvertime = setInterval(() => {
       const { timestamp } = this.state.block.header
-      const now = Date.now()
-      const overtime = now - Number(timestamp)
-      this.setState({ overtime })
-    }, 100)
+      if (prevBlockTime === +timestamp) {
+        this.setState(state => ({
+          ...state,
+          overtime: Date.now() - prevFetchTime
+        }))
+      } else {
+        prevBlockTime = +timestamp
+        prevFetchTime = Date.now()
+        this.setState(state => ({
+          ...state,
+          overtime: 0
+        }))
+      }
+    }, ms)
   }
 
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
@@ -180,11 +192,15 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private fetchNewBlockLoop = () => {
     const { newBlockSubjectAdd, newBlockSubjectStart } = this.props.CITAObservables as any
-    newBlockSubjectAdd('header', block => {
-      this.setState({
-        block
-      })
-    }, this.handleError)
+    newBlockSubjectAdd(
+      'header',
+      block => {
+        this.setState({
+          block
+        })
+      },
+      this.handleError
+    )
     newBlockSubjectStart()
   }
 
