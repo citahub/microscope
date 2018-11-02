@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
 import { Chain } from '@nervos/plugin'
-import { fromNow } from '../../utils/timeFormatter'
+import { formatedAgeString } from '../../utils/timeFormatter'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
@@ -51,7 +51,7 @@ export default translate('microscope')(
                     <span className={texts.addr}>{block.hash.slice(-4)}</span>
                   </Link>
                 </span>
-                <span className={styles.time}>{`${fromNow(block.header.timestamp)} ago`}</span>
+                <span className={styles.time}>{formatedAgeString(block.header.timestamp)}</span>
               </React.Fragment>
             }
             secondary={

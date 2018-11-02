@@ -22,10 +22,15 @@ const initState = {
   }
 }
 
+const GraphsDefault = {
+  initState,
+  PRICE
+}
+
 interface GraphsProps extends IContainerProps {}
 type GraphState = typeof initState
 type BlockGraphData = [BlockNumber, Timestamp, number, string]
 type TxGraphData = [Hash, number]
 type ProposalData = [string, number]
 
-export { PRICE, initState, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData }
+export { GraphsDefault, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData }

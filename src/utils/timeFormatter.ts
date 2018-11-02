@@ -34,6 +34,14 @@ export const fromNow = time => {
   return t.trim().length ? t : '0 sec'
 }
 
+export const formatedAgeString = time => {
+  const t = fromNow(time)
+  if (t === 'Time Error') {
+    return t
+  }
+  return `${t} ago`
+}
+
 export default {
   fromNow
 }

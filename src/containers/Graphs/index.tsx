@@ -10,7 +10,7 @@ import { BarOption, PieOption } from '../../config/graph'
 import { fetchTransactions, fetchStatistics } from '../../utils/fetcher'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
-import { PRICE, initState, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData } from './init'
+import { GraphsDefault, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData } from './init'
 import Image from '../../images'
 
 const layout = require('../../styles/layout.scss')
@@ -25,7 +25,7 @@ const getBlockSource = ({ blocks }) => {
       `${+(curr as IBlock).header.number}`, // height
       +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
       (curr as IBlock).body.transactions.length, // tx count
-      `${+(curr as IBlock).header.gasUsed / PRICE}`
+      `${+(curr as IBlock).header.gasUsed / GraphsDefault.PRICE}`
     ])
     return curr
   })
@@ -46,7 +46,7 @@ const getProposalSource = ({ proposals = this.state.proposals }) => {
 }
 
 class Graphs extends React.Component<GraphsProps, GraphState> {
-  readonly state = initState
+  readonly state = GraphsDefault.initState
 
   public componentWillMount () {
     this.setMaxCount()

@@ -11,7 +11,7 @@ import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError } from '../../utils/handleError'
 import { rangeSelectorText } from '../../utils/searchTextGen'
 import toText from '../../utils/toText'
-import { fromNow } from '../../utils/timeFormatter'
+import { formatedAgeString } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
 import check, { errorMessages } from '../../utils/check'
 
@@ -171,7 +171,7 @@ class TransactionTable extends React.Component<TransactionTableProps, Transactio
             hash: tx.hash,
             from: tx.from,
             to: toText(tx.to),
-            age: `${fromNow(tx.timestamp)} ago`,
+            age: formatedAgeString(tx.timestamp),
             value: valueFormatter(+tx.value),
             gasUsed: `${+tx.gasUsed}`
           }))

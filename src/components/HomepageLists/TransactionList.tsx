@@ -4,7 +4,7 @@ import { translate } from 'react-i18next'
 import { List, ListItem, ListItemText } from '@material-ui/core'
 import { TransactionFromServer } from '../../typings/'
 import { ContractCreation } from '../../initValues'
-import { fromNow } from '../../utils/timeFormatter'
+import { formatedAgeString } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
 
 const texts = require('../../styles/text.scss')
@@ -40,7 +40,7 @@ export default translate('microscope')(
                     <span className={texts.addr}>{tx.hash.slice(-4)}</span>
                   </Link>
                 </span>
-                <span className={styles.time}>{`${fromNow(tx.timestamp)} ago`}</span>
+                <span className={styles.time}>{formatedAgeString(tx.timestamp)}</span>
               </React.Fragment>
             }
             secondary={

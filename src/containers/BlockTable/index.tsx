@@ -24,7 +24,7 @@ import { handleError, dismissError } from '../../utils/handleError'
 import { rangeSelectorText } from '../../utils/searchTextGen'
 
 import { initBlockTableState } from '../../initValues'
-import { fromNow } from '../../utils/timeFormatter'
+import { formatedAgeString } from '../../utils/timeFormatter'
 
 interface BlockSelectors {
   selectorsValue: {
@@ -134,7 +134,7 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
             key: block.hash,
             height: `${+block.header.number}`,
             hash: block.hash,
-            age: `${fromNow(block.header.timestamp)} ago`,
+            age: formatedAgeString(block.header.timestamp),
             transactions: `${block.transactionsCount}`,
             gasUsed: `${+block.header.gasUsed}`
           }))

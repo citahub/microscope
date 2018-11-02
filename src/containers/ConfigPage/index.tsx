@@ -19,49 +19,12 @@ import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons'
 import Banner from '../../components/Banner'
 import Icon, {Loading} from '../../components/Icons'
 
-import { PanelConfigs } from '../../config/localstorage'
-
-import { withConfig, Config } from '../../contexts/config'
+import { withConfig } from '../../contexts/config'
 import hideLoader from '../../utils/hideLoader'
+import { ConfigPageProps, ConfigPageState, ConfigDetailType, ConfigType, ConfigPageDefault} from './init'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./config.scss')
-
-/* eslint-disable no-use-before-define */
-interface ConfigDetail {
-  panel: ConfigPanel
-  type: ConfigType
-  key: string
-  title: string
-}
-/* eslint-enable no-use-before-define */
-
-enum ConfigType {
-  DISPLAY,
-  COUNT,
-  ITEMS,
-  VALUE
-}
-
-enum ConfigPanel {
-  GENERAL = 'general',
-  HEADER = 'header',
-  BLOCK = 'block',
-  TRANSACTION = 'transaction',
-  GRAPH = 'graph',
-  DEBUGGER = 'debugger'
-}
-
-export interface ConfigPageProps {
-  config: Config
-  t: (key: string) => string
-}
-
-export interface ConfigPageState {
-  configs: PanelConfigs
-  inputTimeout?: any
-  saving?: boolean
-}
 
 const ConfigDetail = translate('microscope')(
   ({
@@ -73,7 +36,7 @@ const ConfigDetail = translate('microscope')(
     saving,
     t
   }: {
-  config: ConfigDetail
+  config: ConfigDetailType
   value: number | string | boolean | undefined
   handleSwitch: (key: string) => (e: any) => void
   handleInput: (key: string) => (e: React.ChangeEvent<HTMLInputElement>) => void
@@ -161,154 +124,9 @@ const ConfigItem = translate('microscope')(
 )
 
 class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
-  static panels = [
-    // ConfigPanel.GENERAL,
-    // ConfigPanel.HEADER,
-    ConfigPanel.BLOCK,
-    ConfigPanel.TRANSACTION,
-    ConfigPanel.GRAPH,
-    ConfigPanel.DEBUGGER
-  ]
-  static configs = [
-    {
-      panel: ConfigPanel.GENERAL,
-      type: ConfigType.VALUE,
-      key: 'logo',
-      title: 'logo'
-    },
-    {
-      panel: ConfigPanel.HEADER,
-      type: ConfigType.DISPLAY,
-      key: 'TPS',
-      title: 'TPS'
-    },
-    {
-      panel: ConfigPanel.BLOCK,
-      type: ConfigType.DISPLAY,
-      key: 'blockHeight',
-      title: 'height'
-    },
-    {
-      panel: ConfigPanel.BLOCK,
-      type: ConfigType.DISPLAY,
-      key: 'blockHash',
-      title: 'hash'
-    },
-    {
-      panel: ConfigPanel.BLOCK,
-      type: ConfigType.DISPLAY,
-      key: 'blockAge',
-      title: 'age'
-    },
-    {
-      panel: ConfigPanel.BLOCK,
-      type: ConfigType.DISPLAY,
-      key: 'blockTransactions',
-      title: 'transactions'
-    },
-    {
-      panel: ConfigPanel.BLOCK,
-      type: ConfigType.DISPLAY,
-      key: 'blockGasUsed',
-      title: 'quota used'
-    },
-    {
-      panel: ConfigPanel.BLOCK,
-      type: ConfigType.VALUE,
-      key: 'blockPageSize',
-      title: 'page size'
-    },
-    {
-      panel: ConfigPanel.TRANSACTION,
-      type: ConfigType.DISPLAY,
-      key: 'transactionHash',
-      title: 'hash'
-    },
-    {
-      panel: ConfigPanel.TRANSACTION,
-      type: ConfigType.DISPLAY,
-      key: 'transactionFrom',
-      title: 'from'
-    },
-    {
-      panel: ConfigPanel.TRANSACTION,
-      type: ConfigType.DISPLAY,
-      key: 'transactionTo',
-      title: 'to'
-    },
-    {
-      panel: ConfigPanel.TRANSACTION,
-      type: ConfigType.DISPLAY,
-      key: 'transactionValue',
-      title: 'value'
-    },
-    {
-      panel: ConfigPanel.TRANSACTION,
-      type: ConfigType.DISPLAY,
-      key: 'transactionAge',
-      title: 'age'
-    },
-    {
-      panel: ConfigPanel.TRANSACTION,
-      type: ConfigType.DISPLAY,
-      key: 'transactionBlockNumber',
-      title: 'block height'
-    },
-    {
-      panel: ConfigPanel.TRANSACTION,
-      type: ConfigType.DISPLAY,
-      key: 'transactionGasUsed',
-      title: 'quota used'
-    },
-    {
-      panel: ConfigPanel.TRANSACTION,
-      type: ConfigType.VALUE,
-      key: 'transactionPageSize',
-      title: 'page size'
-    },
-    {
-      panel: ConfigPanel.GRAPH,
-      type: ConfigType.DISPLAY,
-      key: 'graphIPB',
-      title: 'Interval/Block'
-    },
-    {
-      panel: ConfigPanel.GRAPH,
-      type: ConfigType.DISPLAY,
-      key: 'graphTPB',
-      title: 'Transactions/Block'
-    },
-    {
-      panel: ConfigPanel.GRAPH,
-      type: ConfigType.DISPLAY,
-      key: 'graphGasUsedBlock',
-      title: 'Quota Used/Block'
-    },
-    {
-      panel: ConfigPanel.GRAPH,
-      type: ConfigType.DISPLAY,
-      key: 'graphGasUsedTx',
-      title: 'Quota Used/Transaction'
-    },
-    {
-      panel: ConfigPanel.GRAPH,
-      type: ConfigType.DISPLAY,
-      key: 'graphProposals',
-      title: 'Proposals/Validator'
-    },
-    {
-      panel: ConfigPanel.GRAPH,
-      type: ConfigType.VALUE,
-      key: 'graphMaxCount',
-      title: 'MaxCount'
-    },
-    {
-      panel: ConfigPanel.DEBUGGER,
-      type: ConfigType.DISPLAY,
-      key: 'debugger',
-      title: 'Debugger'
-    }
-  ] as ConfigDetail[]
+  static panels = ConfigPageDefault.panels
+  static configs = ConfigPageDefault.configs
+
   public constructor (props) {
     super(props)
     this.state = {
@@ -321,6 +139,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
   public componentDidMount () {
     hideLoader()
   }
+
   private handleSwitch = key => (e?: any) => {
     this.setState(state => {
       const { configs } = this.state
@@ -331,6 +150,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       return state
     })
   }
+
   private handleInput = key => (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.currentTarget
     this.setState(state => {
@@ -342,6 +162,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       return state
     })
   }
+
   private controlInputScope = key => e => {
     const { configs, inputTimeout } = this.state
     const { value } = e.currentTarget
@@ -365,6 +186,7 @@ class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState> {
       this.setState({ inputTimeout: t, saving: true })
     }
   }
+
   public render () {
     return (
       <React.Fragment>
