@@ -66,7 +66,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         {
           icon: 'forum',
           title: 'Nervos Forums',
-          url: 'https://forums.nervos.org'
+          url: 'https://talk.nervos.org/'
         }
       ] as Contact[]
     }
