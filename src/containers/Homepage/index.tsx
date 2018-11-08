@@ -1,24 +1,25 @@
 import * as React from 'react'
-import { Grid } from '@material-ui/core'
-import { translate } from 'react-i18next'
-import { Chain } from '@nervos/plugin'
+import { Grid, } from '@material-ui/core'
+import { translate, } from 'react-i18next'
+import { Chain, } from '@nervos/plugin'
 
-import { LinearProgress } from '../../components'
-import { IContainerProps, TransactionFromServer } from '../../typings'
-import { withConfig } from '../../contexts/config'
-import { withObservables } from '../../contexts/observables'
-import { fetch10Transactions } from '../../utils/fetcher'
+import { LinearProgress, } from '../../components'
+import { TransactionFromServer, } from '../../typings'
+import { withConfig, } from '../../contexts/config'
+import { withObservables, } from '../../contexts/observables'
+import { fetch10Transactions, } from '../../utils/fetcher'
 import StaticCard from '../../components/StaticCard'
 import BlockList from '../../components/HomepageLists/BlockList'
 import TransactionList from '../../components/HomepageLists/TransactionList'
 import ErrorNotification from '../../components/ErrorNotification'
 import hideLoader from '../../utils/hideLoader'
-import { handleError, dismissError } from '../../utils/handleError'
+import { handleError, dismissError, } from '../../utils/handleError'
+import { HomepageProps, HomepageState, initState, } from './init'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
 
-const HomePageList = ({ icon, title, list: List, page }) => (
+const HomePageList = ({ icon, title, list: List, page, }) => (
   <Grid item md={6} sm={12} xs={12}>
     <StaticCard icon={icon} title={title} className={styles.card} page={page}>
       <List />
@@ -26,7 +27,7 @@ const HomePageList = ({ icon, title, list: List, page }) => (
   </Grid>
 )
 
-const HomeBlockList = ({ blocks }) => (
+const HomeBlockList = ({ blocks, }) => (
   <HomePageList
     icon="/microscopeIcons/blocks.png"
     title="Latest 10 Blocks"
@@ -35,7 +36,7 @@ const HomeBlockList = ({ blocks }) => (
   />
 )
 
-const HomeTransactionList = ({ transactions, symbol }) => (
+const HomeTransactionList = ({ transactions, symbol, }) => (
   <HomePageList
     icon="/microscopeIcons/transactions.png"
     title="Latest 10 Transactions"
@@ -43,22 +44,6 @@ const HomeTransactionList = ({ transactions, symbol }) => (
     list={() => <TransactionList transactions={transactions} symbol={symbol} />}
   />
 )
-
-const initState = {
-  loading: 0,
-  blocks: [] as Chain.Block<Chain.TransactionInBlock>[],
-  transactions: [] as TransactionFromServer[],
-  healthy: {
-    count: ''
-  },
-  error: {
-    code: '',
-    message: ''
-  }
-}
-
-interface HomepageProps extends IContainerProps {}
-type HomepageState = typeof initState
 
 class Homepage extends React.Component<HomepageProps, HomepageState> {
   state = initState
@@ -79,52 +64,55 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
 
   private fetchBlockNumber = () => {
     // NOTICE: async
-    this.setState(state => ({ loading: state.loading + 1 })) // for get block number
+    this.setState(state => ({ loading: state.loading + 1, })) // for get block number
     this.props.CITAObservables.newBlockNumber(0, false).subscribe(
       blockNumber => {
-        this.setState(state => ({ loading: state.loading - 1 }))
-        this.blockHistory({ height: blockNumber, count: 10 })
+        this.setState(state => ({ loading: state.loading - 1, }))
+        this.blockHistory({ height: blockNumber, count: 10, })
       },
       this.handleError // for get block number
     )
   }
 
-  private blockHistory = ({ height, count }) => {
+  private blockHistory = ({ height, count, }) => {
     // NOTICE: async
-    this.setState(state => ({ loading: state.loading + 1 })) // for block history
+    this.setState(state => ({ loading: state.loading + 1, })) // for block history
     this.props.CITAObservables.blockHistory({
       by: height,
-      count
+      count,
     }).subscribe((blocks: Chain.Block<Chain.TransactionInBlock>[]) => {
       this.setState(state => ({
         loading: state.loading - 1,
-        blocks
+        blocks,
       }))
     }, this.handleError) // for block history
   }
 
   private transactionHistory = () => {
     // NOTICE: async
-    this.setState(state => ({ loading: state.loading + 1 })) // for transaction history
+    this.setState(state => ({ loading: state.loading + 1, })) // for transaction history
     fetch10Transactions()
-      .then(({ result: { transactions } }: { result: { transactions: TransactionFromServer[] } }) => {
+      .then(({ result: { transactions, }, }: { result: { transactions: TransactionFromServer[] } }) => {
         this.setState(state => ({
           loading: state.loading - 1,
-          transactions
+          transactions,
         }))
       })
       .catch(this.handleError)
   }
 
   private subjectNewBlock = () => {
-    const { newBlockSubjectAdd } = this.props.CITAObservables
+    const { newBlockSubjectAdd, } = this.props.CITAObservables
     newBlockSubjectAdd(
       'homepage',
       block => {
         this.setState(state => {
-          const blocks = [...state.blocks, block].sort((b1, b2) => b2.header.number - b1.header.number).slice(0, 10)
+          const blocks = [...state.blocks, block, ].sort((b1, b2) => b2.header.number - b1.header.number).slice(0, 10)
+          if (block.body.transactions.length > 0) {
+            this.transactionHistory()
+          }
           return {
-            blocks
+            blocks,
           }
         })
       },
@@ -137,7 +125,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
   private dismissError = dismissError(this)
 
   public render () {
-    const { blocks, transactions, loading } = this.state
+    const { blocks, transactions, loading, } = this.state
     return (
       <React.Fragment>
         <LinearProgress loading={loading} />
