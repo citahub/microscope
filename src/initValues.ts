@@ -5,7 +5,8 @@
  * @Last Modified time: 2018-11-06 16:01:15
  */
 
-import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction, } from './typings'
+import { Chain, } from '@nervos/plugin'
+import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction, TransactionFromServer, } from './typings'
 import widerThan from './utils/widerThan'
 import { Contract, AccountType, } from './typings/account'
 import { LocalAccount, } from './components/LocalAccounts'
@@ -248,3 +249,16 @@ export const initConfigContext = {
 }
 
 export const ContractCreation = 'Contract Creation'
+
+export const initHomePageState = {
+  loading: 0,
+  blocks: [] as Chain.Block<Chain.TransactionInBlock>[],
+  transactions: [] as TransactionFromServer[],
+  healthy: {
+    count: '',
+  },
+  error: {
+    code: '',
+    message: '',
+  },
+}
