@@ -14,7 +14,7 @@ import TransactionList from '../../components/HomepageLists/TransactionList'
 import ErrorNotification from '../../components/ErrorNotification'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
-import { HomepageProps, HomepageState, } from './type'
+import { HomepageProps, HomepageState, } from './init'
 import { initHomePageState as initState, } from '../../initValues'
 
 const layout = require('../../styles/layout.scss')

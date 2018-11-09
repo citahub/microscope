@@ -1,22 +1,22 @@
 import * as React from 'react'
 import * as echarts from 'echarts'
-import { Observable } from '@reactivex/rxjs'
-import { Card, CardContent } from '@material-ui/core'
-import { withObservables } from '../../contexts/observables'
-import { withConfig } from '../../contexts/config'
+import { Observable, } from '@reactivex/rxjs'
+import { Card, CardContent, } from '@material-ui/core'
+import { withObservables, } from '../../contexts/observables'
+import { withConfig, } from '../../contexts/config'
 import Banner from '../../components/Banner'
 import ErrorNotification from '../../components/ErrorNotification'
-import { BarOption, PieOption } from '../../config/graph'
-import { fetchTransactions, fetchStatistics } from '../../utils/fetcher'
+import { BarOption, PieOption, } from '../../config/graph'
+import { fetchTransactions, fetchStatistics, } from '../../utils/fetcher'
 import hideLoader from '../../utils/hideLoader'
-import { handleError, dismissError } from '../../utils/handleError'
-import { GraphsDefault, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData } from './init'
+import { handleError, dismissError, } from '../../utils/handleError'
+import { GraphsDefault, IBlock, GraphsProps, GraphState, BlockGraphData, TxGraphData, ProposalData, } from './init'
 import Image from '../../images'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./graph.scss')
 
-const getBlockSource = ({ blocks }) => {
+const getBlockSource = ({ blocks, }) => {
   if (blocks.length <= 1) return []
   const source: BlockGraphData[] = []
   // form the source , x = height, y = interval, tx count, gas used
@@ -25,23 +25,23 @@ const getBlockSource = ({ blocks }) => {
       `${+(curr as IBlock).header.number}`, // height
       +(curr as IBlock).header.timestamp - +(prev as IBlock).header.timestamp, // interval
       (curr as IBlock).body.transactions.length, // tx count
-      `${+(curr as IBlock).header.gasUsed / GraphsDefault.PRICE}`
+      `${+(curr as IBlock).header.gasUsed / GraphsDefault.PRICE}`,
     ])
     return curr
   })
-  const graphSource = [['Blocks', 'Block Interval', 'Transactions', 'Quota Used'], ...source]
+  const graphSource = [['Blocks', 'Block Interval', 'Transactions', 'Quota Used', ], ...source, ]
   return graphSource
 }
 
-const getTxSource = ({ txs = this.state.transactions }) => {
-  const source: TxGraphData[] = txs.length ? txs.map(tx => [tx.hash, tx.gasUsed]) : []
-  const graphSource = [['Transactions', 'Quota Used'], ...source]
+const getTxSource = ({ txs = this.state.transactions, }) => {
+  const source: TxGraphData[] = txs.length ? txs.map(tx => [tx.hash, tx.gasUsed, ]) : []
+  const graphSource = [['Transactions', 'Quota Used', ], ...source, ]
   return graphSource
 }
 
-const getProposalSource = ({ proposals = this.state.proposals }) => {
-  const source: ProposalData[] = proposals.length ? proposals.map(p => [`${p.validator.slice(0, 5)}...`, p.count]) : []
-  const graphSource = [['Validators', 'Count'], ...source]
+const getProposalSource = ({ proposals = this.state.proposals, }) => {
+  const source: ProposalData[] = proposals.length ? proposals.map(p => [`${p.validator.slice(0, 5)}...`, p.count, ]) : []
+  const graphSource = [['Validators', 'Count', ], ...source, ]
   return graphSource
 }
 
@@ -71,8 +71,8 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   }
 
   private setMaxCount = () => {
-    const { graphMaxCount: maxCount } = this.props.config.panelConfigs
-    this.setState({ maxCount })
+    const { graphMaxCount: maxCount, } = this.props.config.panelConfigs
+    this.setState({ maxCount, })
   }
 
   // declare chart variables
@@ -86,11 +86,11 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   private gasUsedGraphDOM: HTMLDivElement | null
   private txGasUsedGraphDOM: HTMLDivElement | null
   private proposalsGraphDOM: HTMLDivElement | null
-  private graphList = ['blockGraph', 'txCountGraph', 'gasUsedGraph', 'txGasUsedGraph', 'proposalsGraph']
+  private graphList = ['blockGraph', 'txCountGraph', 'gasUsedGraph', 'txGasUsedGraph', 'proposalsGraph', ]
 
   private initGraphs = () => {
     // init chart dom
-    const { panelConfigs } = this.props.config
+    const { panelConfigs, } = this.props.config
     if (panelConfigs.graphIPB) {
       this.blockGraph = this.initGraph(this.blockGraphDOM as HTMLDivElement)
     }
@@ -115,8 +115,7 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   }
 
   private startListening = () => {
-    const { newBlockSubjectAdd } = this.props.CITAObservables
-    // this.props.CITAObservables.newBlockByNumberSubject.subscribe(block => {
+    const { newBlockSubjectAdd, } = this.props.CITAObservables
     newBlockSubjectAdd(
       'graphs',
       block => {
@@ -134,50 +133,50 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   }
 
   private updateProposals = () => {
-    fetchStatistics({ type: 'proposals' })
-      .then(({ result = [] }) => {
-        this.setState(state => ({ ...state, proposals: result }))
-        const source = getProposalSource({ proposals: result })
+    fetchStatistics({ type: 'proposals', })
+      .then(({ result = [], }) => {
+        this.setState(state => ({ ...state, proposals: result, }))
+        const source = getProposalSource({ proposals: result, })
         const proposalOption = {
           ...PieOption,
           title: {
             text: 'Proposal Distribution',
             textStyle: {
-              fontSize: 16
-            }
+              fontSize: 16,
+            },
           },
-          color: ['#415dfc', '#ab62f1', '#fca441', '#4db7f8'],
-          radius: ['50%', '70%'],
-          dataset: { source }
+          color: ['#415dfc', '#ab62f1', '#fca441', '#4db7f8', ],
+          radius: ['50%', '70%', ],
+          dataset: { source, },
         }
         this.updateGraph({
           graph: this.proposalsGraph,
-          option: proposalOption
+          option: proposalOption,
         })
       })
       .catch(this.handleError)
   }
 
   private updateTransactions = () => {
-    fetchTransactions({ limit: this.state.maxCount })
-      .then(({ result: { transactions: txs } }) => {
+    fetchTransactions({ limit: this.state.maxCount, })
+      .then(({ result: { transactions: txs, }, }) => {
         txs.reverse()
         this.setState(state => ({
           ...state,
-          transactions: txs
+          transactions: txs,
         }))
-        const source = getTxSource({ txs })
+        const source = getTxSource({ txs, })
         const txGasUsedOption = {
           ...BarOption,
           title: {
-            text: `Quota Used in the Latest ${this.state.maxCount} Transactions`
+            text: `Quota Used in the Latest ${this.state.maxCount} Transactions`,
           },
-          color: ['#ab62f1'],
+          color: ['#ab62f1', ],
           xAxis: {
             ...BarOption.xAxis,
             axisLabel: {
-              show: false
-            }
+              show: false,
+            },
           },
           formatter: (param: { seriesName: string; value: any[] }) => {
             const label = `<span>${param.seriesName}</span><br/><span>${param.value[0].slice(
@@ -187,13 +186,13 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
             return label
           },
           dataset: {
-            source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1]] : [item[0], item[1]]))
-          }
+            source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1], ] : [item[0], item[1], ])),
+          },
         }
         if (this.props.config.panelConfigs.graphGasUsedTx) {
           this.updateGraph({
             graph: this.txGasUsedGraph,
-            option: txGasUsedOption
+            option: txGasUsedOption,
           })
           this.txGasUsedGraph.on('click', (param: any) => {
             this.props.history.push(`/transaction/${param.value[0]}`)
@@ -204,73 +203,73 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
   }
 
   private updateGraphBlock = source => {
-    const { panelConfigs } = this.props.config
+    const { panelConfigs, } = this.props.config
     if (this.blockGraph && panelConfigs.graphIPB) {
       const timeCostOption = {
         title: {
           text: `Interval (in ms) for the Latest ${this.state.maxCount} Blocks`,
           textStyle: {
-            fontSize: 16
-          }
+            fontSize: 16,
+          },
         },
-        color: ['#415dfc'],
+        color: ['#415dfc', ],
         ...BarOption,
-        dataset: { source: source.map(item => [item[0], item[1]]) }
+        dataset: { source: source.map(item => [item[0], item[1], ]), },
       }
-      this.updateGraph({ graph: this.blockGraph, option: timeCostOption })
+      this.updateGraph({ graph: this.blockGraph, option: timeCostOption, })
     }
   }
 
   private updateGraphTxCount = source => {
-    const { panelConfigs } = this.props.config
+    const { panelConfigs, } = this.props.config
     if (this.txCountGraph && panelConfigs.graphTPB) {
       const txCountOption = {
         title: {
           text: `Transaction Count in the Latest ${this.state.maxCount} Blocks`,
           textStyle: {
-            fontSize: 16
-          }
+            fontSize: 16,
+          },
         },
-        color: ['#fca441'],
+        color: ['#fca441', ],
         ...BarOption,
-        dataset: { source: source.map(item => [item[0], item[2]]) }
+        dataset: { source: source.map(item => [item[0], item[2], ]), },
       }
-      this.updateGraph({ graph: this.txCountGraph, option: txCountOption })
+      this.updateGraph({ graph: this.txCountGraph, option: txCountOption, })
     }
   }
 
   private updateGasUsed = source => {
-    const { panelConfigs } = this.props.config
+    const { panelConfigs, } = this.props.config
     if (this.gasUsedGraph && panelConfigs.graphGasUsedBlock) {
       const gasUsedOption = {
         title: {
           text: `Quota Used in Latest ${this.state.maxCount} Blocks`,
           textStyle: {
-            fontSize: 16
-          }
+            fontSize: 16,
+          },
         },
-        color: ['#4db7f8'],
+        color: ['#4db7f8', ],
         ...BarOption,
-        dataset: { source: source.map(item => [item[0], item[3]]) }
+        dataset: { source: source.map(item => [item[0], item[3], ]), },
       }
-      this.updateGraph({ graph: this.gasUsedGraph, option: gasUsedOption })
+      this.updateGraph({ graph: this.gasUsedGraph, option: gasUsedOption, })
     }
   }
 
   private handleNewBlock = block => {
     this.setState(state => {
-      const blocks = [...state.blocks, block].slice(-(this.state.maxCount + 1))
+      const blocks = [...state.blocks, block, ].slice(-(this.state.maxCount + 1))
       if (blocks.length > 1) {
-        const source = getBlockSource({ blocks })
+        const source = getBlockSource({ blocks, })
         this.updateGraphBlock(source)
         this.updateGraphTxCount(source)
         this.updateGasUsed(source)
       }
-      return { blocks }
+      return { blocks, }
     })
   }
 
-  private updateGraph = ({ graph, option }) => {
+  private updateGraph = ({ graph, option, }) => {
     graph.setOption(option)
     graph.hideLoading()
   }

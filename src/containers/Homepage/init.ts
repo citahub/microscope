@@ -1,4 +1,3 @@
-import { Chain, } from '@nervos/plugin'
 import { IContainerProps, TransactionFromServer, } from '../../typings'
 import { initHomePageState as initState, } from '../../initValues'
 

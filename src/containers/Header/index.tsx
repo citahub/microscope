@@ -1,31 +1,31 @@
 import * as React from 'react'
-import { createPortal } from 'react-dom'
-import { translate } from 'react-i18next'
-import { Subject, Subscription } from '@reactivex/rxjs'
-import { AppBar, Toolbar, Menu, MenuItem, Typography, Button, IconButton } from '@material-ui/core'
-import { Translate as TranslateIcon, Close as CloseIcon } from '@material-ui/icons'
-import { Chain } from '@nervos/plugin'
+import { createPortal, } from 'react-dom'
+import { translate, } from 'react-i18next'
+import { Subject, Subscription, } from '@reactivex/rxjs'
+import { AppBar, Toolbar, Menu, MenuItem, Typography, Button, IconButton, } from '@material-ui/core'
+import { Translate as TranslateIcon, Close as CloseIcon, } from '@material-ui/icons'
+import { Chain, } from '@nervos/plugin'
 import containers from '../../Routes/containers'
 import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
 import ErrorNotification from '../../components/ErrorNotification'
 import RightSidebar from '../../components/RightSidebar'
-import MetadataPanel, { ServerList } from '../../components/MetadataPanel'
+import MetadataPanel, { ServerList, } from '../../components/MetadataPanel'
 import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
-import { withConfig } from '../../contexts/config'
-import { withObservables } from '../../contexts/observables'
-import { fetchStatistics, fetchServerList, fetchMetadata } from '../../utils/fetcher'
-import { initMetadata } from '../../initValues'
-import { handleError, dismissError } from '../../utils/handleError'
-import { initState, HeaderState, HeaderProps } from './init'
+import { withConfig, } from '../../contexts/config'
+import { withObservables, } from '../../contexts/observables'
+import { fetchStatistics, fetchServerList, fetchMetadata, } from '../../utils/fetcher'
+import { initMetadata, } from '../../initValues'
+import { handleError, dismissError, } from '../../utils/handleError'
+import { initHeaderState as initState, HeaderState, HeaderProps, } from './init'
 import Image from '../../images'
 
 const styles = require('./header.scss')
 const layout = require('../../styles/layout')
 
-const BlockOvertimeAlert = ({ metadata, overtime }) => {
-  let { blockInterval: interval } = metadata
+const BlockOvertimeAlert = ({ metadata, overtime, }) => {
+  let { blockInterval: interval, } = metadata
   if (interval === 0) {
     interval = 3000
   }
@@ -51,7 +51,7 @@ const BlockOvertimeAlert = ({ metadata, overtime }) => {
         overflow: 'hidden',
         background: openHardAlert ? '#fc4141' : '#f5a623',
         textAlign: 'center',
-        transition: 'height 0.5s ease 0s, padding 0.5s ease 0s'
+        transition: 'height 0.5s ease 0s, padding 0.5s ease 0s',
       }}
     >
       {`Notice：No blocks loaded in ${openHardAlert ? Math.floor(overtime / 1000) : Math.floor(overtime / 100) / 10}s`}
@@ -69,7 +69,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   public componentDidMount () {
     // start search subscription
-    this.searchSubscription = this.onSearch$.debounceTime(1000).subscribe(({ key, value }) => {
+    this.searchSubscription = this.onSearch$.debounceTime(1000).subscribe(({ key, value, }) => {
       if (key === 'searchIp') {
         this.getChainMetadata(value)
       }
@@ -102,12 +102,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private getChainMetadata = ip => {
     fetchMetadata(ip)
-      .then(({ result }) => {
+      .then(({ result, }) => {
         this.setState({
           otherMetadata: {
             ...result,
-            genesisTimestamp: new Date(result.genesisTimestamp).toLocaleString()
-          }
+            genesisTimestamp: new Date(result.genesisTimestamp).toLocaleString(),
+          },
         })
       })
       .catch(this.handleError)
@@ -116,7 +116,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private intervalCheckOvertime = -1 as any
 
   private initBlockTimestamp = () => {
-    const { timestamp } = this.state.block.header
+    const { timestamp, } = this.state.block.header
     if (timestamp === '') {
       this.setState(state =>
         Object.assign({}, state, {
@@ -124,9 +124,9 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             ...state.block,
             header: {
               ...state.block.header,
-              timestamp: Date.now()
-            }
-          }
+              timestamp: Date.now(),
+            },
+          },
         })
       )
     }
@@ -138,34 +138,34 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     let prevFetchTime = 0
     const ms = 100
     this.intervalCheckOvertime = setInterval(() => {
-      const { timestamp } = this.state.block.header
+      const { timestamp, } = this.state.block.header
       if (prevBlockTime === +timestamp) {
         this.setState(state => ({
           ...state,
-          overtime: Date.now() - prevFetchTime
+          overtime: Date.now() - prevFetchTime,
         }))
       } else {
         prevBlockTime = +timestamp
         prevFetchTime = Date.now()
         this.setState(state => ({
           ...state,
-          overtime: 0
+          overtime: 0,
         }))
       }
     }, ms)
   }
 
   private toggleSideNavs = (open: boolean = false) => (e: React.SyntheticEvent<HTMLElement>) => {
-    this.setState({ sidebarNavs: open })
+    this.setState({ sidebarNavs: open, })
   }
 
   private fetchNewBlockLoop = () => {
-    const { newBlockSubjectAdd } = this.props.CITAObservables
+    const { newBlockSubjectAdd, } = this.props.CITAObservables
     newBlockSubjectAdd(
       'header',
       block => {
         this.setState({
-          block
+          block,
         })
       },
       this.handleError
@@ -177,15 +177,15 @@ class Header extends React.Component<HeaderProps, HeaderState> {
    */
   private fetchStatisticsPanel = () => {
     // fetch brief statistics
-    fetchStatistics({ type: 'brief' })
-      .then(({ result: { tps, tpb, ipb } }) => {
-        this.setState(state => ({ ...state, tps, tpb, ipb }))
+    fetchStatistics({ type: 'brief', })
+      .then(({ result: { tps, tpb, ipb, }, }) => {
+        this.setState(state => ({ ...state, tps, tpb, ipb, }))
       })
       .catch(this.handleError)
     // fetch peer Count
-    const { peerCount } = this.props.CITAObservables
+    const { peerCount, } = this.props.CITAObservables
     peerCount(60000).subscribe(
-      (count: string) => this.setState((state: any) => ({ ...state, peerCount: +count })),
+      (count: string) => this.setState((state: any) => ({ ...state, peerCount: +count, })),
       this.handleError
     )
     this.fetchNewBlockLoop()
@@ -201,10 +201,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
         Object.keys(servers).forEach(serverName => {
           serverList.push({
             serverName,
-            serverIp: servers[serverName]
+            serverIp: servers[serverName],
           })
         })
-        this.setState({ serverList })
+        this.setState({ serverList, })
       })
       .catch(this.handleError)
   }
@@ -212,13 +212,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private fetchMetaDataPanel = () => {
     // fetch metadata
     this.props.CITAObservables.metaData({
-      blockNumber: 'latest'
+      blockNumber: 'latest',
     }).subscribe((metadata: Chain.MetaData) => {
       this.setState({
         metadata: {
           ...metadata,
-          genesisTimestamp: new Date(metadata.genesisTimestamp).toLocaleString()
-        }
+          genesisTimestamp: new Date(metadata.genesisTimestamp).toLocaleString(),
+        },
       })
       this.props.config.setSymbol(metadata.tokenSymbol)
     }, this.handleError)
@@ -228,7 +228,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private togglePanel = (panel: string) => (e?: any) => {
     this.setState({
-      activePanel: panel
+      activePanel: panel,
     })
   }
 
@@ -239,25 +239,25 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   protected handleInput = key => (e: React.SyntheticEvent<HTMLInputElement>) => {
-    const { value } = e.currentTarget
+    const { value, } = e.currentTarget
     if (key === 'searchIp') {
-      this.onSearch$.next({ key: 'searchIp', value })
+      this.onSearch$.next({ key: 'searchIp', value, })
     }
     this.setState(state => ({
       ...state,
       [key]: value,
       otherMetadata: initMetadata,
       inputChainError: false,
-      waitingMetadata: false
+      waitingMetadata: false,
     }))
   }
 
   private toggleLngMenu = (lngOpen = false) => e => {
-    this.setState({ lngOpen, anchorEl: e.currentTarget })
+    this.setState({ lngOpen, anchorEl: e.currentTarget, })
   }
 
   private changeLng = (lng = 'en') => e => {
-    this.setState({ lngOpen: false })
+    this.setState({ lngOpen: false, })
     window.localStorage.setItem('i18nextLng', lng)
     window.location.reload()
   }
@@ -286,15 +286,15 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     if (immediate) {
       this.switchChainImmediate(chain)
     }
-    const { otherMetadata } = this.state
-    this.setState({ inputChainError: false })
-    this.setState({ waitingMetadata: true })
+    const { otherMetadata, } = this.state
+    this.setState({ inputChainError: false, })
+    this.setState({ waitingMetadata: true, })
     setTimeout(() => {
       if (otherMetadata.chainId !== -1) {
         this.switchChainImmediate(chain)
       } else {
-        this.setState({ inputChainError: true })
-        this.setState({ waitingMetadata: false })
+        this.setState({ inputChainError: true, })
+        this.setState({ waitingMetadata: false, })
       }
     }, 1000)
   }
@@ -302,10 +302,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private searchSubscription: Subscription
-  private translations = process.env.LNGS ? process.env.LNGS.split(',') : ['zh', 'en']
+  private translations = process.env.LNGS ? process.env.LNGS.split(',') : ['zh', 'en', ]
 
   private ActivePanel = () => {
-    const { serverList, inputChainError, waitingMetadata, activePanel } = this.state
+    const { serverList, inputChainError, waitingMetadata, activePanel, } = this.state
     if (activePanel === 'metadata') {
       return (
         <MetadataPanel
@@ -337,12 +337,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   public render () {
-    const { anchorEl, lngOpen, error, metadata, overtime } = this.state
+    const { anchorEl, lngOpen, error, metadata, overtime, } = this.state
     const {
-      location: { pathname },
-      t
+      location: { pathname, },
+      t,
     } = this.props
-    const ignoredContainer = [this.props.config.panelConfigs.debugger ? '' : 'Debugger']
+    const ignoredContainer = [this.props.config.panelConfigs.debugger ? '' : 'Debugger', ]
     const displayedContainers = containers.filter(container => !ignoredContainer.includes(container.name))
 
     return createPortal(
@@ -352,13 +352,13 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           <Toolbar
             className={layout.center}
             classes={{
-              root: styles.toolbarRoot
+              root: styles.toolbarRoot,
             }}
           >
             <IconButton
               aria-label="open drawer"
               onClick={this.toggleSideNavs(true)}
-              classes={{ root: styles.toggleIcon }}
+              classes={{ root: styles.toggleIcon, }}
             >
               <img src={Image.extend} alt="expand" />
             </IconButton>
@@ -404,7 +404,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             <AppBar color="default" position="sticky" elevation={0}>
               <Toolbar
                 classes={{
-                  root: styles.toolbarRoot
+                  root: styles.toolbarRoot,
                 }}
               >
                 <Typography variant="title" color="inherit">
