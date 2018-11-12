@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { translate } from 'react-i18next'
-import { List, ListItem, ListItemText } from '@material-ui/core'
-import { TransactionFromServer } from '../../typings/'
-import { ContractCreation } from '../../initValues'
-import { formatedAgeString } from '../../utils/timeFormatter'
+import { Link, } from 'react-router-dom'
+import { translate, } from 'react-i18next'
+import { List, ListItem, ListItemText, } from '@material-ui/core'
+import { TransactionFromServer, } from '../../typings/'
+import { ContractCreation, } from '../../initValues'
+import { formatedAgeString, } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
 
 const texts = require('../../styles/text.scss')
@@ -14,7 +14,7 @@ export default translate('microscope')(
   ({
     transactions,
     t,
-    symbol
+    symbol,
   }: {
   transactions: TransactionFromServer[]
   t: (key: string) => string
@@ -22,30 +22,30 @@ export default translate('microscope')(
   }) => (
     <List
       classes={{
-        padding: styles.listPadding
+        padding: styles.listPadding,
       }}
     >
       {transactions.map(tx => (
-        <ListItem key={tx.hash} classes={{ root: styles.listItemContainer }}>
+        <ListItem key={tx.hash} classes={{ root: styles.listItemContainer, }}>
           <img
             src={`${process.env.PUBLIC}/microscopeIcons/transaction.svg`}
             alt="transaction"
             className={styles.txIcon}
           />
           <ListItemText
-            classes={{ primary: styles.primary, root: styles.listItemTextRoot }}
+            classes={{ primary: styles.primary, root: styles.listItemTextRoot, }}
             primary={
               <React.Fragment>
-                <span style={{ maxWidth: '100%' }}>
-                  {t('transaction')}:{' '}
+                <span style={{ maxWidth: '80%', }}>
+                  <div>TX#:</div>
                   <Link
                     to={`/transaction/${tx.hash}`}
                     href={`/transaction/${tx.hash}`}
                     className={styles.hashlink}
                     title={tx.hash}
                   >
-                    <span className={`${texts.addr} ${texts.ellipsis}`}>{tx.hash.slice(0, -4)}</span>
-                    <span className={texts.addr}>{tx.hash.slice(-4)}</span>
+                    <span className={`${texts.addr} ${texts.addrStart}`}>{tx.hash.slice(0, -4)}</span>
+                    <span className={`${texts.addr} ${texts.addrEnd}`}>{tx.hash.slice(-4)}</span>
                   </Link>
                 </span>
                 <span className={styles.time}>{formatedAgeString(tx.timestamp)}</span>
@@ -53,22 +53,24 @@ export default translate('microscope')(
             }
             secondary={
               <span className={styles.txInfo}>
-                <span className={texts.ellipsis}>
-                  {t('from')}:{' '}
-                  <Link to={`/account/${tx.from}`} href={`/account/${tx.from}`} className={texts.addr}>
-                    {tx.from || 'null'}
-                  </Link>
-                </span>
-                <span className={texts.ellipsis}>
-                  {t('to')}:{' '}
-                  {tx.to === '0x' ? (
-                    ContractCreation
-                  ) : (
-                    <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
-                      {tx.to}
+                <div className={styles.fromTo}>
+                  <span className={texts.ellipsis}>
+                    <div>From</div>
+                    <Link to={`/account/${tx.from}`} href={`/account/${tx.from}`} className={texts.addr}>
+                      {tx.from || 'null'}
                     </Link>
-                  )}
-                </span>
+                  </span>
+                  <span className={texts.ellipsis}>
+                    <div>To</div>
+                    {tx.to === '0x' ? (
+                      ContractCreation
+                    ) : (
+                      <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
+                        {tx.to}
+                      </Link>
+                    )}
+                  </span>
+                </div>
                 <span className={texts.ellipsis}>
                   {t('value')}:{' '}
                   <span className={styles.value} title={`${+tx.value}`}>

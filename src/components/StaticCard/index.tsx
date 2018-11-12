@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { Card, CardContent } from '@material-ui/core'
-import { TrendingFlat as ArrowIcon } from '@material-ui/icons'
+import { Card, CardContent, } from '@material-ui/core'
+import { TrendingFlat as ArrowIcon, } from '@material-ui/icons'
 
 const styles = require('./staticCard.scss')
 
@@ -33,4 +33,20 @@ export default (props: StaticCardProps) => (
       {props.children}
     </CardContent>
   </Card>
+)
+
+interface StaticCardProps {
+  title: string
+  page?: string
+}
+
+export const StaticCardTitle = props => (
+  <h2 className={styles.onlytitle}>
+    <span>{props.title}</span>
+    {props.page ? (
+      <a href={`/#/${props.page}`} className={styles.more}>
+        {'More >'}
+      </a>
+    ) : null}
+  </h2>
 )

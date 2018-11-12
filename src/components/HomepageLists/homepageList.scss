@@ -35,13 +35,25 @@
 
 .listItemContainer {
   width: auto !important;
-  padding: 16px 0 !important;
-  margin-left: 33px;
+  // padding: 16px 0 !important;
+  // margin-left: 33px;
   display: flex;
   align-items: stretch !important;
   border-bottom: 1px solid $divider;
   text-transform: capitalize;
   height: 130px;
+
+  // width: 580px;
+  padding: 37px 0 37px 27px !important;
+  height: 179px;
+  border-radius: 4px;
+  box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
+  background-color: #ffffff;
+  margin-bottom: 20px;
+
+  a:hover {
+    text-decoration: underline !important;
+  }
 
   svg {
     font-size: 1.5rem;
@@ -67,8 +79,14 @@
   color: #fff !important;
   border-radius: 4px;
   box-sizing: border-box;
-  line-height: 1.4;
 
+  font-size: 16px;
+  line-height: 24px;
+  width: 96px;
+  height: 105px;
+  opacity: 0.8;
+  border-radius: 6px;
+  background-color: #75b5ef;
   span {
     color: inherit;
   }
@@ -82,8 +100,8 @@
   font-size: 12px; // color: $plainText;
   color: #8b94a0;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 37px;
+  right: 20px;
   text-transform: lowercase !important;
 }
 
@@ -93,6 +111,16 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.fromTo {
+  display: flex;
+  span {
+    max-width: 50%;
+  }
+  span:first-child {
+    margin-right: 30px;
+  }
 }
 
 .value {

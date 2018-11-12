@@ -23,6 +23,15 @@
   color: #2647fdcc;
 }
 
+.addrStart {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.addrEnd::before {
+  content: '...';
+}
+
 .hash {
   @extend %hash;
   color: $plainText;

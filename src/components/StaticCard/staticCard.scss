@@ -47,6 +47,13 @@
   }
 }
 
+.onlytitle {
+  @extend .title;
+  border-bottom: none;
+  font-weight: normal;
+  padding: 0 0 10px 0;
+}
+
 .more {
   font-size: 0.875rem;
   color: $plainText;

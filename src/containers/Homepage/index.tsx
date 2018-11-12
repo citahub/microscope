@@ -8,7 +8,7 @@ import { TransactionFromServer, } from '../../typings'
 import { withConfig, } from '../../contexts/config'
 import { withObservables, } from '../../contexts/observables'
 import { fetch10Transactions, } from '../../utils/fetcher'
-import StaticCard from '../../components/StaticCard'
+import {StaticCardTitle, } from '../../components/StaticCard'
 import BlockList from '../../components/HomepageLists/BlockList'
 import TransactionList from '../../components/HomepageLists/TransactionList'
 import ErrorNotification from '../../components/ErrorNotification'
@@ -121,9 +121,10 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
 
 const HomePageList = ({ icon, title, list: List, page, }) => (
   <Grid item md={6} sm={12} xs={12}>
-    <StaticCard icon={icon} title={title} className={styles.card} page={page}>
-      <List />
-    </StaticCard>
+    <StaticCardTitle {...{title, page, }} />
+    <List />
+    {/* <StaticCard icon={icon} title={title} className={styles.card} page={page}>
+    </StaticCard> */}
   </Grid>
 )
 
@@ -155,9 +156,9 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
 
   public componentDidMount () {
     hideLoader()
-    this.subjectNewBlock()
+    // this.subjectNewBlock()
     this.fetchMetaData()
-    this.checkFetchBlockOvertime()
+    // this.checkFetchBlockOvertime()
   }
 
   public componentDidCatch (err) {
