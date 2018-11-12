@@ -12,13 +12,13 @@ declare global {
 
 if (URLSearchParams) {
   Object.defineProperty(window, 'urlParamChain', {
-    value: new URLSearchParams(window.location.search).get('chain')
+    value: new URLSearchParams(window.location.search).get('chain'),
   })
 }
 
 const initObservables: any = new CITAObservables({
   server: window.urlParamChain || window.localStorage.getItem('chainIp') || process.env.CHAIN_SERVERS || '',
-  interval: (process.env.OBSERVABLE_INTERVAL && +process.env.OBSERVABLE_INTERVAL) || 1000
+  interval: (process.env.OBSERVABLE_INTERVAL && +process.env.OBSERVABLE_INTERVAL) || 1000,
 })
 
 const newBlockCallbackTable = {} as any
@@ -75,7 +75,7 @@ initObservables.newBlockSubjectAdd = (key, callback, error, { ...params }) => {
   newBlockCallbackTable[key] = {
     callback,
     error,
-    ...params
+    ...params,
   }
 }
 

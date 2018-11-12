@@ -1,21 +1,19 @@
 import * as React from 'react'
+import { hexToUtf8, } from 'web3-utils'
 import { Link, } from 'react-router-dom'
-import { Card, CardContent, List, ListSubheader, ListItem, ListItemText, Divider, } from '@material-ui/core'
-import { unsigner, } from '@nervos/signer'
+import { Card, CardContent, List, ListSubheader, ListItem, ListItemText, Typography, Divider, } from '@material-ui/core'
+import { unsigner, } from '@appchain/signer'
 import { Chain, } from '@nervos/plugin/lib/typings/index.d'
 
 import { LinearProgress, } from '../../components'
 import Banner from '../../components/Banner'
-import Icon from '../../components/Icons'
 import ErrorNotification from '../../components/ErrorNotification'
 
 import { withConfig, } from '../../contexts/config'
 import { withObservables, } from '../../contexts/observables'
-import { IContainerProps, DetailedTransaction, } from '../../typings/'
+import { IContainerProps, } from '../../typings/'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
-import bytesToHex from '../../utils/bytesToHex'
-import { timeFormatter, } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
 import { format0x, } from '../../utils/check'
 import Images from '../../images'
@@ -24,125 +22,125 @@ const layouts = require('../../styles/layout.scss')
 const texts = require('../../styles/text.scss')
 const styles = require('./transaction.scss')
 
-const InfoList = ({ infos, details, }) =>
-  infos.map(info => (
-    <ListItem key={info.key}>
-      <ListItemText
-        classes={{
-          primary: styles.infoTitle,
-          secondary: styles.infoValue,
-        }}
-        primary={info.label}
-        secondary={
-          info.type && !['Contract Creation', ].includes(details[info.key]) ? (
-            <Link
-              to={`/${info.type}/${details[info.key]}`}
-              href={`/${info.type}/${details[info.key]}`}
-              className={texts.addr}
-            >
-              {details[info.key] || 'null'}
-            </Link>
-          ) : (
-            details[info.key] || 'null'
-          )
-        }
-      />
-    </ListItem>
-  ))
+// ;
 
-const Info = ({ title, infos, details, }) => (
-  <List
-    subheader={
-      <ListSubheader component="div" classes={{ root: styles.listHeaderRoot, }}>
-        {title}
-      </ListSubheader>
-    }
-    classes={{
-      root: styles.listRoot,
-    }}
-  >
-    <Divider classes={{ root: styles.divider, }} light />
-    <InfoList infos={infos} details={details} />
-  </List>
-)
+// (window as any).hello = unsigner
+export enum TX_TYPE {
+  EXCHANGE = 'Exchange',
+  CONTRACT_CREATION = 'Contract Creation',
+  CONTRACT_CALL = 'Contract Call',
+}
+export enum TX_STATUS {
+  SUCCESS = 'Success',
+  FAILURE = 'Failure',
+}
+export enum DATA_TYPE {
+  HEX = 'Hex',
+  UTF8 = 'UTF-8',
+}
+const EMPTY_DATA = 'Empty Data'
 
-const Timestamp = (timestamp, gasUsed) => (
-  <Card classes={{ root: styles.hashCardRoot, }}>
-    <CardContent>
-      <div className={styles.attrs}>
-        <span>
-          <Icon name="time" />
-          <span className={styles.attrTitle}>Time: </span>
-          {timeFormatter(timestamp, true)}
-        </span>
-        {gasUsed ? (
-          <span>
-            <img src={Images.gas} alt="gas used" className={styles.gasIcon} />
-            <span className={styles.attrTitle}>Gas Used: </span>
-            {gasUsed}
-          </span>
-        ) : null}
-      </div>
-    </CardContent>
-  </Card>
+const InfoItem = ({
+  label,
+  type,
+  detail,
+  action,
+}: {
+label: string
+type?: string
+detail: any
+action?: {
+label: string
+cb: (e) => void
+}
+}) => (
+  <ListItem>
+    <ListItemText
+      classes={{
+        primary: styles.infoTitle,
+        secondary: styles.infoValue,
+      }}
+      primary={
+        <Typography variant="body2">
+          {label}
+          {action ? <button onClick={action.cb}>{action.label}</button> : null}
+        </Typography>
+      }
+      secondary={
+        type ? (
+          <Link to={`/${type}/${detail}`} href={`/${type}/${detail}`} className={texts.addr}>
+            {detail}
+          </Link>
+        ) : (
+          detail
+        )
+      }
+    />
+  </ListItem>
 )
 
 interface TransactionProps extends IContainerProps {}
 
-interface TransactionState extends DetailedTransaction {
-  timestamp: ''
-  gasUsed: ''
-  error: {
-    message: string
-    code: string
-  }
-  loading: number
-}
-const initState: TransactionState = {
+const initState = {
   hash: '',
   blockHash: '',
   blockNumber: '',
-  index: '',
-  content: '',
-  basicInfo: {
-    from: '',
-    to: '',
-    nonce: '',
-    validUntilBlock: '',
-    value: '',
-    data: '',
-    quotaLimit: '',
-    quotaPrice: '',
-    quotaUsed: '',
-    createdContractAddress: '',
-    errorMessage: '',
-  },
+  from: '',
+  to: '',
+  nonce: '',
+  validUntilBlock: '',
+  value: '',
+  data: '',
+  utf8Str: '',
+  quotaLimit: '',
+  quotaUsed: '',
+  version: 0,
   error: {
     message: '',
     code: '',
   },
+  quotaPrice: '',
   timestamp: '',
-  gasUsed: '',
   loading: 0,
+  status: TX_STATUS.FAILURE as TX_STATUS | String,
+  type: TX_TYPE.EXCHANGE,
+  dataType: DATA_TYPE.HEX,
 }
 
-class Transaction extends React.Component<TransactionProps, TransactionState> {
+type ITransactionState = typeof initState
+
+class Transaction extends React.Component<TransactionProps, ITransactionState> {
+  static items = [
+    { key: 'type', label: 'Type', },
+    { key: 'status', label: 'Status', },
+    { key: 'from', label: 'From', type: 'account', },
+    { key: 'to', label: 'To', type: 'account', },
+    { key: 'contractAddress', label: 'Contract', type: 'account', },
+    { key: 'blockNumber', label: 'Block Height', type: 'block', },
+    { key: 'version', label: 'Version', },
+    { key: 'nonce', label: 'Nonce', },
+    { key: 'validUntilBlock', label: 'ValidUntilBlock', },
+    { key: 'value', label: 'Value', },
+    { key: 'quota', label: 'Quota', },
+    { key: 'quotaPrice', label: 'Quota Price', },
+    { key: 'fee', label: 'Fee', },
+  ]
   readonly state = initState
 
-  public componentWillMount () {
+  public componentDidMount () {
+    hideLoader()
     const { transaction, } = this.props.match.params
     if (transaction) {
       this.fetchTransactionInfo(transaction)
     }
   }
 
-  public componentDidMount () {
-    hideLoader()
-  }
-
   public componentWillReceiveProps (nextProps) {
     const { transaction, } = nextProps.match.params
-    if (transaction) {
+    if (
+      transaction &&
+      transaction.replace(/^0x/, '').toLowerCase() !== this.state.hash.replace(/^0x/, '').toLowerCase()
+    ) {
       this.fetchTransactionInfo(transaction)
     }
   }
@@ -151,16 +149,12 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
     this.handleError(err)
   }
 
-  private getQuotaPrice = (blockNumber: string) => {
-    this.props.CITAObservables.getQuotaPrice(blockNumber).subscribe((price: string) => {
-      this.setState(state =>
-        Object.assign({}, state, {
-          basicInfo: {
-            ...state.basicInfo,
-            quotaPrice: `${price === '0x' ? '0' : +price}`,
-          },
-        })
-      )
+  private getQuotaPrice = () => {
+    this.props.CITAObservables.getQuotaPrice().subscribe((price: string) => {
+      this.setState(state => ({
+        ...state,
+        quotaPrice: `${price === '0x' ? '0' : +price}`,
+      }))
     }, this.handleError)
   }
 
@@ -168,12 +162,14 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
     const hash = format0x(transaction)
     this.setState(state => ({ loading: state.loading + 2, hash, }))
     this.props.CITAObservables.getTransaction(transaction).subscribe((tx: Chain.Transaction) => {
-      this.handleReturnedTx(tx)
+      setTimeout(() => {
+        this.handleReturnedTx(tx)
+      }, 100)
     }, this.handleError)
     this.props.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: Chain.TransactionReceipt) => {
       this.handleReturnedTxReceipt(receipt)
     }, this.handleError)
-    // this.getQuotaPrice()
+    this.getQuotaPrice()
   }
 
   private handleReturnedTx = (tx: Chain.Transaction) => {
@@ -185,88 +181,94 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
         },
       })
     }
-    const details = unsigner(tx.content)
-    let { data, value, } = details.transaction
-    const { nonce, quota: quotaLimit, validUntilBlock, } = details.transaction
-    let { address: from, } = details.sender
-    let { to, } = tx.basicInfo as any
+    try {
+      const unsignedTx = unsigner(tx.content)
+      const { value, data, nonce, quota: quotaLimit, validUntilBlock, version, to, } = unsignedTx.transaction
 
-    const hexData = bytesToHex(data as any)
-    data = hexData === '0x' ? 'null' : hexData
-    value = valueFormatter(bytesToHex(value as any), this.props.config.symbol)
-    from = `0x${from}`
-    to = to ? `0x${to}` : 'Contract Creation'
-
-    this.setState(state =>
-      Object.assign({}, state, {
+      this.setState(state => ({
+        ...state,
         blockHash: tx.blockHash,
         blockNumber: `${+tx.blockNumber}`,
         index: `${+tx.index}`,
-        basicInfo: {
-          ...state.basicInfo,
-          data,
-          value,
-          from,
-          nonce,
-          quotaLimit,
-          validUntilBlock,
-          to,
-        },
+        data: data === '0x' ? EMPTY_DATA : data,
+        from: unsignedTx.sender.address,
+        to,
+        quotaLimit,
+        nonce,
+        validUntilBlock,
+        value,
+        version,
+        type: !to ? TX_TYPE.CONTRACT_CREATION : data ? TX_TYPE.CONTRACT_CALL : TX_TYPE.EXCHANGE,
         loading: state.loading - 1,
+      }))
+
+      const utf8Str = hexToUtf8(data)
+      this.setState({
+        utf8Str,
       })
-    )
+    } catch (err) {
+      console.warn(err)
+      this.handleError({
+        error: 'Invalid Transaction',
+        code: '-1',
+      })
+    }
   }
 
   private handleReturnedTxReceipt = (receipt: Chain.TransactionReceipt) => {
     if (!receipt) {
       this.handleError({
         error: {
-          message: 'Transaction Not Found',
+          message: 'Transaction Receipt Not Found',
           code: '-1',
         },
       })
     }
-    const { errorMessage, gasUsed: quotaUsed, contractAddress: createdContractAddress, blockNumber, } = receipt
-    this.setState(state =>
-      Object.assign({}, state, {
-        basicInfo: {
-          ...state.basicInfo,
-          errorMessage,
-          quotaUsed,
-          createdContractAddress,
-        },
-        loading: state.loading - 1,
-      })
-    )
-    // get quota price
-    this.getQuotaPrice(blockNumber)
+    const { errorMessage, gasUsed: quotaUsed, contractAddress, } = receipt
+    this.setState(state => ({
+      ...state,
+      status: errorMessage ? `${TX_STATUS.FAILURE} ${errorMessage}` : TX_STATUS.SUCCESS,
+      quotaUsed: `${+quotaUsed}`,
+      contractAddress,
+      loading: state.loading - 1,
+    }))
   }
 
-  private infos = [
-    { key: 'blockHash', label: 'Block Hash', type: 'block', },
-    { key: 'blockNumber', label: 'Height', type: 'height', },
-    { key: 'index', label: 'Index', },
-  ]
-
-  private basicInfo = [
-    { key: 'from', label: 'From', type: 'account', },
-    { key: 'to', label: 'To', type: 'account', },
-    { key: 'nonce', label: 'Nonce', },
-    { key: 'validUntilBlock', label: 'ValidUntilBlock', },
-    { key: 'value', label: 'Value', },
-    { key: 'data', label: 'Data', },
-    { key: 'quotaLimit', label: 'Quota Limit', },
-    { key: 'quotaPrice', label: 'Quota Price', },
-    { key: 'quotaUsed', label: 'Quota Used', },
-    { key: 'createdContractAddress', label: 'Created Contract Address', },
-    { key: 'errorMessage', label: 'Error Message', },
-  ]
+  private switchDataType = e => {
+    this.setState(state => ({
+      dataType: state.dataType === DATA_TYPE.HEX ? DATA_TYPE.UTF8 : DATA_TYPE.HEX,
+    }))
+  }
 
   private handleError = handleError(this)
   private dismissError = dismissError(this)
 
   public render () {
-    const { hash, error, timestamp, gasUsed, loading, } = this.state
+    const {
+      data,
+      utf8Str,
+      dataType,
+      hash,
+      error,
+      value,
+      quotaUsed,
+      quotaPrice,
+      quotaLimit,
+      loading,
+      validUntilBlock,
+      blockNumber,
+    } = this.state
+    const { symbol, } = this.props.config
+    const txInfo = {
+      ...this.state,
+      blockNumber: `${(+blockNumber).toLocaleString()}`,
+      quota: `${(+quotaUsed).toLocaleString()} / ${(+quotaLimit).toLocaleString()}`,
+      fee: valueFormatter(+quotaUsed * +quotaPrice, symbol),
+      quotaPrice: (+quotaPrice).toLocaleString(),
+      value: valueFormatter(value, symbol),
+      validUntilBlock: `${(+validUntilBlock).toLocaleString()}`,
+      data: dataType === DATA_TYPE.HEX ? data : utf8Str,
+    }
     return (
       <React.Fragment>
         <LinearProgress loading={loading} />
@@ -276,12 +278,34 @@ class Transaction extends React.Component<TransactionProps, TransactionState> {
         </Banner>
 
         <div className={layouts.main}>
-          {timestamp ? <Timestamp timestamp={timestamp} gasUsed={gasUsed} /> : null}
           <Card classes={{ root: layouts.cardContainer, }}>
             <CardContent classes={{ root: styles.cardContentRoot, }}>
               <div className={styles.lists}>
-                <Info title="Transaction" infos={this.basicInfo} details={this.state.basicInfo} />
-                <Info title="Block" infos={this.infos} details={this.state} />
+                <List
+                  subheader={
+                    <ListSubheader component="div" classes={{ root: styles.listHeaderRoot, }}>
+                      Transaction
+                    </ListSubheader>
+                  }
+                  classes={{
+                    root: styles.listRoot,
+                  }}
+                >
+                  <Divider classes={{ root: styles.divider, }} light />
+                  {Transaction.items.map(
+                    item =>
+                      txInfo[item.key] !== '' ? (
+                        <InfoItem label={item.label} type={item.type} key={item.key} detail={txInfo[item.key]} />
+                      ) : null
+                  )}
+                  {data ? (
+                    <InfoItem
+                      label="Data"
+                      detail={txInfo.data}
+                      action={utf8Str ? { label: 'HEX/UTF8', cb: this.switchDataType, } : undefined}
+                    />
+                  ) : null}
+                </List>
               </div>
             </CardContent>
           </Card>

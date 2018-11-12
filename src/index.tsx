@@ -1,13 +1,13 @@
 /*
  * @Author: Keith-CY
  * @Date: 2018-07-22 19:59:17
- * @Last Modified by:   Keith-CY
- * @Last Modified time: 2018-07-22 19:59:17
+ * @Last Modified by: Keith-CY
+ * @Last Modified time: 2018-11-12 20:58:23
  */
 
 import * as React from 'react'
-import { render } from 'react-dom'
-import { I18nextProvider } from 'react-i18next'
+import { render, } from 'react-dom'
+import { I18nextProvider, } from 'react-i18next'
 import 'normalize.css'
 
 import i18n from './config/i18n'
@@ -20,7 +20,7 @@ const mount = (Comp: any) =>
     <I18nextProvider i18n={i18n}>
       <Comp />
     </I18nextProvider>,
-    document.getElementById('root') as HTMLElement,
+    document.getElementById('root') as HTMLElement
   )
 
 mount(App)

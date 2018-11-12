@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { Link } from 'react-router-dom'
-import { translate } from 'react-i18next'
-import { Search as SearchIcon } from '@material-ui/icons'
-import { unsigner } from '@nervos/signer'
-import { withObservables } from '../../contexts/observables'
-import { IContainerProps, IBlock, UnsignedTransaction } from '../../typings'
-import { initBlock, initUnsignedTransaction } from '../../initValues'
-import { fetchTransactions } from '../../utils/fetcher'
+import { Link, } from 'react-router-dom'
+import { translate, } from 'react-i18next'
+import { Search as SearchIcon, } from '@material-ui/icons'
+import { unsigner, } from '@appchain/signer'
+import { withObservables, } from '../../contexts/observables'
+import { IContainerProps, IBlock, UnsignedTransaction, } from '../../typings'
+import { initBlock, initUnsignedTransaction, } from '../../initValues'
+import { fetchTransactions, } from '../../utils/fetcher'
 import toText from '../../utils/toText'
 import bytesToHex from '../../utils/bytesToHex'
 import valueFormatter from '../../utils/valueFormatter'
@@ -20,20 +20,20 @@ enum SearchType {
   TRANSACTION,
   ACCOUNT,
   HEIGHT,
-  ERROR
+  ERROR,
 }
 
 const searchGen = keyword => {
   let word = check.format0x(keyword)
   word = word.toLocaleLowerCase()
   if (check.address(word)) {
-    return { type: SearchType.ACCOUNT, value: word }
+    return { type: SearchType.ACCOUNT, value: word, }
   } else if (check.transaction(word)) {
-    return { type: SearchType.TRANSACTION, value: word }
+    return { type: SearchType.TRANSACTION, value: word, }
   } else if (check.height(word)) {
-    return { type: SearchType.HEIGHT, value: word }
+    return { type: SearchType.HEIGHT, value: word, }
   }
-  return { type: SearchType.ERROR, value: word }
+  return { type: SearchType.ERROR, value: word, }
 }
 
 const NotFound = () => (
@@ -43,7 +43,7 @@ const NotFound = () => (
   </div>
 )
 
-const BlockDisplay = translate('microscope')(({ block, t }: { block: IBlock; t: (key: string) => string }) => (
+const BlockDisplay = translate('microscope')(({ block, t, }: { block: IBlock; t: (key: string) => string }) => (
   <div className={styles.display}>
     <div className={styles.title}>Block</div>
     <table className={styles.items}>
@@ -81,7 +81,7 @@ const BlockDisplay = translate('microscope')(({ block, t }: { block: IBlock; t: 
 ))
 
 const TransactionDisplay = translate('microscope')(
-  ({ tx, t }: { tx: UnsignedTransaction & { hash: string }; t: (key: string) => string }) => (
+  ({ tx, t, }: { tx: UnsignedTransaction & { hash: string }; t: (key: string) => string }) => (
     <div className={styles.display}>
       <div className={styles.title}>Transaction</div>
       <table className={styles.items}>
@@ -108,7 +108,7 @@ const TransactionDisplay = translate('microscope')(
 )
 
 const AccountDisplay = translate('microscope')(
-  ({ balance, txCount, addr, t }: { balance: string; txCount: number; addr: string; t: (key: string) => string }) => (
+  ({ balance, txCount, addr, t, }: { balance: string; txCount: number; addr: string; t: (key: string) => string }) => (
     <div className={styles.display}>
       <div className={styles.title}>{t('account')}</div>
       <table className={styles.items}>
@@ -133,11 +133,11 @@ const AccountDisplay = translate('microscope')(
 const initState = {
   keyword: '',
   block: initBlock,
-  transaction: { ...initUnsignedTransaction, hash: '' },
+  transaction: { ...initUnsignedTransaction, hash: '', },
   txCount: '',
   balance: '',
   searchValueError: false,
-  searched: false
+  searched: false,
 }
 
 type SearchPanelState = typeof initState
@@ -146,10 +146,10 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
   state = initState
 
   private handleInput = (e: React.SyntheticEvent<HTMLInputElement>) => {
-    const { value } = e.currentTarget
+    const { value, } = e.currentTarget
     this.setState({
       keyword: value,
-      searched: false
+      searched: false,
     })
   }
   private handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -159,57 +159,57 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
   }
   private fetchHeight = value =>
     this.props.CITAObservables.blockByNumber(value).subscribe(block =>
-      this.setState(state => Object.assign({}, state, { block }))
+      this.setState(state => Object.assign({}, state, { block, }))
     )
   private fetchTxOrBlock = value => {
     this.props.CITAObservables.blockByHash(value).subscribe(block =>
-      this.setState(state => Object.assign({}, state, { block }))
+      this.setState(state => Object.assign({}, state, { block, }))
     )
     this.props.CITAObservables.getTransaction(value).subscribe(transaction => {
       const unsignedTransaction = unsigner(transaction.content)
       unsignedTransaction.hash = transaction.hash
-      this.setState(state => Object.assign({}, state, { transaction: unsignedTransaction }))
+      this.setState(state => Object.assign({}, state, { transaction: unsignedTransaction, }))
     })
   }
   private fetchAccount = value => {
-    fetchTransactions({ account: value })
-      .then(({ result }) => this.setState(state => Object.assign({}, state, { txCount: result.count })))
+    fetchTransactions({ account: value, })
+      .then(({ result, }) => this.setState(state => Object.assign({}, state, { txCount: result.count, })))
       .catch(() => {
         this.props.CITAObservables.getTransactionCount({
           addr: value,
-          blockNumber: 'latest'
+          blockNumber: 'latest',
         }).subscribe(txCount => {
-          this.setState(state => Object.assign({}, state, { txCount }))
+          this.setState(state => Object.assign({}, state, { txCount, }))
         })
       })
     return this.props.CITAObservables.getBalance({
       addr: value,
-      blockNumber: 'latest'
+      blockNumber: 'latest',
     }).subscribe(balance => {
-      this.setState(state => Object.assign({}, state, { balance }))
+      this.setState(state => Object.assign({}, state, { balance, }))
     })
   }
   private inputSearchError = () =>
     this.setState({
-      searchValueError: true
+      searchValueError: true,
     })
   private handleSearch = () => {
-    const { keyword } = this.state
-    const { fetchHeight, fetchTxOrBlock, fetchAccount, inputSearchError } = this
+    const { keyword, } = this.state
+    const { fetchHeight, fetchTxOrBlock, fetchAccount, inputSearchError, } = this
     if (keyword === '') return
     // clear history
-    this.setState({ ...initState, keyword, searched: true })
+    this.setState({ ...initState, keyword, searched: true, })
     const typeTable = {
       [SearchType.HEIGHT]: fetchHeight,
       [SearchType.TRANSACTION]: fetchTxOrBlock,
       [SearchType.ACCOUNT]: fetchAccount,
-      [SearchType.ERROR]: inputSearchError
+      [SearchType.ERROR]: inputSearchError,
     }
     const search = searchGen(keyword)
     typeTable[search.type](search.value)
   }
   render () {
-    const { keyword, block, transaction, balance, txCount, searchValueError, searched } = this.state
+    const { keyword, block, transaction, balance, txCount, searchValueError, searched, } = this.state
     return (
       <div>
         <div className={`${styles.fields} ${searchValueError ? styles.error : ''}`}>

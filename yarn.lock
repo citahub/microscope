@@ -2,6 +2,16 @@
 # yarn lockfile v1
 
 
+"@appchain/signer@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/@appchain/signer/-/signer-2.0.1.tgz#d20bfe4ea8fe9172b1f30df0a227effee0b697ec"
+  integrity sha512-dHA/cVP33j858oMBOK8qiC0N9KWhEanPoXEbFmuJ0kkfOnWAzlFTopHMTDXD8+KhkkHGQVery59sFbZoNwEZxA==
+  dependencies:
+    ec "^0.0.1"
+    elliptic "^6.4.0"
+    google-protobuf "^3.5.0"
+    web3 "^1.0.0-beta.34"
+
 "@babel/runtime@7.0.0-beta.42":
   version "7.0.0-beta.42"
   resolved "http://registry.npmjs.org/@babel/runtime/-/runtime-7.0.0-beta.42.tgz#352e40c92e0460d3e82f49bd7e79f6cda76f919f"
@@ -93,16 +103,6 @@
     "@types/google-protobuf" "^3.2.7"
     axios "^0.18.0"
     google-protobuf "^3.5.0"
-
-"@nervos/signer@^1.0.28":
-  version "1.0.35"
-  resolved "https://registry.npmjs.org/@nervos/signer/-/signer-1.0.35.tgz#2b464bcfcca00bd389e7fd6dad5faa67f8c65b45"
-  integrity sha512-kWOBh2A5/q3gzZCWOLcvdg1Eeh/8Xh2lg81JPO11rusagMj02md8rSUl9dFc/HfJFf+guY28lW+09GTeLg+19w==
-  dependencies:
-    ec "^0.0.1"
-    elliptic "^6.4.0"
-    google-protobuf "^3.5.0"
-    web3 "^1.0.0-beta.34"
 
 "@reactivex/rxjs@^5.5.6", "@reactivex/rxjs@^5.5.8":
   version "5.5.12"
