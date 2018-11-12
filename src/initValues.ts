@@ -10,7 +10,7 @@ import { IBlock, IBlockHeader, Transaction, Metadata, ABI, UnsignedTransaction, 
 import widerThan from './utils/widerThan'
 import { Contract, AccountType, } from './typings/account'
 import { LocalAccount, } from './components/LocalAccounts'
-
+import { ServerList, } from './components/MetadataPanel'
 import { SelectorType, } from './components/TableWithSelector'
 import LOCAL_STORAGE, { PanelConfigs, } from './config/localstorage'
 import { getServerList, getPrivkeyList, getPanelConfigs, } from './utils/accessLocalstorage'
@@ -110,6 +110,32 @@ export const initPanelConfigs: PanelConfigs = {
 export const initServerList = (process.env.CHAIN_SERVERS || '').split(',')
 export const initPrivateKeyList = []
 export const initError = { message: '', code: '', }
+
+export const initHeaderState = {
+  keyword: '',
+  metadata: initMetadata,
+  sidebarNavs: false,
+  activePanel: window.urlParamChain || window.localStorage.getItem('chainIp') ? '' : 'metadata',
+  searchIp: '',
+  otherMetadata: initMetadata,
+  tps: 0,
+  tpb: 0,
+  ipb: 0,
+  peerCount: 0,
+  block: initBlock,
+  anchorEl: undefined,
+  lngOpen: false,
+  lng: window.localStorage.getItem('i18nextLng'),
+  inputChainError: false,
+  waitingMetadata: false,
+  error: {
+    code: '',
+    message: '',
+  },
+  overtime: 0,
+  serverList: [] as ServerList,
+}
+
 export const initAccountState = {
   loading: 0,
   type: AccountType.NORMAL,
@@ -254,6 +280,8 @@ export const ContractCreation = 'Contract Creation'
 
 export const initHomePageState = {
   loading: 0,
+  metadata: initMetadata,
+  overtime: 0,
   blocks: [] as Chain.Block<Chain.TransactionInBlock>[],
   transactions: [] as TransactionFromServer[],
   healthy: {

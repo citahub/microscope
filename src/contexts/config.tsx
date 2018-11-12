@@ -25,6 +25,7 @@ class ConfigProvider extends React.Component<any, Config> {
     this.setState({ symbol, })
     return true
   }
+
   protected addServer = (server: string): boolean => {
     const serverList = [...this.state.serverList, ]
     if (!serverList.includes(server)) {
@@ -38,6 +39,7 @@ class ConfigProvider extends React.Component<any, Config> {
     }
     return false
   }
+
   protected deleteServer = (idx: number): boolean => {
     if (!this.state.serverList.length) {
       return false
@@ -50,6 +52,7 @@ class ConfigProvider extends React.Component<any, Config> {
     window.localStorage.setItem(LOCAL_STORAGE.SERVER_LIST, JSON.stringify(serverList))
     return true
   }
+
   protected addPrivkey = (privkey: string): boolean => {
     const privkeyList = [...this.state.privkeyList, ]
     if (!privkeyList.includes(privkey)) {
@@ -61,6 +64,7 @@ class ConfigProvider extends React.Component<any, Config> {
     }
     return false
   }
+
   protected deletePrivkey = (idx: number): boolean => {
     if (!this.state.privkeyList.length) {
       return false
@@ -71,6 +75,7 @@ class ConfigProvider extends React.Component<any, Config> {
     window.localStorage.setItem(LOCAL_STORAGE.PRIV_KEY_LIST, JSON.stringify(privkeyList))
     return true
   }
+
   protected changePanelConfig = newPanelConfigs => {
     this.setState({
       panelConfigs: newPanelConfigs,
@@ -79,6 +84,7 @@ class ConfigProvider extends React.Component<any, Config> {
     window.localStorage.setItem(LOCAL_STORAGE.PANEL_CONFIGS, JSON.stringify(newPanelConfigs))
     return true
   }
+
   public render () {
     return (
       <ConfigContext.Provider

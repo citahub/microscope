@@ -18,7 +18,7 @@ import { withObservables, } from '../../contexts/observables'
 import { fetchStatistics, fetchServerList, fetchMetadata, } from '../../utils/fetcher'
 import { initMetadata, } from '../../initValues'
 import { handleError, dismissError, } from '../../utils/handleError'
-import { initState, HeaderState, HeaderProps, } from './init'
+import { initHeaderState as initState, HeaderState, HeaderProps, } from './init'
 import Image from '../../images'
 
 const styles = require('./header.scss')

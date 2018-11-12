@@ -15,5 +15,96 @@
   align-items: center;
 }
 
+.metadataTable {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-flow: wrap;
+  margin-bottom: 60px;
+}
+
+.mainInfoBlock {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.mainInfoCell {
+  width: 380px;
+  max-height: 150px;
+  margin: 0 10px;
+  padding: 45px 0 35px 40px;
+  border-radius: 6px;
+  background-image: linear-gradient(to left, #4eadf1, #5d87dd);
+  color: #fff;
+  display: flex;
+}
+
+.mainInfoIcon {
+  width: 70px;
+  height: 70px;
+  background-color: #699be5;
+  margin-right: 20px;
+  border-radius: 50%;
+  img {
+    margin: (70 - 34px) / 2;
+    width: 34px;
+    height: 34px;
+  }
+}
+
+.mainInfoContent {
+  font-size: 32px;
+  line-height: 40px;
+  margin-bottom: 4px;
+}
+
+.mainInfoName {
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.subInfoBlock {
+  display: flex;
+  width: 100%;
+  flex-flow: wrap;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
+  background-color: #ffffff;
+  padding: 14px 0 20px 0;
+}
+
+.subInfoCell {
+  width: 33%;
+  padding: 12px 0 0 58px;
+  box-sizing: border-box;
+  display: flex;
+}
+
+.subInfoIcon {
+  width: 22px;
+  height: 22px;
+  margin-right: 18px;
+  img {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+.subInfoContent {
+  font-size: 18px;
+  line-height: 25px;
+  margin-bottom: 5px;
+  color: #4a5563;
+}
+
+.subInfoName {
+  font-size: 14px;
+  line-height: 20px;
+  color: #979a9e;
+}
+
 .firstChart,
-.secondChart {}
+.secondChart {
+}
