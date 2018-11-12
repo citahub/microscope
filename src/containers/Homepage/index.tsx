@@ -23,7 +23,7 @@ const styles = require('./homepage.scss')
 const MainInfoCell = ({ icon, content, name, }) => (
   <div className={styles.mainInfoCell}>
     <div className={styles.mainInfoIcon}>
-      <img alt='' src={icon} />
+      <img alt="" src={icon} />
     </div>
     <div className={styles.mainInfo}>
       <div className={styles.mainInfoContent}>{content}</div>
@@ -43,7 +43,7 @@ const MainInfoBlock = ({ proplist, }) => (
 const SubInfoCell = ({ icon, content, name, }) => (
   <div className={styles.subInfoCell}>
     <div className={styles.subInfoIcon}>
-      <img alt='' src={icon} />
+      <img alt="" src={icon} />
     </div>
     <div className={styles.subInfo}>
       <div className={styles.subInfoContent}>{content}</div>
@@ -180,7 +180,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     // NOTICE: async
     this.setState(state => ({ loading: state.loading + 1, })) // for block history
     this.props.CITAObservables.blockHistory({
-      by: height,
+      by: `${height - 1}`,
       count,
     }).subscribe((blocks: Chain.Block<Chain.TransactionInBlock>[]) => {
       this.setState(state => ({
