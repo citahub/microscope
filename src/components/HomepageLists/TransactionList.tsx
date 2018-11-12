@@ -10,7 +10,25 @@ import valueFormatter from '../../utils/valueFormatter'
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
 
-const Primary = ({ tx, t, symbol, error, }) => (
+const enum TransactionType {
+  Transfer,
+  Create,
+  Call,
+}
+
+const TransactionTypeInfo = {
+  [TransactionType.Transfer]: {
+    icon: '',
+  },
+  [TransactionType.Create]: {
+    icon: '',
+  },
+  [TransactionType.Call]: {
+    icon: '',
+  },
+}
+
+const Primary = ({ tx, t, symbol, error, type, }) => (
   <React.Fragment>
     <div>TX#:</div>
     <Link to={`/transaction/${tx.hash}`} href={`/transaction/${tx.hash}`} className={styles.hashlink} title={tx.hash}>
@@ -28,7 +46,7 @@ const Secondary = ({ tx, t, symbol, }) => (
       <span className={texts.ellipsis}>
         <div>From</div>
         <Link to={`/account/${tx.from}`} href={`/account/${tx.from}`} className={texts.addr}>
-          {tx.from || 'null'}
+          {tx.from}
         </Link>
       </span>
       <span className={texts.ellipsis}>
@@ -51,30 +69,18 @@ const Secondary = ({ tx, t, symbol, }) => (
   </span>
 )
 
-const TransactionTypeInfo = {
-  transfer: {
-    icon: '',
-  },
-  create: {
-    icon: '',
-  },
-  call: {
-    icon: '',
-  },
-}
-
 const TransactionCell = ({ tx, t, symbol, }) => {
   const error = tx.errorMessage === null
-  let type = 'transfer'
+  let type = TransactionType.Transfer
   if (tx.to === '0x') {
-    type = 'create'
+    type = TransactionType.Create
   }
   return (
     <ListItem key={tx.hash} classes={{ root: styles.listItemContainer, }}>
       <img src={`${process.env.PUBLIC}/microscopeIcons/transaction.svg`} alt="transaction" className={styles.txIcon} />
       <ListItemText
         classes={{ primary: styles.primary, root: styles.listItemTextRoot, }}
-        primary={<Primary {...{ tx, t, symbol, error, }} />}
+        primary={<Primary {...{ tx, t, symbol, error, type, }} />}
         secondary={<Secondary {...{ tx, t, symbol, }} />}
       />
     </ListItem>
