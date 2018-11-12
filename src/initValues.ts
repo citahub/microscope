@@ -278,6 +278,8 @@ export const ContractCreation = 'Contract Creation'
 
 export const initHomePageState = {
   loading: 0,
+  metadata: initMetadata,
+  overtime: 0,
   blocks: [] as Chain.Block<Chain.TransactionInBlock>[],
   transactions: [] as TransactionFromServer[],
   healthy: {
