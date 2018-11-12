@@ -36,18 +36,16 @@ export default translate('microscope')(
             classes={{ primary: styles.primary, root: styles.listItemTextRoot, }}
             primary={
               <React.Fragment>
-                <span style={{ maxWidth: '80%', }}>
-                  <div>TX#:</div>
-                  <Link
-                    to={`/transaction/${tx.hash}`}
-                    href={`/transaction/${tx.hash}`}
-                    className={styles.hashlink}
-                    title={tx.hash}
-                  >
-                    <span className={`${texts.addr} ${texts.addrStart}`}>{tx.hash.slice(0, -4)}</span>
-                    <span className={`${texts.addr} ${texts.addrEnd}`}>{tx.hash.slice(-4)}</span>
-                  </Link>
-                </span>
+                <div>TX#:</div>
+                <Link
+                  to={`/transaction/${tx.hash}`}
+                  href={`/transaction/${tx.hash}`}
+                  className={styles.hashlink}
+                  title={tx.hash}
+                >
+                  <span className={`${texts.addr} ${texts.addrStart}`}>{tx.hash.slice(0, -4)}</span>
+                  <span className={`${texts.addr} ${texts.addrEnd}`}>{tx.hash.slice(-4)}</span>
+                </Link>
                 <span className={styles.time}>{formatedAgeString(tx.timestamp)}</span>
               </React.Fragment>
             }
