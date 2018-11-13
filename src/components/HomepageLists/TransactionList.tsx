@@ -6,29 +6,24 @@ import { TransactionFromServer, } from '../../typings/'
 import { ContractCreation, } from '../../initValues'
 import { formatedAgeString, } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
+import { TX_TYPE, } from '../../containers/Transaction'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
 
-const enum TransactionType {
-  Transfer,
-  Create,
-  Call,
-}
-
 const TransactionTypeInfo = {
-  [TransactionType.Transfer]: {
+  [TX_TYPE.EXCHANGE]: {
     icon: '',
   },
-  [TransactionType.Create]: {
+  [TX_TYPE.CONTRACT_CREATION]: {
     icon: '',
   },
-  [TransactionType.Call]: {
+  [TX_TYPE.CONTRACT_CALL]: {
     icon: '',
   },
 }
 
-const Primary = ({ tx, t, symbol, error, type, }) => (
+const Primary = ({ tx, t, symbol, }) => (
   <React.Fragment>
     <div>TX#:</div>
     <Link to={`/transaction/${tx.hash}`} href={`/transaction/${tx.hash}`} className={styles.hashlink} title={tx.hash}>
@@ -36,7 +31,6 @@ const Primary = ({ tx, t, symbol, error, type, }) => (
       <span className={`${texts.addr} ${texts.addrEnd}`}>{tx.hash.slice(-4)}</span>
     </Link>
     <span className={styles.time}>{formatedAgeString(tx.timestamp)}</span>
-    {error ? 'error' : null}
   </React.Fragment>
 )
 
@@ -69,23 +63,20 @@ const Secondary = ({ tx, t, symbol, }) => (
   </span>
 )
 
-const TransactionCell = ({ tx, t, symbol, }) => {
-  const error = tx.errorMessage === null
-  let type = TransactionType.Transfer
-  if (tx.to === '0x') {
-    type = TransactionType.Create
-  }
-  return (
-    <ListItem key={tx.hash} classes={{ root: styles.listItemContainer, }}>
-      <img src={`${process.env.PUBLIC}/microscopeIcons/transaction.svg`} alt="transaction" className={styles.txIcon} />
-      <ListItemText
-        classes={{ primary: styles.primary, root: styles.listItemTextRoot, }}
-        primary={<Primary {...{ tx, t, symbol, error, type, }} />}
-        secondary={<Secondary {...{ tx, t, symbol, }} />}
-      />
-    </ListItem>
-  )
-}
+const TransactionCell = ({ tx, t, symbol, }) => (
+  <ListItem key={tx.hash} classes={{ root: styles.listItemContainer, }}>
+    {/* <img src={`${process.env.PUBLIC}/microscopeIcons/transaction.svg`} alt="transaction" className={styles.txIcon} /> */}
+    <div>
+      <div>{tx.type}</div>
+      {tx.error ? <div>error</div> : null}
+    </div>
+    <ListItemText
+      classes={{ primary: styles.primary, root: styles.listItemTextRoot, }}
+      primary={<Primary {...{ tx, t, symbol, }} />}
+      secondary={<Secondary {...{ tx, t, symbol, }} />}
+    />
+  </ListItem>
+)
 
 export default translate('microscope')(
   ({

@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Grid, } from '@material-ui/core'
 import { translate, } from 'react-i18next'
 import { Chain, } from '@nervos/plugin'
+import { unsigner, } from '@appchain/signer'
 
 import { LinearProgress, } from '../../components'
 import { TransactionFromServer, } from '../../typings'
@@ -16,6 +17,7 @@ import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
 import { HomepageProps, HomepageState, } from './init'
 import { initHomePageState as initState, } from '../../initValues'
+import { TX_TYPE, } from '../../containers/Transaction'
 
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
@@ -196,9 +198,25 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     this.setState(state => ({ loading: state.loading + 1, })) // for transaction history
     fetch10Transactions()
       .then(({ result: { transactions, }, }: { result: { transactions: TransactionFromServer[] } }) => {
+        const txlist = transactions.map((tx: any) => {
+          const content = unsigner(tx.content)
+          const {data, value, } = content.transaction
+          const error = tx.errorMessage !== null
+          let type = TX_TYPE.CONTRACT_CALL
+          if (tx.to === '0x') {
+            type = TX_TYPE.CONTRACT_CREATION
+          } else if (data === '0x' && value !== 0) {
+            type = TX_TYPE.EXCHANGE
+          }
+          return {
+            ...tx,
+            type,
+            error,
+          }
+        })
         this.setState(state => ({
           loading: state.loading - 1,
-          transactions,
+          transactions: txlist,
         }))
       })
       .catch(this.handleError)
@@ -212,7 +230,6 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
         this.setState(state => {
           const blocks = [...state.blocks, block, ].sort((b1, b2) => b2.header.number - b1.header.number).slice(0, 10)
           if (block.body.transactions.length > 0) {
-            console.log('length', block.body.transactions.length)
             this.transactionHistory()
           }
           return {
@@ -269,7 +286,6 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
   private dismissError = dismissError(this)
 
   public render () {
-    console.log('home page')
     const { blocks, transactions, loading, } = this.state
     return (
       <React.Fragment>
