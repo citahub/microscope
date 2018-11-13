@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@appchain/signer@^2.0.1":
+"@appchain/signer@2.0.1":
   version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@appchain/signer/-/signer-2.0.1.tgz#d20bfe4ea8fe9172b1f30df0a227effee0b697ec"
+  resolved "https://registry.npmjs.org/@appchain/signer/-/signer-2.0.1.tgz#d20bfe4ea8fe9172b1f30df0a227effee0b697ec"
   integrity sha512-dHA/cVP33j858oMBOK8qiC0N9KWhEanPoXEbFmuJ0kkfOnWAzlFTopHMTDXD8+KhkkHGQVery59sFbZoNwEZxA==
   dependencies:
     ec "^0.0.1"

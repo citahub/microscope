@@ -20,7 +20,7 @@ enum SearchType {
   TRANSACTION,
   ACCOUNT,
   HEIGHT,
-  ERROR
+  ERROR,
 }
 
 const searchGen = keyword => {

@@ -2,7 +2,7 @@
  * @Author: Keith-CY
  * @Date: 2018-08-02 11:37:01
  * @Last Modified by: Keith-CY
- * @Last Modified time: 2018-09-11 14:28:32
+ * @Last Modified time: 2018-11-12 21:03:41
  */
 
 import * as React from 'react'
@@ -11,7 +11,7 @@ import { Card, CardContent, List, ListItem, } from '@material-ui/core'
 
 import { unsigner, } from '@appchain/signer'
 import { RpcResult, Chain, } from '@nervos/plugin/lib/typings/index.d'
-import { IContainerProps, IBlock, } from '../../typings'
+import { IContainerProps, } from '../../typings'
 
 import { initBlockState, } from '../../initValues'
 
@@ -95,12 +95,12 @@ const InfoContent = ({ header, transactions, toggleTransaction, quotaPrice, fee,
     <Card classes={{ root: layouts.cardContainer, }}>
       <CardContent>
         <List className={styles.items}>
-          <InfoCell name="TimeStamp">
+          <InfoCell name="Timestamp">
             <span>{timeFormatter(header.timestamp, true)}</span>
           </InfoCell>
 
           <InfoCell
-            name="TimeStamp"
+            name="Transactions"
             onClick={transactions.length ? toggleTransaction(true) : undefined}
             style={transactions.length ? { cursor: 'pointer', } : undefined}
           >
