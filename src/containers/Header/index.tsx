@@ -31,11 +31,18 @@ const BlockOvertimeAlert = ({ metadata, overtime, }) => {
   }
   let openAlert = false
   let openHardAlert = false
-  if (overtime > 3 * interval) {
+  let notice = ''
+  if (overtime > 5 * 60 * 1000) {
     openAlert = true
     openHardAlert = true
+    notice = `Notice：No blocks loaded in 5 minutes, please check network connection.`
+  } else if (overtime > 5 * interval) {
+    openAlert = true
+    openHardAlert = true
+    notice = `Notice：No blocks loaded in ${Math.floor(overtime / 1000)}s`
   } else if (overtime > 2 * interval) {
     openAlert = true
+    notice = `Notice：No blocks loaded in ${Math.floor(overtime / 100) / 10}s`
   }
 
   if (!openAlert) {
@@ -54,7 +61,7 @@ const BlockOvertimeAlert = ({ metadata, overtime, }) => {
         transition: 'height 0.5s ease 0s, padding 0.5s ease 0s',
       }}
     >
-      {`Notice：No blocks loaded in ${openHardAlert ? Math.floor(overtime / 1000) : Math.floor(overtime / 100) / 10}s`}
+      {notice}
     </div>
   )
 }
