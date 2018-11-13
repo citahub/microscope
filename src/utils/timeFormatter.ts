@@ -34,6 +34,26 @@ export const fromNow = time => {
   return t.trim().length ? t : '0 sec'
 }
 
+export const parsedNow = time => {
+  let r = (new Date().getTime() - time) / 1000
+  if (r < 0) {
+    return 'Time Error'
+  }
+  const d = Math.floor(r / day)
+  r -= d * day
+  const h = Math.floor(r / hour)
+  r -= h * hour
+  const m = Math.floor(r / minute)
+  r -= m * minute
+  const s = Math.floor(r / second)
+  return {
+    day: d,
+    hour: h,
+    minute: m,
+    second: s,
+  }
+}
+
 export const formatedAgeString = time => {
   const t = fromNow(time)
   if (t === 'Time Error') {
@@ -41,6 +61,7 @@ export const formatedAgeString = time => {
   }
   return `${t} ago`
 }
+
 export const timeFormatter = (time, withDate = false): string => {
   const _time = new Date(+time)
   return _time[withDate ? 'toLocaleString' : 'toLocaleTimeString']('zh', { hour12: false, })

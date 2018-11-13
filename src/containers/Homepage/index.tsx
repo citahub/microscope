@@ -95,7 +95,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
     {
       name: '经济模型',
       icon: '',
-      content: metadata.economicalModel,
+      content: metadata.economicalModel === 0 ? 'free' : 'charge',
     },
     {
       name: '代币名称',
