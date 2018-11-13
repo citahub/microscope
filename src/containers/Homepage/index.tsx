@@ -8,7 +8,7 @@ import { TransactionFromServer, } from '../../typings'
 import { withConfig, } from '../../contexts/config'
 import { withObservables, } from '../../contexts/observables'
 import { fetch10Transactions, } from '../../utils/fetcher'
-import {StaticCardTitle, } from '../../components/StaticCard'
+import { StaticCardTitle, } from '../../components/StaticCard'
 import BlockList from '../../components/HomepageLists/BlockList'
 import TransactionList from '../../components/HomepageLists/TransactionList'
 import ErrorNotification from '../../components/ErrorNotification'
@@ -121,7 +121,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
 
 const HomePageList = ({ icon, title, list: List, page, }) => (
   <Grid item md={6} sm={12} xs={12}>
-    <StaticCardTitle {...{title, page, }} />
+    <StaticCardTitle {...{ title, page, }} />
     <List />
     {/* <StaticCard icon={icon} title={title} className={styles.card} page={page}>
     </StaticCard> */}
@@ -156,9 +156,9 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
 
   public componentDidMount () {
     hideLoader()
-    // this.subjectNewBlock()
+    this.subjectNewBlock()
     this.fetchMetaData()
-    // this.checkFetchBlockOvertime()
+    this.checkFetchBlockOvertime()
   }
 
   public componentDidCatch (err) {
@@ -212,6 +212,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
         this.setState(state => {
           const blocks = [...state.blocks, block, ].sort((b1, b2) => b2.header.number - b1.header.number).slice(0, 10)
           if (block.body.transactions.length > 0) {
+            console.log('length', block.body.transactions.length)
             this.transactionHistory()
           }
           return {
@@ -268,6 +269,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
   private dismissError = dismissError(this)
 
   public render () {
+    console.log('home page')
     const { blocks, transactions, loading, } = this.state
     return (
       <React.Fragment>
