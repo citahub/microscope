@@ -43,16 +43,14 @@ const Secondary = ({ tx, t, symbol, }) => (
           {tx.from}
         </Link>
       </span>
-      <span className={texts.ellipsis}>
-        <div>To</div>
-        {tx.to === '0x' ? (
-          ContractCreation
-        ) : (
+      {(tx.type === TX_TYPE.CONTRACT_CREATION || tx.to === '0x') ? null : (
+        <span className={texts.ellipsis}>
+          <div>To</div>
           <Link to={`/account/${tx.to}`} href={`/account/${tx.to}`} className={texts.addr}>
             {tx.to}
           </Link>
-        )}
-      </span>
+        </span>
+      )}
     </div>
     <span className={texts.ellipsis}>
       {t('value')}:{' '}
