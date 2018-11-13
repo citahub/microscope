@@ -65,17 +65,17 @@ const SubInfoBlock = ({ proplist, }) => (
 const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
   const mainProplist = [
     {
-      name: '区块高度',
+      name: 'Block Height',
       icon: '',
       content: lastestBlock ? Number(lastestBlock.header.number) : 0,
     },
     {
-      name: '出块间隔',
+      name: 'Block Interval',
       icon: '',
       content: `${Math.floor(overtime / 100) / 10}s/${Math.floor(metadata.blockInterval / 1000)}s`,
     },
     {
-      name: '共识节点',
+      name: 'Validators',
       icon: '',
       content: metadata.validators.length || 0,
     },
@@ -83,32 +83,32 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, }) => {
 
   const subProplist = [
     {
-      name: '名称',
+      name: 'Chain Name',
       icon: '',
       content: metadata.chainName,
     },
     {
-      name: '运营方',
+      name: 'Operator',
       icon: '',
       content: metadata.operator,
     },
     {
-      name: '经济模型',
+      name: 'Economical Model',
       icon: '',
       content: metadata.economicalModel === 0 ? 'free' : 'charge',
     },
     {
-      name: '代币名称',
+      name: 'Token Symbol',
       icon: '',
       content: `${metadata.tokenSymbol} (${metadata.tokenName})`,
     },
     {
-      name: '链 ID',
+      name: 'Chain ID',
       icon: '',
       content: metadata.chainId,
     },
     {
-      name: '版本号',
+      name: 'Version',
       icon: '',
       content: metadata.version,
     },
@@ -200,7 +200,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
       .then(({ result: { transactions, }, }: { result: { transactions: TransactionFromServer[] } }) => {
         const txlist = transactions.map((tx: any) => {
           const content = unsigner(tx.content)
-          const {data, value, } = content.transaction
+          const { data, value, } = content.transaction
           const error = tx.errorMessage !== null
           let type = TX_TYPE.CONTRACT_CALL
           if (tx.to === '0x') {
