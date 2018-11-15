@@ -10,6 +10,7 @@ import { withConfig, } from '../../contexts/config'
 import { withObservables, } from '../../contexts/observables'
 import { fetch10Transactions, } from '../../utils/fetcher'
 import { StaticCardTitle, } from '../../components/StaticCard'
+import { IconBase, } from '../../components/Icons'
 import BlockList from '../../components/HomepageLists/BlockList'
 import TransactionList from '../../components/HomepageLists/TransactionList'
 import ErrorNotification from '../../components/ErrorNotification'
@@ -29,7 +30,7 @@ const MainInfoCell = ({ icon, content, name, validators, toggleValidators, showV
       <React.Fragment>
         <div className={`${styles.mainInfoCell} ${styles.alertContiner}`} onClick={toggleValidators}>
           <div className={styles.mainInfoIcon}>
-            <img alt={`${name} icon`} src={icon} />
+            <IconBase name={icon} />
           </div>
           <div className={styles.mainInfo}>
             <div className={styles.mainInfoContent}>{content}</div>
@@ -50,7 +51,7 @@ const MainInfoCell = ({ icon, content, name, validators, toggleValidators, showV
   return (
     <div className={styles.mainInfoCell}>
       <div className={styles.mainInfoIcon}>
-        <img alt={`${name} icon`} src={icon} />
+        <IconBase name={icon} />
       </div>
       <div className={styles.mainInfo}>
         <div className={styles.mainInfoContent}>{content}</div>
@@ -71,7 +72,7 @@ const MainInfoBlock = ({ proplist, toggleValidators, showValidators, }) => (
 const SubInfoCell = ({ icon, content, name, }) => (
   <div className={styles.subInfoCell}>
     <div className={styles.subInfoIcon}>
-      <img alt="" src={icon} />
+      <IconBase name={icon} />
     </div>
     <div className={styles.subInfo}>
       <div className={styles.subInfoContent}>{content}</div>
@@ -92,17 +93,17 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
   const mainProplist = [
     {
       name: 'Block Height',
-      icon: '',
+      icon: 'chainBlockHeight',
       content: lastestBlock ? Number(lastestBlock.header.number) : 0,
     },
     {
       name: 'Block Interval',
-      icon: '',
+      icon: 'chainBlockInterval',
       content: `${Math.floor(overtime / 100) / 10}s/${Math.floor(metadata.blockInterval / 1000)}s`,
     },
     {
       name: 'Validators',
-      icon: '',
+      icon: 'chainValidators',
       content: metadata.validators.length || 0,
       validators: metadata.validators,
     },
@@ -111,32 +112,32 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
   const subProplist = [
     {
       name: 'Chain Name',
-      icon: '',
+      icon: 'chainName',
       content: metadata.chainName,
     },
     {
       name: 'Operator',
-      icon: '',
+      icon: 'chainOperator',
       content: metadata.operator,
     },
     {
       name: 'Economical Model',
-      icon: '',
+      icon: 'chainEconomicalModel',
       content: metadata.economicalModel === 0 ? 'free' : 'charge',
     },
     {
       name: 'Token Symbol',
-      icon: '',
+      icon: 'chainTokenSymbol',
       content: `${metadata.tokenSymbol} (${metadata.tokenName})`,
     },
     {
       name: 'Chain ID',
-      icon: '',
+      icon: 'chainId',
       content: metadata.chainId,
     },
     {
       name: 'Version',
-      icon: '',
+      icon: 'chainVersion',
       content: metadata.version,
     },
   ]

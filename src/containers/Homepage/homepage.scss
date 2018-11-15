@@ -72,10 +72,11 @@
   background-color: #699be5;
   margin-right: 20px;
   border-radius: 50%;
-  img {
+  svg {
     margin: (70 - 34px) / 2;
     width: 34px;
     height: 34px;
+    color: white;
   }
 }
 
@@ -105,22 +106,21 @@
   padding: 12px 0 0 58px;
   box-sizing: border-box;
   display: flex;
-  align-items: flex-end;
 }
 
 .subInfoIcon {
   width: 22px;
   height: 22px;
   margin-right: 18px;
-  img {
+  svg {
     width: 22px;
     height: 22px;
+    color: #5486db;
   }
 }
 
 .subInfoContent {
   font-size: 18px;
-  line-height: 25px;
   margin-bottom: 5px;
   color: #4a5563;
 }
