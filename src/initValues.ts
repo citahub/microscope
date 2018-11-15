@@ -65,7 +65,7 @@ export const initUnsignedTransaction: UnsignedTransaction = {
     quota: 0,
     to: '',
     validUntilBlock: 0,
-    value: [] as number[],
+    value: 0,
     version: 0,
   },
 }

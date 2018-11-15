@@ -63,7 +63,7 @@ export interface UnsignedTransaction {
     quota: number
     to: string
     validUntilBlock: number
-    value: number[]
+    value: number
     version: number
   }
 }
