@@ -212,7 +212,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     fetchServerList()
       .then(servers => {
         if (!servers) return
-        const history = loadedLocalStorage('chainHistory')
+        const history = loadedLocalStorage('chainHistory') || []
         const serverList = [...history, ] as ServerList
         Object.keys(servers).forEach(serverName => {
           serverList.push({

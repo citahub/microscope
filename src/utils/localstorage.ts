@@ -1,6 +1,6 @@
 export const loadedLocalStorage = (key: string) => {
   const json = window.localStorage.getItem(key)
-  if (json === null) return json
+  if (json === null) return null
   const obj = JSON.parse(json)
   return obj
 }
