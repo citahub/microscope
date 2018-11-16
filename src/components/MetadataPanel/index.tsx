@@ -163,12 +163,15 @@ export const ChainSwitchPanel = ({
         {waitingMetadata ? <Loading /> : t('switch')}
       </button>
       {inputChainError ? (
-        <div className={styles.chainerror}>Please enter a URL to AppChain node or ReBirth server</div>
-      ) : null}
-      <div className={styles.alert}>
-        If you connect to an AppChain node instead of a <a href="https://github.com/cryptape/re-birth">ReBirth</a>{' '}
-        server, Microscope will NOT be fully functional.
-      </div>
+        <div className={`${styles.chainerror} ${styles.alert}`}>
+          Please enter a URL to AppChain node or ReBirth server
+        </div>
+      ) : (
+        <div className={styles.alert}>
+          If you connect to an AppChain node instead of a <a href="https://github.com/cryptape/re-birth">ReBirth</a>{' '}
+          server, Microscope will NOT be fully functional.
+        </div>
+      )}
     </div>
 
     {searchResult.chainId !== -1 ? (

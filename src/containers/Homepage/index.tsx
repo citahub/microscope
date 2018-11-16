@@ -7,7 +7,7 @@ import { unsigner, } from '@appchain/signer'
 import { LinearProgress, } from '../../components'
 import { TransactionFromServer, } from '../../typings'
 import { withConfig, } from '../../contexts/config'
-import { withObservables, } from '../../contexts/observables'
+import { withObservables, stopSubjectNewBlock, } from '../../contexts/observables'
 import { fetch10Transactions, } from '../../utils/fetcher'
 import { StaticCardTitle, } from '../../components/StaticCard'
 import { IconBase, } from '../../components/Icons'
@@ -24,32 +24,21 @@ import { TX_TYPE, } from '../../containers/Transaction'
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
 
-const MainInfoCell = ({ icon, content, name, validators, toggleValidators, showValidators, }) => {
-  if (validators) {
-    return (
-      <React.Fragment>
-        <div className={`${styles.mainInfoCell} ${styles.alertContiner}`} onClick={toggleValidators}>
-          <div className={styles.mainInfoIcon}>
-            <IconBase name={icon} />
-          </div>
-          <div className={styles.mainInfo}>
-            <div className={styles.mainInfoContent}>{content}</div>
-            <div className={styles.mainInfoName}>{name}</div>
-          </div>
-          {showValidators ? <div className="fullMask" onClick={toggleValidators} /> : null}
-          {showValidators ? (
-            <div className={styles.alert} onClick={stopPropagation}>
-              {validators.map(validator => (
-                <div>{validator}</div>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      </React.Fragment>
-    )
-  }
-  return (
-    <div className={styles.mainInfoCell}>
+const BlockHeight = ({ icon, content, name, }) => (
+  <div className={styles.mainInfoCell}>
+    <div className={styles.mainInfoIcon}>
+      <IconBase name={icon} />
+    </div>
+    <div className={styles.mainInfo}>
+      <div className={styles.mainInfoContent}>{content}</div>
+      <div className={styles.mainInfoName}>{name}</div>
+    </div>
+  </div>
+)
+
+const Validators = ({ icon, content, name, validators, toggleValidators, showValidators, }) => (
+  <React.Fragment>
+    <div className={`${styles.mainInfoCell} ${styles.alertContiner}`} onClick={toggleValidators}>
       <div className={styles.mainInfoIcon}>
         <IconBase name={icon} />
       </div>
@@ -57,14 +46,44 @@ const MainInfoCell = ({ icon, content, name, validators, toggleValidators, showV
         <div className={styles.mainInfoContent}>{content}</div>
         <div className={styles.mainInfoName}>{name}</div>
       </div>
+      {showValidators ? <div className="fullMask" onClick={toggleValidators} /> : null}
+      {showValidators ? (
+        <div className={styles.alert} onClick={stopPropagation}>
+          {validators.map(validator => (
+            <div>{validator}</div>
+          ))}
+        </div>
+      ) : null}
     </div>
-  )
+  </React.Fragment>
+)
+
+const BlockInterval = ({ icon, stopCheckOvertime, overtime, metadata, name, }) => {
+  const { blockInterval: interval, } = metadata
+  const intervalTime = Math.floor(metadata.blockInterval / 1000)
+  let c = `${Math.floor(overtime / 100) / 10}s/${intervalTime}s`
+  if (overtime > 5 * 60 * 1000) {
+    stopSubjectNewBlock()
+    stopCheckOvertime()
+  } else if (overtime > 5 * interval) {
+    c = `${Math.floor(overtime / 1000)}s/${intervalTime}s`
+  }
+  return <BlockHeight {...{ icon, content: c, name, }} />
 }
 
-const MainInfoBlock = ({ proplist, toggleValidators, showValidators, }) => (
+const MainInfoCell = props => {
+  if (props.validators) {
+    return <Validators {...props} />
+  } else if (props.content === 'interval') {
+    return <BlockInterval {...props} />
+  }
+  return <BlockHeight {...props} />
+}
+
+const MainInfoBlock = props => (
   <div className={styles.mainInfoBlock}>
-    {proplist.map(prop => (
-      <MainInfoCell {...prop} {...{ toggleValidators, showValidators, }} />
+    {props.proplist.map(prop => (
+      <MainInfoCell {...prop} {...props} />
     ))}
   </div>
 )
@@ -89,7 +108,7 @@ const SubInfoBlock = ({ proplist, }) => (
   </div>
 )
 
-const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, showValidators, }) => {
+const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, showValidators, stopCheckOvertime, }) => {
   const mainProplist = [
     {
       name: 'Block Height',
@@ -99,7 +118,9 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
     {
       name: 'Block Interval',
       icon: 'chainBlockInterval',
-      content: `${Math.floor(overtime / 100) / 10}s/${Math.floor(metadata.blockInterval / 1000)}s`,
+      content: 'interval',
+      overtime,
+      metadata,
     },
     {
       name: 'Validators',
@@ -143,7 +164,7 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
   ]
   return (
     <div className={styles.metadataTable}>
-      <MainInfoBlock proplist={mainProplist} {...{ toggleValidators, showValidators, }} />
+      <MainInfoBlock proplist={mainProplist} {...{ toggleValidators, showValidators, stopCheckOvertime, }} />
       <SubInfoBlock proplist={subProplist} />
     </div>
   )
@@ -283,8 +304,12 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
 
   private intervalCheckOvertime = -1 as any
 
-  private checkFetchBlockOvertime = () => {
+  private stopCheckOvertime = () => {
     clearInterval(this.intervalCheckOvertime)
+  }
+
+  private checkFetchBlockOvertime = () => {
+    this.stopCheckOvertime()
     let prevBlockTime = 0
     let prevFetchTime = 0
     const ms = 100
@@ -332,6 +357,7 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
               overtime={this.state.overtime}
               showValidators={this.state.showValidators}
               toggleValidators={this.toggleValidators}
+              stopCheckOvertime={this.stopCheckOvertime}
             />
             <Grid container spacing={window.innerWidth > 800 ? 24 : 0}>
               <HomeBlockList blocks={blocks} />

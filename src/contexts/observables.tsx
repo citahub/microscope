@@ -38,7 +38,7 @@ const handleCallback = block => {
   })
 }
 
-const fetchBlockByNumber = (number, time = 10) => {
+const fetchBlockByNumber = (number, time = 3) => {
   initObservables.blockByNumber(number, false).subscribe(handleCallback, error => {
     const t = time - 1
     if (t > -1) {
@@ -48,8 +48,10 @@ const fetchBlockByNumber = (number, time = 10) => {
   })
 }
 
+export const stopSubjectNewBlock = () => clearInterval(newBlockCallbackInterval)
+
 export const startSubjectNewBlock = () => {
-  clearInterval(newBlockCallbackInterval)
+  stopSubjectNewBlock()
   let current = 0
   newBlockCallbackInterval = setInterval(() => {
     initObservables.newBlockNumber(0, false).subscribe(blockNumber => {

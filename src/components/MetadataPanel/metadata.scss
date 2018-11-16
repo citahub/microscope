@@ -83,16 +83,6 @@ $sidebar-padding: 29px;
       cursor: default;
     }
   }
-  .chainerror {
-    color: $form-error;
-    position: absolute;
-    bottom: 0;
-  }
-  .chainerror {
-    color: $form-error;
-    position: absolute;
-    bottom: 0;
-  }
 }
 
 .fields:focus-within {
@@ -107,15 +97,23 @@ $sidebar-padding: 29px;
     padding: 10px 20px 0px;
     width: 500px;
     line-height: 1;
-    bottom: 0;
-    left: 0;
-    transform: translateY(100%);
+    bottom: 20px;
+    left: 50%;
+    transform: translate(-50%, 100%);
     background: #4faaef;
     z-index: 1;
     box-shadow: 0 4px 16px 0 rgba(86, 129, 204, 0.1);
-    width: 100%;
+    width: 90%;
+    padding: 20px;
     box-sizing: border-box;
 }
+
+
+  .chainerror {
+    @extend .alert;
+    color: $form-error;
+    background: #333;
+  }
 
 .listItem:hover {
   cursor: pointer;

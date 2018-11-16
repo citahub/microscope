@@ -14,18 +14,19 @@ import MetadataPanel, { ServerList, ChainSwitchPanel, } from '../../components/M
 import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
 import { withConfig, } from '../../contexts/config'
-import { withObservables, } from '../../contexts/observables'
+import { withObservables, stopSubjectNewBlock, } from '../../contexts/observables'
 import { fetchStatistics, fetchServerList, fetchMetadata, } from '../../utils/fetcher'
 import { initMetadata, } from '../../initValues'
 import { handleError, dismissError, } from '../../utils/handleError'
 import { stopPropagation, } from '../../utils/event'
+import { saveChainHistoryLocal, loadedLocalStorage, } from '../../utils/localstorage'
 import { initHeaderState as initState, HeaderState, HeaderProps, } from './init'
 import Image from '../../images'
 
 const styles = require('./header.scss')
 const layout = require('../../styles/layout')
 
-const BlockOvertimeAlert = ({ metadata, overtime, }) => {
+const BlockOvertimeAlert = ({ metadata, overtime, stopCheckOvertime, }) => {
   let { blockInterval: interval, } = metadata
   if (interval === 0) {
     interval = 3000
@@ -37,6 +38,8 @@ const BlockOvertimeAlert = ({ metadata, overtime, }) => {
     openAlert = true
     openHardAlert = true
     notice = `Notice：No blocks loaded in 5 minutes, please check network connection.`
+    stopSubjectNewBlock()
+    stopCheckOvertime()
   } else if (overtime > 5 * interval) {
     openAlert = true
     openHardAlert = true
@@ -140,8 +143,12 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     }
   }
 
-  private checkFetchBlockOvertime = () => {
+  private stopCheckOvertime = () => {
     clearInterval(this.intervalCheckOvertime)
+  }
+
+  private checkFetchBlockOvertime = () => {
+    this.stopCheckOvertime()
     let prevBlockTime = 0
     let prevFetchTime = 0
     const ms = 100
@@ -205,7 +212,8 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     fetchServerList()
       .then(servers => {
         if (!servers) return
-        const serverList = [] as ServerList
+        const history = loadedLocalStorage('chainHistory')
+        const serverList = [...history, ] as ServerList
         Object.keys(servers).forEach(serverName => {
           serverList.push({
             serverName,
@@ -271,15 +279,15 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   private switchChainImmediate = chain => {
-    const ip = chain || this.state.searchIp
-    this.props.CITAObservables.setServer(ip.startsWith('http') ? ip : `https://${ip}`)
-    const chainIp = ip.startsWith('http') ? ip : `https://${ip}`
+    const chainIp = chain.startsWith('http') ? chain : `https://${chain}`
+    this.props.CITAObservables.setServer(chainIp)
     window.localStorage.setItem('chainIp', chainIp)
     let i = 0
     const reload = () => {
       if (i++ > 20) return
       setTimeout(() => {
         if (window.localStorage.getItem('chainIp') === chainIp) {
+          window.location.href = window.location.origin
           window.location.reload()
         } else {
           reload()
@@ -289,22 +297,23 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     reload()
   }
 
-  private switchChain = (chain: string = '', immediate = false) => (e?: any) => {
-    window.location.search = ''
+  private switchChain = (chain: string, immediate = false) => (e?: any) => {
+    const ip = chain || this.state.searchIp
     if (immediate) {
-      this.switchChainImmediate(chain)
+      this.switchChainImmediate(ip)
     }
     const { otherMetadata, } = this.state
     this.setState({ inputChainError: false, })
     this.setState({ waitingMetadata: true, })
     setTimeout(() => {
       if (otherMetadata.chainId !== -1) {
-        this.switchChainImmediate(chain)
+        saveChainHistoryLocal(ip, otherMetadata.chainName)
+        this.switchChainImmediate(ip)
       } else {
         this.setState({ inputChainError: true, })
         this.setState({ waitingMetadata: false, })
       }
-    }, 1000)
+    }, 1500)
   }
 
   private toggleMetadata = e => {
@@ -365,7 +374,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     return createPortal(
       <React.Fragment>
         <AppBar position="fixed" elevation={0}>
-          <BlockOvertimeAlert metadata={metadata} overtime={overtime} />
+          <BlockOvertimeAlert metadata={metadata} overtime={overtime} stopCheckOvertime={this.stopCheckOvertime} />
           <Toolbar
             className={layout.center}
             classes={{
