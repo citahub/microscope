@@ -24,6 +24,11 @@ import { TX_TYPE, } from '../../containers/Transaction'
 const layout = require('../../styles/layout.scss')
 const styles = require('./homepage.scss')
 
+export const enum EconomicalModel {
+  QUOTA = 'quota',
+  CHARGE = 'charge',
+}
+
 const BlockHeight = ({ icon, content, name, }) => (
   <div className={styles.mainInfoCell}>
     <div className={styles.mainInfoIcon}>
@@ -143,8 +148,8 @@ const MetadataTable = ({ metadata, lastestBlock, overtime, toggleValidators, sho
     },
     {
       name: 'Economical Model',
-      icon: 'chainEconomicalModel',
-      content: metadata.economicalModel === 0 ? 'free' : 'charge',
+      icon: '',
+      content: metadata.economicalModel === 0 ? EconomicalModel.QUOTA : EconomicalModel.CHARGE,
     },
     {
       name: 'Token Symbol',

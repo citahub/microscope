@@ -3,12 +3,12 @@ import { Link, } from 'react-router-dom'
 import { translate, } from 'react-i18next'
 import { Search as SearchIcon, } from '@material-ui/icons'
 import { unsigner, } from '@appchain/signer'
+import { withConfig, } from '../../contexts/config'
 import { withObservables, } from '../../contexts/observables'
 import { IContainerProps, IBlock, UnsignedTransaction, } from '../../typings'
 import { initBlock, initUnsignedTransaction, } from '../../initValues'
 import { fetchTransactions, } from '../../utils/fetcher'
 import toText from '../../utils/toText'
-import bytesToHex from '../../utils/bytesToHex'
 import valueFormatter from '../../utils/valueFormatter'
 import check from '../../utils/check'
 
@@ -81,7 +81,7 @@ const BlockDisplay = translate('microscope')(({ block, t, }: { block: IBlock; t:
 ))
 
 const TransactionDisplay = translate('microscope')(
-  ({ tx, t, }: { tx: UnsignedTransaction & { hash: string }; t: (key: string) => string }) => (
+  ({ tx, symbol, t, }: { tx: UnsignedTransaction & { hash: string }; symbol: string; t: (key: string) => string }) => (
     <div className={styles.display}>
       <div className={styles.title}>Transaction</div>
       <table className={styles.items}>
@@ -96,7 +96,7 @@ const TransactionDisplay = translate('microscope')(
           </tr>
           <tr>
             <td>{t('value')}</td>
-            <td>{valueFormatter(bytesToHex(tx.transaction.value as any))}</td>
+            <td>{valueFormatter(tx.transaction.value, symbol)}</td>
           </tr>
         </tbody>
       </table>
@@ -186,7 +186,7 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
       addr: value,
       blockNumber: 'latest',
     }).subscribe(balance => {
-      this.setState(state => Object.assign({}, state, { balance, }))
+      this.setState(state => Object.assign({}, state, { balance: valueFormatter(balance, this.props.config.symbol), }))
     })
   }
   private inputSearchError = () =>
@@ -233,11 +233,11 @@ class SearchPanel extends React.Component<SearchPanelProps, SearchPanelState> {
         </div>
 
         {block.hash ? <BlockDisplay block={block} /> : null}
-        {transaction.hash ? <TransactionDisplay tx={transaction} /> : null}
+        {transaction.hash ? <TransactionDisplay tx={transaction} symbol={this.props.config.symbol} /> : null}
         {balance !== '' ? <AccountDisplay balance={balance} txCount={+txCount} addr={keyword} /> : null}
         {searched && !searchValueError && !block.hash && !transaction.hash && !balance ? <NotFound /> : null}
       </div>
     )
   }
 }
-export default withObservables(SearchPanel)
+export default withConfig(withObservables(SearchPanel))
