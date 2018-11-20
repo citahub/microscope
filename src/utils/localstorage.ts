@@ -1,7 +1,7 @@
 export const loadedLocalStorage = (key: string) => {
-  const json = window.localStorage.getItem(key)
-  if (json === null) return null
-  const obj = JSON.parse(json)
+  const localChainData = window.localStorage.getItem(key)
+  if (localChainData === null) return null
+  const obj = JSON.parse(localChainData)
   return obj
 }
 
