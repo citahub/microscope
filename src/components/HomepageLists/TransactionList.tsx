@@ -7,19 +7,20 @@ import { ContractCreation, } from '../../initValues'
 import { formatedAgeString, } from '../../utils/timeFormatter'
 import valueFormatter from '../../utils/valueFormatter'
 import { TX_TYPE, } from '../../containers/Transaction'
+import Image from '../../images'
 
 const texts = require('../../styles/text.scss')
 const styles = require('./homepageList.scss')
 
 const TransactionTypeInfo = {
   [TX_TYPE.EXCHANGE]: {
-    icon: '',
+    icon: Image.type.exchange,
   },
   [TX_TYPE.CONTRACT_CREATION]: {
-    icon: '',
+    icon: Image.type.contractCreation,
   },
   [TX_TYPE.CONTRACT_CALL]: {
-    icon: '',
+    icon: Image.type.contractCall,
   },
 }
 
@@ -63,9 +64,8 @@ const Secondary = ({ tx, t, symbol, }) => (
 
 const TransactionCell = ({ tx, t, symbol, }) => (
   <ListItem key={tx.hash} classes={{ root: styles.listItemContainer, }}>
-    {/* <img src={`${process.env.PUBLIC}/microscopeIcons/transaction.svg`} alt="transaction" className={styles.txIcon} /> */}
     <div>
-      <div>{tx.type}</div>
+      <img src={TransactionTypeInfo[tx.type].icon} alt='' />
       {tx.error ? <div>error</div> : null}
     </div>
     <ListItemText
