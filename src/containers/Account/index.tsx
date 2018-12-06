@@ -10,7 +10,7 @@ import * as web3Utils from 'web3-utils'
 import * as Web3Contract from 'web3-eth-contract'
 import * as web3Abi from 'web3-eth-abi'
 
-import { Card, CardHeader, CardContent, Tabs, Tab, Button, Divider, LinearProgress } from '@material-ui/core'
+import { Card, CardHeader, CardContent, Tabs, Tab, Button, Divider, LinearProgress, } from '@material-ui/core'
 
 import ERCPanel from '../../components/ERCPanel'
 import TransactionTable from '../../containers/TransactionTable'
@@ -20,13 +20,13 @@ import ErrorNotification from '../../components/ErrorNotification'
 import LocalAccounts from '../../components/LocalAccounts'
 import ContractInfoPanel from '../../components/ContractInfoPanel'
 
-import { AccountType } from '../../typings/account'
-import { IContainerProps } from '../../typings'
-import { withObservables } from '../../contexts/observables'
+import { AccountType, } from '../../typings/account'
+import { IContainerProps, } from '../../typings'
+import { withObservables, } from '../../contexts/observables'
 
-import { initAccountState } from '../../initValues'
+import { initAccountState, } from '../../initValues'
 import hideLoader from '../../utils/hideLoader'
-import { handleError, dismissError } from '../../utils/handleError'
+import { handleError, dismissError, } from '../../utils/handleError'
 import valueFormatter from '../../utils/valueFormatter'
 
 const layouts = require('../../styles/layout.scss')
@@ -38,14 +38,14 @@ type AccountState = typeof initAccountState
 class Account extends React.Component<AccountProps, AccountState> {
   readonly state = initAccountState
   public componentWillMount () {
-    const { account } = this.props.match.params
+    const { account, } = this.props.match.params
     this.onMount(account)
   }
   public componentDidMount () {
     hideLoader()
   }
   public componentWillReceiveProps (nextProps: AccountProps) {
-    const { account } = nextProps.match.params
+    const { account, } = nextProps.match.params
     if (account && account !== this.props.match.params.account) {
       this.onMount(account)
     }
@@ -60,36 +60,36 @@ class Account extends React.Component<AccountProps, AccountState> {
     this.fetchContractCode(account)
   }
   private onTabClick = (e, value) => {
-    this.setState({ panelOn: value })
+    this.setState({ panelOn: value, })
   }
 
-  private setTransactionsCount = count => this.setState({ txCount: count })
+  private setTransactionsCount = count => this.setState({ txCount: count, })
   private fetchContractCode = account =>
     this.props.CITAObservables.getCode({
       contractAddr: account,
-      blockNumber: 'latest'
-    }).subscribe(code => this.setState({ code }))
+      blockNumber: 'latest',
+    }).subscribe(code => this.setState({ code, }))
   protected readonly addrGroups = [
     {
       key: 'normals',
-      label: AccountType.NORMAL
+      label: AccountType.NORMAL,
     },
     {
       key: 'erc20s',
-      label: AccountType.ERC20
+      label: AccountType.ERC20,
     },
     {
       key: 'erc721s',
-      label: AccountType.ERC721
-    }
+      label: AccountType.ERC721,
+    },
   ]
   private fetchInfo = addr => {
     // NOTE: async
-    this.setState(state => ({ loading: state.loading + 2 })) // for get balance, get transaction count, and get abi
-    this.props.CITAObservables.getBalance({ addr, blockNumber: 'latest' })
+    this.setState(state => ({ loading: state.loading + 2, })) // for get balance, get transaction count, and get abi
+    this.props.CITAObservables.getBalance({ addr, blockNumber: 'latest', })
       // .finally(() => this.setState(state => ({ loading: state.loading - 1 })))
       .subscribe(
-        (balance: string) => this.setState(state => ({ loading: state.loading - 1, balance: `${+balance}` })),
+        (balance: string) => this.setState(state => ({ loading: state.loading - 1, balance: `${+balance}`, })),
         this.handleError
       )
     // this.props.CITAObservables.getTransactionCount({
@@ -102,10 +102,10 @@ class Account extends React.Component<AccountProps, AccountState> {
 
     this.props.CITAObservables.getAbi({
       contractAddr: addr,
-      blockNumber: 'latest'
+      blockNumber: 'latest',
     }).subscribe(encoded => {
       if (encoded === '0x') {
-        this.setState(state => ({ loading: state.loading - 1 }))
+        this.setState(state => ({ loading: state.loading - 1, }))
       } else {
         try {
           const abiStr = web3Utils.hexToUtf8(encoded as string)
@@ -114,7 +114,7 @@ class Account extends React.Component<AccountProps, AccountState> {
           this.setState(state => ({
             abi,
             contract,
-            loading: state.loading - 1
+            loading: state.loading - 1,
           }))
         } catch (err) {
           this.handleError(err)
@@ -130,18 +130,18 @@ class Account extends React.Component<AccountProps, AccountState> {
       type = this.state.erc721s.map(erc => erc.addr).includes(addr) ? AccountType.ERC721 : type
       this.setState({
         addr,
-        type
+        type,
       })
       this.fetchInfo(addr)
     }
   }
   private toggleAddrs = (addrsOn = false) => e => {
-    this.setState({ addrsOn })
+    this.setState({ addrsOn, })
   }
   private addAddr = group => e => {
     this.setState(state => {
-      const { name, addr } = this.state[`${group}Add`]
-      const newList = [...state[group], { name, addr }]
+      const { name, addr, } = this.state[`${group}Add`]
+      const newList = [...state[group], { name, addr, }, ]
       // side effect
       window.localStorage.setItem(group, JSON.stringify(newList))
       return {
@@ -149,56 +149,56 @@ class Account extends React.Component<AccountProps, AccountState> {
         [group]: newList,
         [`${group}Add`]: {
           name: '',
-          addr: ''
-        }
+          addr: '',
+        },
       }
     })
   }
   private handleAddrInput = (group, label) => e => {
-    const { value } = e.target
+    const { value, } = e.target
     this.setState(state => ({
       ...state,
       [`${group}Add`]: {
         ...state[`${group}Add`],
-        [label]: value
-      }
+        [label]: value,
+      },
     }))
   }
   private handleAddrDelete = (group, idx) => e => {
     this.setState(state => {
-      const newList = [...state[group]].splice(idx, 1)
+      const newList = [...state[group], ].splice(idx, 1)
       window.localStorage.setItem(group, JSON.stringify(newList))
       return {
         ...state,
         [group]: newList,
         [`${group}Add`]: {
           name: '',
-          addr: ''
-        }
+          addr: '',
+        },
       }
     })
   }
   private handleAbiValueChange = (index: number) => (inputIndex: number) => e => {
-    const { value } = e.target
+    const { value, } = e.target
     this.setState(state => {
-      const abi = [...state.abi]
+      const abi = [...state.abi, ]
       const oldInput = abi[index].inputs[inputIndex]
-      const newInput = { ...oldInput, value }
+      const newInput = { ...oldInput, value, }
       abi[index].inputs[inputIndex] = newInput
-      return { ...state, abi }
+      return { ...state, abi, }
     })
   }
   private handleEthCall = (index: number) => e => {
     const inputs = this.state.abi[index].inputs.map(input => ({
       name: input.name,
-      value: input.value
+      value: input.value,
     }))
     /* eslint-disable no-underscore-dangle */
     const jsonInterface = this.state.contract._jsonInterface[index]
     /* eslint-enable no-underscore-dangle */
     // send transform data
     const data = web3Abi.encodeFunctionCall(jsonInterface, inputs.map(input => input.value))
-    this.setState(state => ({ loading: state.loading + 1 })) // for eth call
+    this.setState(state => ({ loading: state.loading + 1, })) // for eth call
     /**
      * @method eth_call
      */
@@ -209,9 +209,9 @@ class Account extends React.Component<AccountProps, AccountState> {
       // }),
       callObject: {
         to: this.state.addr,
-        data
+        data,
       },
-      blockNumber: 'latest'
+      blockNumber: 'latest',
     }).subscribe(result => {
       try {
         const outputTypes = this.state.abi[index].outputs.map(o => o.type)
@@ -221,7 +221,7 @@ class Account extends React.Component<AccountProps, AccountState> {
           for (let i = 0; i < outputs.__length__; i++) {
             abi[index].outputs[i].value = outputs[i]
           }
-          return { ...state, abi, loading: state.loading - 1 }
+          return { ...state, abi, loading: state.loading - 1, }
         })
       } catch (err) {
         console.warn(err)
@@ -232,7 +232,7 @@ class Account extends React.Component<AccountProps, AccountState> {
   private handleError = handleError(this)
   private dismissError = dismissError(this)
   private renderPanelByTab = () => {
-    const { abi, addr, panelOn, code } = this.state
+    const { abi, addr, panelOn, code, } = this.state
     // const { account } = this.props.match.params
     const erc = (
       <ERCPanel
@@ -246,7 +246,7 @@ class Account extends React.Component<AccountProps, AccountState> {
     const table = {
       tx,
       abi: erc,
-      info
+      info,
     }
     return table[panelOn]
   }
@@ -266,7 +266,7 @@ class Account extends React.Component<AccountProps, AccountState> {
       erc721sAdd,
       abi,
       code,
-      error
+      error,
     } = this.state
 
     return (
@@ -274,21 +274,21 @@ class Account extends React.Component<AccountProps, AccountState> {
         {loading ? (
           <LinearProgress
             classes={{
-              root: 'linearProgressRoot'
+              root: 'linearProgressRoot',
             }}
           />
         ) : null}
 
         <Banner bg={`${process.env.PUBLIC}/banner/banner-Account.png`}>
           <div className={text.bannerText}>
-            Account: <span style={{ fontWeight: 100 }}>{addr}</span>
+            Account: <span style={{ fontWeight: 100, }}>{addr}</span>
           </div>
           <div className={text.bannerText}>
-            Balance: <span style={{ fontWeight: 100 }}>{valueFormatter(balance)}</span>
+            Balance: <span style={{ fontWeight: 100, }}>{valueFormatter(balance)}</span>
           </div>
         </Banner>
         <div className={layouts.main}>
-          <Card classes={{ root: layouts.cardContainer }} elevation={0}>
+          <Card classes={{ root: layouts.cardContainer, }} elevation={0}>
             <CardHeader action={<Button onClick={this.toggleAddrs(true)}>管理本地账户</Button>} />
             <CardContent>
               <Tabs value={panelOn} onChange={this.onTabClick}>
@@ -301,7 +301,8 @@ class Account extends React.Component<AccountProps, AccountState> {
             </CardContent>
           </Card>
         </div>
-        <Dialog fullScreen on={addrsOn} dialogTitle="地址管理" onClose={this.toggleAddrs()}>
+        {/*
+        <Dialog fullScreen on={addrsOn} dialogTitle="Saved Accounts" onClose={this.toggleAddrs()}>
           <LocalAccounts
             addrGroups={this.addrGroups}
             normals={normals}
@@ -315,6 +316,7 @@ class Account extends React.Component<AccountProps, AccountState> {
             addAddr={this.addAddr}
           />
         </Dialog>
+         */}
         <ErrorNotification error={error} dismissError={this.dismissError} />
       </React.Fragment>
     )
