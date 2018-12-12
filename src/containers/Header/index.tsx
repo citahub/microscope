@@ -10,7 +10,7 @@ import HeaderNavs from '../../components/HeaderNavs'
 import SidebarNavs from '../../components/SidebarNavs'
 import ErrorNotification from '../../components/ErrorNotification'
 import RightSidebar from '../../components/RightSidebar'
-import MetadataPanel, { ServerList, ChainSwitchPanel, } from '../../components/MetadataPanel'
+import { ServerList, ChainSwitchPanel, } from '../../components/MetadataPanel'
 import BriefStatisticsPanel from '../../components/BriefStatistics'
 import SearchPanel from '../../components/SearchPanel'
 import { withConfig, } from '../../contexts/config'
@@ -298,15 +298,17 @@ class Header extends React.Component<HeaderProps, HeaderState> {
   }
 
   private pollingCheckChainAndSwitch = (maxCount, ip) => {
-    setTimeout(() => {
+    let count = maxCount
+    const timer = setInterval(() => {
       const { otherMetadata, } = this.state
       if (otherMetadata.chainId !== -1) {
+        clearInterval(timer)
         saveChainHistoryLocal(ip, otherMetadata.chainName)
         this.switchChainImmediate(ip)
-      } else if (maxCount > 0) {
-        this.pollingCheckChainAndSwitch(maxCount - 1, ip)
+      } else if (count < 0) {
+        clearInterval(timer)
       } else {
-        this.setState({ inputChainError: true, waitingMetadata: false, })
+        count--
       }
     }, 500)
   }
@@ -315,9 +317,10 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     const ip = chain || this.state.searchIp
     if (immediate) {
       this.switchChainImmediate(ip)
+    } else {
+      this.setState({ inputChainError: false, waitingMetadata: true, })
+      this.pollingCheckChainAndSwitch(15, ip)
     }
-    this.setState({ inputChainError: false, waitingMetadata: true, })
-    this.pollingCheckChainAndSwitch(5, ip)
   }
 
   private toggleMetadata = e => {
@@ -335,21 +338,6 @@ class Header extends React.Component<HeaderProps, HeaderState> {
 
   private ActivePanel = () => {
     const { serverList, inputChainError, waitingMetadata, activePanel, } = this.state
-    // if (activePanel === 'metadata') {
-    //   return (
-    //     <MetadataPanel
-    //       metadata={this.state.metadata}
-    //       handleInput={this.handleInput}
-    //       searchIp={this.state.searchIp}
-    //       searchResult={this.state.otherMetadata}
-    //       switchChain={this.switchChain}
-    //       handleKeyUp={this.handleKeyUp}
-    //       serverList={serverList}
-    //       inputChainError={inputChainError}
-    //       waitingMetadata={waitingMetadata}
-    //     />
-    //   )
-    // } else
     if (activePanel === 'statistics') {
       return (
         <BriefStatisticsPanel
