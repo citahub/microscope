@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { hexToUtf8, } from 'web3-utils'
+import * as abiCoder from 'web3-eth-abi'
 import { Link, } from 'react-router-dom'
 import { Card, CardContent, List, ListSubheader, ListItem, ListItemText, Typography, Divider, } from '@material-ui/core'
 import { unsigner, } from '@appchain/signer'
@@ -102,6 +103,7 @@ const initState = {
   status: TX_STATUS.FAILURE as TX_STATUS | String,
   type: TX_TYPE.EXCHANGE,
   dataType: DATA_TYPE.HEX,
+  parameters: '',
 }
 
 type ITransactionState = typeof initState
@@ -113,7 +115,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     { key: 'from', label: 'From', type: 'account', },
     { key: 'to', label: 'To', type: 'account', },
     { key: 'contractAddress', label: 'Contract', type: 'account', },
-    { key: 'blockNumber', label: 'Block Height', type: 'height', },
+    { key: 'blockNumber', label: 'Block Height', type: 'Height', },
     { key: 'version', label: 'Version', },
     { key: 'nonce', label: 'Nonce', },
     { key: 'validUntilBlock', label: 'ValidUntilBlock', },
@@ -155,6 +157,36 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     }, this.handleError)
   }
 
+  private parseParamters = (contractAddr, data) => {
+    this.props.CITAObservables.getAbi({
+      contractAddr,
+      blockNumber: 'pending',
+    }).subscribe(hexAbi => {
+      if (hexAbi) {
+        try {
+          const abis = JSON.parse(hexToUtf8(hexAbi))
+          const fnHash = data.slice(0, 10)
+          abis.forEach(_abi => {
+            const _abiHash = abiCoder.encodeFunctionSignature(_abi.name)
+            if (_abi.signature === fnHash) {
+              const parameters = {}
+              const p = abiCoder.decodeParameters(_abi.inputs, data)
+              Object.keys(p).forEach(key => {
+                parameters[key] = p[key]
+              })
+              Object.defineProperty(parameters, '__length__', {
+                enumerable: false,
+              })
+              this.setState({ parameters: JSON.stringify(parameters, null, 2), })
+            }
+          })
+        } catch (err) {
+          console.warn(err)
+        }
+      }
+    }, console.warn)
+  }
+
   private fetchTransactionInfo = transaction => {
     const hash = format0x(transaction)
     this.setState(state => ({ loading: state.loading + 2, hash, }))
@@ -163,7 +195,8 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
         this.handleReturnedTx(tx)
       }, 100)
     }, this.handleError)
-    this.props.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: Chain.TransactionReceipt) => {
+    this.props.CITAObservables.getTransactionReceipt(transaction).subscribe((receipt: // Chain.TransactionReceipt
+    any) => {
       this.handleReturnedTxReceipt(receipt)
     }, this.handleError)
     this.getQuotaPrice()
@@ -181,6 +214,10 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     try {
       const unsignedTx = unsigner(tx.content)
       const { value, data, nonce, quota: quotaLimit, validUntilBlock, version, to, } = unsignedTx.transaction
+
+      if (to !== '0x') {
+        this.parseParamters(to, data)
+      }
 
       this.setState(state => ({
         ...state,
@@ -221,7 +258,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
         },
       })
     }
-    const { errorMessage, gasUsed: quotaUsed, contractAddress, } = receipt
+    const { errorMessage, quotaUsed, contractAddress, } = receipt as any
     this.setState(state => ({
       ...state,
       status: errorMessage ? `${TX_STATUS.FAILURE} ${errorMessage}` : TX_STATUS.SUCCESS,
@@ -254,6 +291,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
       loading,
       validUntilBlock,
       blockNumber,
+      parameters,
     } = this.state
     const { symbol, } = this.props.config
     const txInfo = {
@@ -302,6 +340,13 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
                       label="Data"
                       detail={txInfo.data}
                       action={utf8Str ? { label: 'HEX/UTF8', cb: this.switchDataType, } : undefined}
+                    />
+                  ) : null}
+                  {parameters ? (
+                    <InfoItem
+                      label="Parameters"
+                      type="Parameters"
+                      detail={<pre style={{ color: '#000', }}>{parameters}</pre>}
                     />
                   ) : null}
                 </List>

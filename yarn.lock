@@ -2,10 +2,20 @@
 # yarn lockfile v1
 
 
-"@appchain/signer@2.0.1":
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/@appchain/signer/-/signer-2.0.1.tgz#d20bfe4ea8fe9172b1f30df0a227effee0b697ec"
-  integrity sha512-dHA/cVP33j858oMBOK8qiC0N9KWhEanPoXEbFmuJ0kkfOnWAzlFTopHMTDXD8+KhkkHGQVery59sFbZoNwEZxA==
+"@appchain/plugin@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.npmjs.org/@appchain/plugin/-/plugin-0.20.0.tgz#a4e983f42a0cc1c4d189aaf284b7388b6c70ec93"
+  integrity sha512-h5GjQe0QOzDZohvsRI5gASFJdF/Mjft8YPLI82QbKpobHjL0pXMoc7z8hkD0uYWg0z+ZR8kQu0Qi9PYMmrK5Hg==
+  dependencies:
+    "@appchain/signer" "^2.0.1"
+    "@types/google-protobuf" "^3.2.7"
+    axios "^0.18.0"
+    google-protobuf "^3.5.0"
+
+"@appchain/signer@^2.0.1", "@appchain/signer@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/@appchain/signer/-/signer-2.0.4.tgz#deae6486b2d04e0525a04f7d4d26b0a9a143e9bb"
+  integrity sha512-Hk3FMjB3VTYCXmiRGH9MR2DnNlQi4W2B9mmFCUEELFgiC3bIOPkz2MXbCnPITV81XycFKtEpzyDRz+JD/a4ilA==
   dependencies:
     ec "^0.0.1"
     elliptic "^6.4.0"
@@ -87,15 +97,15 @@
   resolved "https://registry.npmjs.org/@most/prelude/-/prelude-1.7.2.tgz#be4ed406518d4c8c220e45c39fa7251365425b73"
   integrity sha512-GM5ec7+xpkuXiCMyzhyENgH/xZ8t0nAMDBY0QOsVVD6TrZYjJKUnW1eaI18HHX8W+COWMwWR9c0zoPiBp9+tUg==
 
-"@nervos/observables@0.18.3":
-  version "0.18.3"
-  resolved "https://registry.npmjs.org/@nervos/observables/-/observables-0.18.3.tgz#e98e13a487813649ab705588be91b9bad956d86b"
-  integrity sha512-H3edEwcMrKQ/AoDdz4eoKZ2SKrO9pBeyvNVE/jtIcldX0CGdcWL4xFc6HfHxXgUYkv2oe1wPJLHNwoXaX9kE0A==
+"@nervos/observables@^0.20.0":
+  version "0.20.0"
+  resolved "https://registry.npmjs.org/@nervos/observables/-/observables-0.20.0.tgz#89a7c1743544fe44d9efcd42593734e775efafed"
+  integrity sha512-1LcULB7DOWQ41vYDLVKyTv1W1wN0AIRTaCunkmHQgUDxvnGZ3lta26xOtqF36OypqT0dB0wr6nV+rfCbfxM6/Q==
   dependencies:
-    "@nervos/plugin" "0.18.4"
+    "@appchain/plugin" "^0.20.0"
     "@reactivex/rxjs" "^5.5.8"
 
-"@nervos/plugin@0.18.4":
+"@nervos/plugin@^0.18.4":
   version "0.18.4"
   resolved "https://registry.npmjs.org/@nervos/plugin/-/plugin-0.18.4.tgz#b6bd1df3bd39c20a7114c884a21b52146c526db1"
   integrity sha512-ozGRfPW2kZwEmyemeaDE6nRZMZ8rGVuu4fauG0bsEPBwRLA1rpUmxYpHYSdu6Rvr10yM/MjLKOmCDajsqeGY4w==

@@ -237,7 +237,8 @@ class Homepage extends React.Component<HomepageProps, HomepageState> {
     this.props.CITAObservables.blockHistory({
       by: `${height - 1}`,
       count,
-    }).subscribe((blocks: Chain.Block<Chain.TransactionInBlock>[]) => {
+    }).subscribe((blocks: // Chain.Block<Chain.TransactionInBlock>[]
+    any) => {
       this.setState(state => ({
         loading: state.loading - 1,
         blocks,

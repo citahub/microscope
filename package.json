@@ -27,10 +27,10 @@
     ]
   },
   "dependencies": {
-    "@appchain/signer": "2.0.1",
+    "@appchain/signer": "^2.0.4",
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
-    "@nervos/observables": "0.18.3",
+    "@nervos/observables": "^0.20.0",
     "@reactivex/rxjs": "^5.5.6",
     "axios": "^0.18.0",
     "echarts": "^4.0.4",
@@ -47,6 +47,7 @@
     "web3": "^1.0.0-beta.33"
   },
   "devDependencies": {
+    "@nervos/plugin": "^0.18.4",
     "@types/echarts": "^0.0.12",
     "@types/node": "^9.4.0",
     "@types/react": "^16.0.35",

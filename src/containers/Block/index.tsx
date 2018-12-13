@@ -171,14 +171,18 @@ class Block extends React.Component<IBlockProps, IBlockState> {
       this.setState(state => ({ loading: state.loading + 1, }))
       // NOTICE: async
       this.props.CITAObservables.blockByHash(blockHash).subscribe(
-        (block: RpcResult.BlockByHash) => this.handleReturnedBlock(block),
+        (
+          block: // RpcResult.BlockByHash
+          any
+        ) => this.handleReturnedBlock(block),
         this.handleError
       )
     }
     if (height) {
       // NOTICE: async
       this.setState(state => ({ loading: state.loading + 1, }))
-      this.props.CITAObservables.blockByNumber(height).subscribe((block: RpcResult.BlockByNumber) => {
+      this.props.CITAObservables.blockByNumber(height).subscribe((block: // RpcResult.BlockByNumber
+      any) => {
         this.handleReturnedBlock(block)
       }, this.handleError)
     }
