@@ -9,7 +9,7 @@ Microscope提供了一个易于使用的用户界面来查询所有AppChain链�
 
 # 关于 Microscope
 
-Microscope一个区块链浏览器，用[React]（https://reactjs.org/）构建，用于查询AppChain。 它支持搜索区块，交易，帐户信息和调用智能合约方法。 它还可以与[ReBirth]（https://github.com/cryptape/re-birth）一起使用，实现指定组合条件的区块交易列表查询，分析AppChain的工作状态等高级功能。
+Microscope一个区块链浏览器，用[React](https://reactjs.org/)构建，用于查询AppChain。 它支持搜索区块，交易，帐户信息和调用智能合约方法。 它还可以与[ReBirth](https://github.com/cryptape/re-birth)一起使用，实现指定组合条件的区块交易列表查询，分析AppChain的工作状态等高级功能。
 
 
 ## 功能特性
