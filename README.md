@@ -1,6 +1,8 @@
 [![MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/cryptape/microscope)
 [![AppChain](https://img.shields.io/badge/made%20for-Nervos%20AppChain-blue.svg)](https://appchain.nervos.org/)
 
+English | [简体中文](./README-CN.md)
+
 # Overview
 
 Microscope provides an easy-to-use user interface to inspect every cell of every AppChain. Yes, every AppChain, due to the ability to switch target chain in Metadata Panel of the Microscope.
