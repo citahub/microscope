@@ -5,17 +5,17 @@
 
 # 概述
 
-Microscope提供了一个易于使用的用户界面来查询所有AppChain链上信息。 是的，每条AppChain，可通过在元数据面板中切换目标链。
+Microscope提供了一个易于使用的用户界面来查询所有CITA链上信息,可通过在元数据面板中切换目标链。
 
 # 关于 Microscope
 
-Microscope一个区块链浏览器，用[React](https://reactjs.org/)构建，用于查询AppChain。 它支持搜索区块，交易，帐户信息和调用智能合约方法。 它还可以与[ReBirth](https://github.com/cryptape/re-birth)一起使用，实现指定组合条件的区块交易列表查询，分析AppChain的工作状态等高级功能。
+Microscope一个区块链浏览器，用[React](https://reactjs.org/)构建，用于查询CITA链。 它支持搜索区块，交易，帐户信息和调用智能合约方法。 它还可以与[ReBirth](https://github.com/cryptape/re-birth)一起使用，实现指定组合条件的区块交易列表查询，分析CITA的工作状态等高级功能。
 
 
 ## 功能特性
 
 - [x] **开源开发**:  Welcome广大开发者PR及贡献.
-- [x] **多链切换**:  支持在线AppChain链间切换
+- [x] **多链切换**:  支持在线CITA链间切换
 - [x] **智能合约支持**: 提供友好界面调用智能合约方法.
 - [x] **用户自定义**: 支持页面展示信息的开关配置.
 - [x] **渐进增强**: 可以独立运行, 也可以跟ReBirth项目协作实现更强大的功能[ReBirth](https://github.com/cryptape/re-birth).
@@ -125,7 +125,7 @@ yarn docker:start
 
 ## 链设置
 
-如果您是第一次访问，则会弹出侧面板，要求您设置要侦听查询的AppChain地址
+如果您是第一次访问，则会弹出侧面板，要求您设置要侦听查询的CITA地址
 
 ## Microscope上的数据信息
 
@@ -137,7 +137,7 @@ yarn docker:start
 
 ### 区块信息
 
-> 注意: 该功能只能配合 [ReBirth](https://github.com/cryptape/re-birth)使用, AppChain缓存服务器.
+> 注意: 该功能只能配合 [ReBirth](https://github.com/cryptape/re-birth)使用, 针对CITA的缓存服务器.
 
 **区块页面** 展示区块列表, 表格项可在 **配置页面** 配置是否显示
 
@@ -152,7 +152,7 @@ yarn docker:start
 
 ### 交易信息
 
-> 注意: 该功能只能配合 [ReBirth](https://github.com/cryptape/re-birth)使用, AppChain缓存服务器.
+> 注意: 该功能只能配合 [ReBirth](https://github.com/cryptape/re-birth)使用, 针对CITA的缓存服务器.
 
 **交易页面** 展现交易列表, 表格项可在 **配置页面** 配置是否显示
 
@@ -168,7 +168,7 @@ yarn docker:start
 
 ### 统计
 
-> 注意: 该功能只能配合 [ReBirth](https://github.com/cryptape/re-birth)使用, AppChain缓存服务器.
+> 注意: 该功能只能配合 [ReBirth](https://github.com/cryptape/re-birth)使用, 针对CITA的缓存服务器.
 
 **统计页面** 展现各类图表, 可在 **配置页面** 配置是否显示
 
