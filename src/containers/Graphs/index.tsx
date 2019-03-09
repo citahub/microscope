@@ -184,6 +184,13 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
             )}...${param.value[0].slice(-4)} : ${param.value[1]}</span>`
             return label
           },
+          yAxis: {
+            type: 'value',
+            scale: true,
+            axisLabel: {
+              formatter: (value: number) => value > 1000000 ? `${value / 100000}(m)` : `${value / 1000}(k)`,
+            },
+          },
           dataset: {
             source: source.map((item, idx) => (idx > 0 ? [item[0], +item[1], ] : [item[0], item[1], ])),
           },
@@ -245,6 +252,12 @@ class Graphs extends React.Component<GraphsProps, GraphState> {
           text: `Quota Used in Latest ${this.state.maxCount} Blocks`,
           textStyle: {
             fontSize: 16,
+          },
+        },
+        yAxis: {
+          type: 'value',
+          axisLabel: {
+            formatter: `{value/1000}(k)`,
           },
         },
         color: ['#4db7f8', ],

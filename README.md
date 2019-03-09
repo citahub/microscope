@@ -1,21 +1,23 @@
 [![MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/cryptape/microscope)
 [![AppChain](https://img.shields.io/badge/made%20for-Nervos%20AppChain-blue.svg)](https://appchain.nervos.org/)
 
+English | [简体中文](./README-CN.md)
+
 # Overview
 
-Microscope provides an easy-to-use user interface to inspect every cell of every AppChain. Yes, every AppChain, due to the ability to switch target chain in Metadata Panel of the Microscope.
+Microscope provides an easy-to-use user interface to inspect CITA, due to the ability to switch target chain in Metadata Panel of the Microscope.
 
 # About Microscope
 
-Microscope is a blockchain explorer built with [React](https://reactjs.org/) for inspecting any AppChain. It supports searching block, transaction, account and invoking call method of smart contract. It also can work with [ReBirth](https://github.com/cryptape/re-birth) to display a list of blocks and transactions on specified conditions, or even analyzes AppChain working status.
+Microscope is a blockchain explorer built with [React](https://reactjs.org/) for inspecting CITA. It supports searching block, transaction, account and invoking call method of smart contract. It also can work with [ReBirth](https://github.com/cryptape/re-birth) to display a list of blocks and transactions on specified conditions, or even analyzes CITA‘s working status.
 
 ## Features
 
 - [x] **Open Source Development**: This project is welcome anyone to use and PR.
-- [x] **Multi-Chain Switch**: This project supports switch between any AppChain.
+- [x] **Multi-Chain Switch**: This project supports switch between CITA chains.
 - [x] **Smart Contract Support**: This project provides a user friendly interface to call methods of smart contracts.
 - [x] **User Customized**: This project supports a config page to specify which value should be displayed.
-- [x] **Progressive**: This project is under progressive development, which means it can work independently, and is able to work with [ReBirth](https://github.com/cryptape/re-birth), another project for AppChain.
+- [x] **Progressive**: This project is under progressive development, which means it can work independently, and is able to work with [ReBirth](https://github.com/cryptape/re-birth), another project for CITA.
 - [x] **Internationalized**: This project supports i18n, default to 中文 and Englisgh.
 
 ## Getting Started
@@ -120,9 +122,9 @@ to reload it.
 
 # Usage
 
-## Set AppChain
+## Set CITA
 
-If you visit the explorer for the first time, the side panel will pop up asking to set AppChain address you want to listen to.
+If you visit the explorer for the first time, the side panel will pop up asking to set CITA address you want to listen to.
 
 ## Data in Microscope
 
@@ -134,7 +136,7 @@ On homeage it displays `Latest 10 Blocks` and `Latest 10 Transactions`.
 
 ### Block
 
-> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the Nervos AppChain cache server.
+> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the cache server for CITA.
 
 **Block Page** show list of blocks, the table items can be specified in **Config Page**
 
@@ -148,7 +150,7 @@ Block Detail can be inspected via table link.
 
 ### Transaction
 
-> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the server caching appchain.
+> NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the cache server for CITA.
 
 **Transaction Page** show list of transaction, the table items can be specified in **Config Page**
 
@@ -164,7 +166,7 @@ Account Detail can be inspected via `from` and `to`.
 
 ### Statisitcs
 
-> NOTICE: Partial diagrams works with [ReBirth](https://github.com/cryptape/ReBirth), the server caching appchain.
+> NOTICE: Partial diagrams works with [ReBirth](https://github.com/cryptape/ReBirth), the cache server for CITA.
 
 **Statistics Page** show list of diagrams, the displaying items can be specified in **Config Page**
 
