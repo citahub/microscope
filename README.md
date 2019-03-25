@@ -1,5 +1,5 @@
 [![MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/cryptape/microscope)
-[![AppChain](https://img.shields.io/badge/made%20for-Nervos%20AppChain-blue.svg)](https://appchain.nervos.org/)
+[![CITAHub](https://img.shields.io/badge/made%20for-CITAHub-blue.svg)](https://www.citahub.com/)
 
 English | [简体中文](./README-CN.md)
 
