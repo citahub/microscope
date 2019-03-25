@@ -22,7 +22,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
     overview: {
       title: 'overview',
       content:
-        'Across the Microscope, we can reach every cell in Nervos Network',
+        'Across the Microscope, we can reach any data in CITA',
     },
     products: {
       title: 'other product',
@@ -30,9 +30,9 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         {
           logo:
             'https://uploads-ssl.webflow.com/5b10cb31f2733b937fe55ab5/5b185b65683265ce7a42c13c_nervos%20logo.png',
-          title: 'Nervos AppChain',
+          title: 'Nervos',
           url: 'http://nervos.org/',
-          overview: 'Nervos AppChain',
+          overview: 'Nervos',
         },
         {
           logo:
@@ -53,24 +53,13 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
         },
         {
           icon: 'email',
-          title: 'appchain.contact@cryptape.com',
-          url: 'mailto:appchain.contact@cryptape.com',
-        },
-        {
-          icon: 'group',
-          title: 'Nervos-AppChain 开发者群组',
-          url: 'https://t.me/NervosNetworkcn',
-        },
-        {
-          icon: 'wechat',
-          title: '微信公众号',
-          url:
-            'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzUzNzg4NTAzOA==&scene=124&#wechat_redirect',
+          title: 'citahub-team@cryptape.com',
+          url: 'mailto:citahub-team@cryptape.com',
         },
         {
           icon: 'forum',
-          title: 'Nervos Forums',
-          url: 'https://talk.nervos.org/',
+          title: 'CITAHub Forums',
+          url: 'https://talk.citahub.com/',
         },
       ] as Contact[],
     },
