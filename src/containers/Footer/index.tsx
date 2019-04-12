@@ -6,40 +6,35 @@ const layout = require('../../styles/layout.scss')
 const styles = require('./styles.scss')
 
 interface Product {
-  logo: string;
-  title: string;
-  url: string;
-  overview: string;
+  logo: string
+  title: string
+  url: string
+  overview: string
 }
 interface Contact {
-  icon: any;
-  title: string;
-  url: string;
+  icon: any
+  title: string
+  url: string
 }
 
 class Footer extends React.Component<{ t: (key: string) => string }, any> {
   state = {
     overview: {
       title: 'overview',
-      content:
-        'Across the Microscope, we can reach any data in CITA',
+      content: 'Across the Microscope, we can reach any data in CITA',
     },
     products: {
-      title: 'other product',
+      title: 'technologies',
       items: [
         {
-          logo:
-            'https://uploads-ssl.webflow.com/5b10cb31f2733b937fe55ab5/5b185b65683265ce7a42c13c_nervos%20logo.png',
+          logo: 'https://uploads-ssl.webflow.com/5b10cb31f2733b937fe55ab5/5b185b65683265ce7a42c13c_nervos%20logo.png',
           title: 'Nervos',
           url: 'http://nervos.org/',
-          overview: 'Nervos',
         },
         {
-          logo:
-            'https://raw.githubusercontent.com/cryptape/assets/master/CITA-logo.png',
+          logo: 'https://raw.githubusercontent.com/cryptape/assets/master/CITA-logo.png',
           title: 'CITA',
           url: 'https://github.com/cryptape/cita',
-          overview: 'CITA',
         },
       ] as Product[],
     },
@@ -70,7 +65,6 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
     return (
       <div className={`${styles.footer} ${layout.center}`}>
         <div className={styles.overview}>
-          <h1>{t(overview.title)}</h1>
           <div>{overview.content}</div>
         </div>
         <div className={styles.products}>
@@ -81,7 +75,6 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
                 <a href={item.url} rel="noreferrer noopener" target="_blank">
                   <img src={item.logo} alt={item.title} />
                 </a>
-                <p>{t(item.overview)}</p>
               </div>
             ))}
           </div>
@@ -90,12 +83,7 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
           <h1>{t(contacts.title)}</h1>
           <div>
             {contacts.items.map(item => (
-              <a
-                key={item.title}
-                href={item.url}
-                rel="noreferrer noopener"
-                target="_blank"
-              >
+              <a key={item.title} href={item.url} rel="noreferrer noopener" target="_blank">
                 <svg className="icon" aria-hidden="true">
                   <use xlinkHref={`#icon-${item.icon}`} />
                 </svg>
@@ -111,7 +99,4 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
 
 const TransFooter = translate('microscope')(Footer)
 
-export default () =>
-  createPortal(<TransFooter />, document.getElementById(
-    'footer'
-  ) as HTMLElement)
+export default () => createPortal(<TransFooter />, document.getElementById('footer') as HTMLElement)
