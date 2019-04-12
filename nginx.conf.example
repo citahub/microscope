@@ -2,9 +2,9 @@ server {
        listen 80;
        listen [::]:80;
 
-       server_name 0.0.0.0;
+       server_name localhost;
 
-       root /app/dist;
+       root /etc/nginx/dist/;
        index index.html;
 
        location / {
