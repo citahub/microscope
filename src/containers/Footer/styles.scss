@@ -8,7 +8,7 @@ $col-span: 92px;
     flex-direction: column;
     align-items: center;
 
-    & > div {
+    &>div {
       max-width: 90vw;
       text-align: center;
       padding: 0;
@@ -24,7 +24,9 @@ $col-span: 92px;
 }
 
 .overview {
+  display: flex;
   flex: 1;
+  align-items: center;
   padding-right: $col-span;
 
   div {
@@ -38,7 +40,7 @@ $col-span: 92px;
   @media (max-width: 800px) {
     width: 100vw;
 
-    & > div {
+    &>div {
       display: flex;
       flex-wrap: wrap;
       margin: 0;
@@ -48,13 +50,13 @@ $col-span: 92px;
   padding: 0 $col-span;
   box-sizing: border-box;
 
-  & > div {
+  &>div {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     margin: 0 -10px;
 
-    & > div {
+    &>div {
       width: 190px;
       margin: 0 10px;
 
@@ -113,7 +115,7 @@ $col-span: 92px;
 .overview,
 .products,
 .contacts {
-  & > div {
+  &>div {
     height: 120px;
     display: flex;
     flex-direction: column;
