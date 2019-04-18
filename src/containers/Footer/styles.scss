@@ -103,7 +103,7 @@ $col-span: 92px;
     border-bottom: 2px solid #fff;
     height: 1.5rem;
     line-height: 1.5rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 0.75rem;
     text-transform: capitalize;
 
     @media (max-width: 800px) {
@@ -116,7 +116,7 @@ $col-span: 92px;
 .products,
 .contacts {
   &>div {
-    height: 120px;
+    height: 80px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -126,6 +126,20 @@ $col-span: 92px;
   @media (max-width: 800px) {
     p {
       display: none;
+    }
+  }
+}
+
+.overview {
+  &>div {
+    justify-content: center;
+  }
+}
+.products{
+  &>div {
+    justify-content: center;
+    &>div:first-child {
+      margin-left: 0;
     }
   }
 }
