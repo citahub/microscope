@@ -8,7 +8,7 @@ $col-span: 92px;
     flex-direction: column;
     align-items: center;
 
-    & > div {
+    &>div {
       max-width: 90vw;
       text-align: center;
       padding: 0;
@@ -24,7 +24,9 @@ $col-span: 92px;
 }
 
 .overview {
+  display: flex;
   flex: 1;
+  align-items: center;
   padding-right: $col-span;
 
   div {
@@ -38,7 +40,7 @@ $col-span: 92px;
   @media (max-width: 800px) {
     width: 100vw;
 
-    & > div {
+    &>div {
       display: flex;
       flex-wrap: wrap;
       margin: 0;
@@ -48,13 +50,13 @@ $col-span: 92px;
   padding: 0 $col-span;
   box-sizing: border-box;
 
-  & > div {
+  &>div {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
     margin: 0 -10px;
 
-    & > div {
+    &>div {
       width: 190px;
       margin: 0 10px;
 
@@ -101,7 +103,7 @@ $col-span: 92px;
     border-bottom: 2px solid #fff;
     height: 1.5rem;
     line-height: 1.5rem;
-    margin-bottom: 1.75rem;
+    margin-bottom: 0.75rem;
     text-transform: capitalize;
 
     @media (max-width: 800px) {
@@ -113,8 +115,8 @@ $col-span: 92px;
 .overview,
 .products,
 .contacts {
-  & > div {
-    height: 120px;
+  &>div {
+    height: 80px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -124,6 +126,20 @@ $col-span: 92px;
   @media (max-width: 800px) {
     p {
       display: none;
+    }
+  }
+}
+
+.overview {
+  &>div {
+    justify-content: center;
+  }
+}
+.products{
+  &>div {
+    justify-content: center;
+    &>div:first-child {
+      margin-left: 0;
     }
   }
 }

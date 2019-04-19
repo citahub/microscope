@@ -87,12 +87,12 @@ const BlockInterval = ({
 }) => {
   const { blockInterval: interval, } = metadata
   const intervalTime = Math.floor(metadata.blockInterval / 1000)
-  let c = `${Math.floor(overtime / 100) / 10}s/${intervalTime}s`
+  let c = `${(Math.floor(overtime / 100) / 10).toFixed(1)}s/${intervalTime}s`
   if (overtime > 5 * 60 * 1000) {
     stopSubjectNewBlock()
     stopCheckOvertime()
   } else if (overtime > 5 * interval) {
-    c = `${Math.floor(overtime / 1000)}s/${intervalTime}s`
+    c = `${(Math.floor(overtime / 1000)).toFixed(1)}s/${intervalTime}s`
   }
   return <BlockHeight {...{ icon, content: c, name, }} />
 }
