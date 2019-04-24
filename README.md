@@ -165,7 +165,7 @@ Block Detail can be inspected via `height`.
 
 Account Detail can be inspected via `from` and `to`.
 
-Data Detail can be inspected via `Hex` , if ABI files are uploaded, the ABI files can also be parsed into readable text and can be inspected via `Parameters`.
+Data Detail can be inspected via `Hex` , if ABI files are uploaded, then according to the ABI files the data can also be parsed into readable text and can be inspected via `Parameters`.
 
 ### Statisitcs
 
@@ -177,7 +177,7 @@ For now, **Statistics Page** includes `Interval/Block`, `Transactions/Block`, `Q
 
 ### Account
 
-**Account Page** displays its **balance** and **transaction records**, and if the account is an contract, the abi panel will also be available.
+**Account Page** displays its **balance** and **transaction records**, and if the account is an contract and upload ABI files, the abi panel will also be available.
 
 ## Other Widgets
 
