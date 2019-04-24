@@ -166,6 +166,9 @@ yarn docker:start
 
 账户详情可以点击 `from` 和 `to` 链接查看
 
+data 详情可在 `Hex` 查看，并且若合约上链同时上传 ABI 文件，还可将 ABI 文件解析成可读文本，从而可在
+`Parameters` 查看一些简要信息。
+
 ### 统计
 
 > 注意: 该功能只能配合 [ReBirth](https://github.com/cryptape/re-birth)使用, 针对CITA的缓存服务器.
@@ -176,7 +179,7 @@ yarn docker:start
 
 ### 账户信息
 
-**账户页面** 展示 **余额** and **交易记录**, 如果是合约账户, 则可以看到abi面板.
+**账户页面** 展示 **余额** and **交易记录**, 如果是合约账户, 则可以看到 abi 面板.
 
 ## 其他Widgets
 

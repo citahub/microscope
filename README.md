@@ -5,7 +5,7 @@ English | [简体中文](./README-CN.md)
 
 # Overview
 
-Microscope provides an easy-to-use user interface to inspect CITA, due to the ability to switch target chain in Metadata Panel of the Microscope.
+Microscope provides an easy-to-use user interface to inspect CITA,  you can switch target chain in Metadata Panel of the Microscope.
 
 # About Microscope
 
@@ -148,6 +148,7 @@ Filters can be set in **Advanced Selector**, available params are `numberFrom`, 
 
 Block Detail can be inspected via table link.
 
+
 ### Transaction
 
 > NOTICE: This page only works with [ReBirth](https://github.com/cryptape/re-birth), the cache server for CITA.
@@ -163,6 +164,8 @@ Transaction Detail can be inspected via `hash`.
 Block Detail can be inspected via `height`.
 
 Account Detail can be inspected via `from` and `to`.
+
+Data Detail can be inspected via `Hex` , if ABI files are uploaded, the ABI files can also be parsed into readable text and can be inspected via `Parameters`.
 
 ### Statisitcs
 
