@@ -156,10 +156,9 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
           const abis = JSON.parse(hexToUtf8(hexAbi))
           const fnHash = data.slice(0, 10)
           abis.forEach(_abi => {
-            const _abiHash = abiCoder.encodeFunctionSignature(_abi.name)
             if (_abi.signature === fnHash) {
               const parameters = {}
-              const p = abiCoder.decodeParameters(_abi.inputs, data.slice(10))
+              const p = abiCoder.decodeParameters(_abi.inputs, `0x${data.slice(10)}`)
               Object.keys(p).forEach(key => {
                 parameters[key] = p[key]
               })
