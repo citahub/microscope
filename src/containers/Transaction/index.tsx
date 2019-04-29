@@ -313,7 +313,7 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
       fee: valueFormatter(+quotaUsed * +quotaPrice, symbol),
       quotaPrice: `1 ${symbol} = ${(+quotaPrice).toLocaleString()} Quota`,
       value: valueFormatter(value, symbol),
-      validUntilBlock: `${(+validUntilBlock).toLocaleString()}`,
+      validUntilBlock: `${(+validUntilBlock)}`,
       data:
         dataType === DATA_TYPE.HEX
           ? data
