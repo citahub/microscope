@@ -79,8 +79,8 @@ const initState = {
   data: '',
   errorMessage: '',
   utf8Str: '',
-  quotaLimit: '',
   quotaUsed: '',
+  quotaLimit: '',
   version: 0,
   error: {
     message: '',
@@ -108,7 +108,8 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     { key: 'nonce', label: 'Nonce', },
     { key: 'validUntilBlock', label: 'ValidUntilBlock', },
     { key: 'value', label: 'Value', },
-    { key: 'quota', label: 'Quota', },
+    { key: 'quotaUsed', label: 'Quota Used', },
+    { key: 'quotaLimit', label: 'Quota Limit', },
     { key: 'quotaPrice', label: 'Quota Price', },
     // { key: 'fee', label: 'Fee', },
   ];
@@ -306,12 +307,13 @@ class Transaction extends React.Component<TransactionProps, ITransactionState> {
     const { symbol, } = this.props.config
     const txInfo = {
       ...this.state,
-      blockNumber: `${(+blockNumber).toLocaleString()}`,
-      quota: `${(+quotaUsed).toLocaleString()} / ${(+quotaLimit).toLocaleString()}`,
+      blockNumber: `${(+blockNumber)}`,
+      quotaUsed: `${(+quotaUsed).toLocaleString()} `,
+      quotaLimit: `${(+quotaLimit).toLocaleString()}`,
       fee: valueFormatter(+quotaUsed * +quotaPrice, symbol),
-      quotaPrice: (+quotaPrice).toLocaleString(),
+      quotaPrice: `1 ${symbol} = ${(+quotaPrice).toLocaleString()} Quota`,
       value: valueFormatter(value, symbol),
-      validUntilBlock: `${(+validUntilBlock).toLocaleString()}`,
+      validUntilBlock: `${(+validUntilBlock)}`,
       data:
         dataType === DATA_TYPE.HEX
           ? data
