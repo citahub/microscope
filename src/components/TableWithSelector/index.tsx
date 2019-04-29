@@ -36,7 +36,7 @@ export interface TableRowWithSelector {
 export interface TableWithSelectorProps {
   headers: TableHeaderWithSelector[];
   items: TableRowWithSelector[];
-  count: number;
+  count?: number;
   pageSize: number;
   pageNo: number;
   selectors: {
@@ -146,7 +146,6 @@ class TableWithSelector extends React.Component<
       inset,
       searchText,
     } = this.props
-    const total = Math.ceil(count / pageSize)
     return (
       <Paper
         className={`${layout.center} ${
@@ -278,19 +277,65 @@ class TableWithSelector extends React.Component<
             ))}
           </tbody>
         </table>
-        <Pager
-          total={total}
-          current={pageNo}
-          visiblePages={3}
-          titles={{
-            first: <SkipPrevious />,
-            last: <SkipNext />,
-            prev: <KeyboardArrowLeft />,
-            next: <KeyboardArrowRight />,
-          }}
-          className={styles.pager}
-          onPageChanged={this.props.handlePageChanged}
-        />
+        {
+          count ? (
+            <Pager
+              total={Math.ceil(count / pageSize)}
+              current={pageNo}
+              visiblePages={3}
+              titles={{
+                first: <SkipPrevious />,
+                last: <SkipNext />,
+                prev: <KeyboardArrowLeft />,
+                next: <KeyboardArrowRight />,
+              }}
+              className={styles.pager}
+              onPageChanged={this.props.handlePageChanged}
+            />)
+            : (
+              <ul className="pagination pager__tableWithSelector--1Ze3F">
+                {
+                  pageNo > 1 ? (
+                    <li className="btn-prev-page">
+                      <svg
+                        onClick={() => {
+                          if (this.props.handlePageChanged) {
+                            this.props.handlePageChanged(pageNo - 1)
+                          }
+                        }}
+                        className="MuiSvgIcon-root-155"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <g>
+                          <path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z" />
+                        </g>
+                      </svg>
+                    </li>) : null
+                }
+                {
+                  items && items.length === pageSize ? (
+                    <li className="btn-next-page">
+                      <svg
+                        onClick={() => {
+                          if (this.props.handlePageChanged) {
+                            this.props.handlePageChanged(pageNo + 1)
+                          }
+                        }}
+                        className="MuiSvgIcon-root-155"
+                        focusable="false"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <g>
+                          <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z" />
+                        </g>
+                      </svg>
+                    </li>) : null
+                }
+              </ul>)
+        }
       </Paper>
     )
   }

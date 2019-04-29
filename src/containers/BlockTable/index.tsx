@@ -19,8 +19,8 @@ import TableWithSelector, {
 import ErrorNotification from '../../components/ErrorNotification'
 import Banner from '../../components/Banner'
 
-import { fetchBlocks, } from '../../utils/fetcher'
-import paramsFilter from '../../utils/paramsFilter'
+import { fetchBlocksV2, } from '../../utils/fetcher'
+import { paramsBlocksV2Adapter, } from '../../utils/paramsFilter'
 import hideLoader from '../../utils/hideLoader'
 import { handleError, dismissError, } from '../../utils/handleError'
 import { rangeSelectorText, } from '../../utils/searchTextGen'
@@ -132,16 +132,16 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
 
   private fetchBlock = (params: { [index: string]: string | number } = {}) => {
     this.setState(state => ({ loading: state.loading + 1, }))
-    return fetchBlocks(paramsFilter(params))
+    return fetchBlocksV2(paramsBlocksV2Adapter(params))
       .then(
         ({
           result,
         }: {
-        result: { blocks: BlockFromServer[]; count: number }
+        result: { blocks: BlockFromServer[]; }
         }) => {
           this.setState(state => ({
             loading: state.loading - 1,
-            count: result.count,
+            // count: result.count,
             items: result.blocks.map(block => ({
               key: block.hash,
               height: `${+block.header.number}`,
@@ -166,13 +166,12 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
       items,
       selectors,
       selectorsValue,
-      count,
       pageSize,
       pageNo,
       loading,
       error,
     } = this.state
-    const activeParams = paramsFilter(selectorsValue) as any
+    const activeParams = paramsBlocksV2Adapter(selectorsValue) as any
     const blockSearchText = rangeSelectorText(
       'Number',
       activeParams.numberFrom,
@@ -206,7 +205,6 @@ class BlockTable extends React.Component<BlockTableProps, BlockTableState> {
           selectorsValue={selectorsValue}
           selectors={selectors}
           onSubmit={this.onSearch}
-          count={count}
           pageSize={pageSize}
           pageNo={pageNo}
           handlePageChanged={this.handlePageChanged}
