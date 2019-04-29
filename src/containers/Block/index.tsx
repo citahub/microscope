@@ -83,6 +83,7 @@ const InfoContent = ({
   toggleTransaction,
   quotaPrice,
   fee,
+  symbol,
 }) => {
   const headerInfo = [
     // { key: 'quotaUsed', label: 'Quota Used', },
@@ -119,7 +120,7 @@ const InfoContent = ({
 
         <InfoCell name="Quota Used">{header.quotaUsed}</InfoCell>
 
-        <InfoCell name="Quota Price">{quotaPrice}</InfoCell>
+        <InfoCell name="Quota Price">1 {symbol} = {(+quotaPrice).toLocaleString()} Quota</InfoCell>
 
         <InfoCell name="Total Handling Fee">{fee}</InfoCell>
 
@@ -148,6 +149,7 @@ const BlockInfo = ({
   toggleTransaction,
   quotaPrice,
   fee,
+  symbol,
 }) => (
   <div className={layouts.main}>
     <InfoHead header={header} />
@@ -158,6 +160,7 @@ const BlockInfo = ({
       toggleTransaction={toggleTransaction}
       quotaPrice={quotaPrice}
       fee={fee}
+      symbol={symbol}
     />
   </div>
 )
@@ -297,6 +300,7 @@ class Block extends React.Component<IBlockProps, IBlockState> {
           toggleTransaction={this.toggleTransaction}
           fee={fee}
           quotaPrice={quotaPrice}
+          symbol={this.props.config.symbol}
         />
         <Dialog
           on={transactionsOn}
