@@ -31,7 +31,7 @@ Microscope is a blockchain explorer built with [React](https://reactjs.org/) for
 1.  clone the repo
 
 ```shell
-git clone https://github.com/cryptape/microscope/
+git clone https://github.com/cryptape/microscope/ && cd microscope
 ```
 
 2.  Install Dependencies
