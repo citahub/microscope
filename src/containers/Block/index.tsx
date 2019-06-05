@@ -9,7 +9,7 @@ import * as React from 'react'
 import { Link, } from 'react-router-dom'
 import { List, ListItem, } from '@material-ui/core'
 
-import { unsigner, } from '@appchain/signer'
+import { unsigner, } from '@cryptape/cita-signer'
 import { Chain, } from '@appchain/plugin/lib/typings/index.d'
 import { IContainerProps, } from '../../typings'
 
