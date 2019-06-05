@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@appchain/observables": "0.20.2",
-    "@appchain/signer": "2.0.4",
+    "@cryptape/cita-signer": "2.4.0",
     "@material-ui/core": "^1.2.0",
     "@material-ui/icons": "^1.1.0",
     "@reactivex/rxjs": "^5.5.6",
