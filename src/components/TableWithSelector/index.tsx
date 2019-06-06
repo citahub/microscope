@@ -293,45 +293,29 @@ class TableWithSelector extends React.Component<
               onPageChanged={this.props.handlePageChanged}
             />)
             : (
-              <ul className="pagination pager__tableWithSelector--1Ze3F">
+              <ul className={styles.pager}>
                 {
-                  pageNo > 1 ? (
+                  pageNo > 0 ? (
                     <li className="btn-prev-page">
-                      <svg
+                      <KeyboardArrowLeft
                         onClick={() => {
                           if (this.props.handlePageChanged) {
                             this.props.handlePageChanged(pageNo - 1)
                           }
                         }}
-                        className="MuiSvgIcon-root-155"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <g>
-                          <path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z" />
-                        </g>
-                      </svg>
+                      />
                     </li>) : null
                 }
                 {
                   items && items.length === pageSize ? (
                     <li className="btn-next-page">
-                      <svg
+                      <KeyboardArrowRight
                         onClick={() => {
                           if (this.props.handlePageChanged) {
                             this.props.handlePageChanged(pageNo + 1)
                           }
                         }}
-                        className="MuiSvgIcon-root-155"
-                        focusable="false"
-                        viewBox="0 0 24 24"
-                        aria-hidden="true"
-                      >
-                        <g>
-                          <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z" />
-                        </g>
-                      </svg>
+                      />
                     </li>) : null
                 }
               </ul>)
