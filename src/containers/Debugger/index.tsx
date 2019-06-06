@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Grid, } from '@material-ui/core'
 import { Chain, } from '@appchain/plugin'
-import { unsigner, } from '@appchain/signer'
+import { unsigner, } from '@cryptape/cita-signer'
 import * as EthAccount from 'web3-eth-accounts'
 
 import StaticCard from '../../components/StaticCard'

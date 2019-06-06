@@ -38,6 +38,14 @@ export const fetchBlocks = (params: Params) =>
       throw new Error(ErrorTexts.CACHE_SERVER_NOT_AVAILABLE)
     })
 
+export const fetchBlocksV2 = (params: Params) =>
+  axiosIns
+    .get('api/v2/blocks', { params, })
+    .then((res: AxiosResponse) => res.data)
+    .catch(() => {
+      throw new Error(ErrorTexts.CACHE_SERVER_NOT_AVAILABLE)
+    })
+
 export const fetchTransactions = (params: Params) =>
   axiosIns
     .get('api/transactions', { params, })

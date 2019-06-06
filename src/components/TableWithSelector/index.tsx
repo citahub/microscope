@@ -36,7 +36,7 @@ export interface TableRowWithSelector {
 export interface TableWithSelectorProps {
   headers: TableHeaderWithSelector[];
   items: TableRowWithSelector[];
-  count: number;
+  count?: number;
   pageSize: number;
   pageNo: number;
   selectors: {
@@ -146,7 +146,6 @@ class TableWithSelector extends React.Component<
       inset,
       searchText,
     } = this.props
-    const total = Math.ceil(count / pageSize)
     return (
       <Paper
         className={`${layout.center} ${
@@ -278,19 +277,49 @@ class TableWithSelector extends React.Component<
             ))}
           </tbody>
         </table>
-        <Pager
-          total={total}
-          current={pageNo}
-          visiblePages={3}
-          titles={{
-            first: <SkipPrevious />,
-            last: <SkipNext />,
-            prev: <KeyboardArrowLeft />,
-            next: <KeyboardArrowRight />,
-          }}
-          className={styles.pager}
-          onPageChanged={this.props.handlePageChanged}
-        />
+        {
+          count ? (
+            <Pager
+              total={Math.ceil(count / pageSize)}
+              current={pageNo}
+              visiblePages={3}
+              titles={{
+                first: <SkipPrevious />,
+                last: <SkipNext />,
+                prev: <KeyboardArrowLeft />,
+                next: <KeyboardArrowRight />,
+              }}
+              className={styles.pager}
+              onPageChanged={this.props.handlePageChanged}
+            />)
+            : (
+              <ul className={styles.pager}>
+                {
+                  pageNo > 0 ? (
+                    <li className="btn-prev-page">
+                      <KeyboardArrowLeft
+                        onClick={() => {
+                          if (this.props.handlePageChanged) {
+                            this.props.handlePageChanged(pageNo - 1)
+                          }
+                        }}
+                      />
+                    </li>) : null
+                }
+                {
+                  items && items.length === pageSize ? (
+                    <li className="btn-next-page">
+                      <KeyboardArrowRight
+                        onClick={() => {
+                          if (this.props.handlePageChanged) {
+                            this.props.handlePageChanged(pageNo + 1)
+                          }
+                        }}
+                      />
+                    </li>) : null
+                }
+              </ul>)
+        }
       </Paper>
     )
   }
