@@ -27,11 +27,6 @@ class Footer extends React.Component<{ t: (key: string) => string }, any> {
       title: 'technologies',
       items: [
         {
-          logo: 'https://uploads-ssl.webflow.com/5b10cb31f2733b937fe55ab5/5b185b65683265ce7a42c13c_nervos%20logo.png',
-          title: '',
-          url: 'http://nervos.org/',
-        },
-        {
           logo: 'https://raw.githubusercontent.com/cryptape/assets/master/CITA-logo.png',
           title: '',
           url: 'https://github.com/cryptape/cita',
